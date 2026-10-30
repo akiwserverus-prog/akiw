@@ -1,4 +1,4 @@
--- MAW AUTO FARM PRO - COMBAT BOSSES & MOBS (SORTED A-Z)
+-- MAW AUTO FARM PRO - PROFESSIONAL MODERN GUI
 local Players = game:GetService("Players")
 local VIM = game:GetService("VirtualInputManager")
 local plr = Players.LocalPlayer
@@ -6,593 +6,602 @@ local pgui = plr:WaitForChild("PlayerGui")
 
 if pgui:FindFirstChild("MAW_HUB") then pgui.MAW_HUB:Destroy() end
 
+-- ScreenGui with top-level ZIndex
 local sg = Instance.new("ScreenGui")
 sg.Name = "MAW_HUB"
 sg.ResetOnSpawn = false
-sg.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+sg.ZIndexBehavior = Enum.ZIndexBehavior.Global
 sg.DisplayOrder = 9999
 sg.Parent = pgui
 
-local BG_COLOR = Color3.fromRGB(15, 15, 18)
-local PANEL_COLOR = Color3.fromRGB(24, 24, 28)
-local SIDEBAR_COLOR = Color3.fromRGB(10, 10, 12)
-local ACCENT_BLUE = Color3.fromRGB(0, 162, 255)
-local TEXT_MAIN = Color3.fromRGB(240, 240, 240)
-local TEXT_DARK = Color3.fromRGB(130, 130, 140)
+-- Professional Color Palette
+local c = {
+    bg = Color3.fromRGB(18, 18, 22),
+    panel = Color3.fromRGB(26, 26, 32),
+    panelHover = Color3.fromRGB(32, 32, 40),
+    sidebar = Color3.fromRGB(12, 12, 16),
+    accent = Color3.fromRGB(0, 162, 255),
+    accentHover = Color3.fromRGB(40, 180, 255),
+    text = Color3.fromRGB(245, 245, 250),
+    textMuted = Color3.fromRGB(120, 120, 135),
+    border = Color3.fromRGB(40, 40, 50),
+    success = Color3.fromRGB(46, 204, 113),
+    danger = Color3.fromRGB(231, 76, 60)
+}
 
+-- Main Container
 local main = Instance.new("Frame")
 main.Name = "Main"
-main.Size = UDim2.new(0, 620, 0, 420)
-main.Position = UDim2.new(0.5, -310, 0.5, -210)
-main.BackgroundColor3 = BG_COLOR
+main.Size = UDim2.new(0, 680, 0, 480)
+main.Position = UDim2.new(0.5, -340, 0.5, -240)
+main.BackgroundColor3 = c.bg
 main.BorderSizePixel = 0
 main.Active = true
 main.Draggable = true
 main.Parent = sg
 
+-- Main Corner
 local mainCorner = Instance.new("UICorner")
-mainCorner.CornerRadius = UDim.new(0, 8)
+mainCorner.CornerRadius = UDim.new(0, 12)
 mainCorner.Parent = main
 
+-- Border Stroke
+local mainStroke = Instance.new("UIStroke")
+mainStroke.Thickness = 1
+mainStroke.Color = c.border
+mainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+mainStroke.Parent = main
+
+-- Top Header
+local header = Instance.new("Frame")
+header.Name = "Header"
+header.Size = UDim2.new(1, 0, 0, 50)
+header.BackgroundColor3 = c.panel
+header.BorderSizePixel = 0
+header.Parent = main
+
+local headerCorner = Instance.new("UICorner")
+headerCorner.CornerRadius = UDim.new(0, 12)
+headerCorner.Parent = header
+
+-- Logo/Title
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(0, 200, 1, 0)
+title.Position = UDim2.new(0, 15, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "⚡ MAW HUB"
+title.TextColor3 = c.accent
+title.TextSize = 18
+title.Font = Enum.Font.GothamBold
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = header
+
+-- Subtitle
+local subtitle = Instance.new("TextLabel")
+subtitle.Size = UDim2.new(0, 150, 0, 16)
+subtitle.Position = UDim2.new(0, 15, 0, 28)
+subtitle.BackgroundTransparency = 1
+subtitle.Text = "Martial Arts World"
+subtitle.TextColor3 = c.textMuted
+subtitle.TextSize = 11
+subtitle.Font = Enum.Font.Gotham
+subtitle.TextXAlignment = Enum.TextXAlignment.Left
+subtitle.Parent = header
+
+-- Close Button
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 32, 0, 32)
+closeBtn.Position = UDim2.new(1, -42, 0.5, -16)
+closeBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 48)
+closeBtn.Text = "✕"
+closeBtn.TextColor3 = c.textMuted
+closeBtn.TextSize = 14
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.Parent = header
+
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(0, 8)
+closeCorner.Parent = closeBtn
+
+closeBtn.MouseButton1Click:Connect(function()
+    sg:Destroy()
+end)
+
+closeBtn.MouseEnter:Connect(function()
+    closeBtn.BackgroundColor3 = c.danger
+    closeBtn.TextColor3 = c.text
+end)
+
+closeBtn.MouseLeave:Connect(function()
+    closeBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 48)
+    closeBtn.TextColor3 = c.textMuted
+end)
+
+-- Minimize Button
+local minBtn = Instance.new("TextButton")
+minBtn.Size = UDim2.new(0, 32, 0, 32)
+minBtn.Position = UDim2.new(1, -80, 0.5, -16)
+minBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 48)
+minBtn.Text = "─"
+minBtn.TextColor3 = c.textMuted
+minBtn.TextSize = 14
+minBtn.Font = Enum.Font.GothamBold
+minBtn.Parent = header
+
+local minCorner = Instance.new("UICorner")
+minCorner.CornerRadius = UDim.new(0, 8)
+minCorner.Parent = minBtn
+
+local isMinimized = false
+minBtn.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    if isMinimized then
+        main:TweenSize(UDim2.new(0, 680, 0, 50), "Out", "Quad", 0.2)
+    else
+        main:TweenSize(UDim2.new(0, 680, 0, 480), "Out", "Quad", 0.2)
+    end
+end)
+
+-- Sidebar Tabs
 local sidebar = Instance.new("Frame")
 sidebar.Name = "Sidebar"
-sidebar.Size = UDim2.new(0, 55, 1, 0)
-sidebar.BackgroundColor3 = SIDEBAR_COLOR
+sidebar.Size = UDim2.new(0, 60, 0, 390)
+sidebar.Position = UDim2.new(0, 10, 0, 60)
+sidebar.BackgroundColor3 = c.sidebar
 sidebar.BorderSizePixel = 0
 sidebar.Parent = main
 
 local sideCorner = Instance.new("UICorner")
-sideCorner.CornerRadius = UDim.new(0, 8)
+sideCorner.CornerRadius = UDim.new(0, 10)
 sideCorner.Parent = sidebar
 
-local logo = Instance.new("TextLabel")
-logo.Size = UDim2.new(1, 0, 0, 50)
-logo.BackgroundTransparency = 1
-logo.Text = "⚡"
-logo.TextColor3 = ACCENT_BLUE
-logo.TextSize = 24
-logo.Font = Enum.Font.SourceSansBold
-logo.Parent = sidebar
+-- Tab Data
+local tabs = {}
+local activeTab = nil
+local tabData = {
+    {icon = "⚔️", name = "Combat"},
+    {icon = "📍", name = "Teleport"},
+    {icon = "⛏️", name = "Mining"},
+    {icon = "🌿", name = "Gathering"},
+    {icon = "📦", name = "Pickup"}
+}
 
-local topbar = Instance.new("Frame")
-topbar.Name = "TopBar"
-topbar.Size = UDim2.new(1, -55, 0, 45)
-topbar.Position = UDim2.new(0, 55, 0, 0)
-topbar.BackgroundTransparency = 1
-topbar.Parent = main
+for i, t in ipairs(tabData) do
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 44, 0, 44)
+    btn.Position = UDim2.new(0.5, -22, 0, 15 + (i-1) * 70)
+    btn.BackgroundColor3 = i == 1 and c.accent or c.panel
+    btn.Text = t.icon
+    btn.TextColor3 = i == 1 and c.text or c.textMuted
+    btn.TextSize = 18
+    btn.Font = Enum.Font.Gotham
+    btn.Parent = sidebar
 
-local pathLbl = Instance.new("TextLabel")
-pathLbl.Name = "PathLbl"
-pathLbl.Size = UDim2.new(1, -80, 1, 0)
-pathLbl.Position = UDim2.new(0, 15, 0, 0)
-pathLbl.BackgroundTransparency = 1
-pathLbl.Text = "MAW Hub > Combat"
-pathLbl.TextColor3 = TEXT_DARK
-pathLbl.TextSize = 13
-pathLbl.Font = Enum.Font.SourceSans
-pathLbl.TextXAlignment = Enum.TextXAlignment.Left
-pathLbl.Parent = topbar
+    local btnCorner = Instance.new("UICorner")
+    btnCorner.CornerRadius = UDim.new(0, 10)
+    btnCorner.Parent = btn
 
-local closeBtn = Instance.new("TextButton")
-closeBtn.Size = UDim2.new(0, 25, 0, 25)
-closeBtn.Position = UDim2.new(1, -35, 0.5, -12)
-closeBtn.BackgroundTransparency = 1
-closeBtn.Text = "✕"
-closeBtn.TextColor3 = TEXT_DARK
-closeBtn.TextSize = 16
-closeBtn.Font = Enum.Font.SourceSansBold
-closeBtn.Parent = topbar
+    local btnStroke = Instance.new("UIStroke")
+    btnStroke.Thickness = 1
+    btnStroke.Color = i == 1 and c.accent or c.border
+    btnStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    btnStroke.Parent = btn
 
-closeBtn.MouseButton1Click:Connect(function() sg:Destroy() end)
+    local tabView = Instance.new("Frame")
+    tabView.Name = t.name .. "View"
+    tabView.Size = UDim2.new(1, -90, 0, 390)
+    tabView.Position = UDim2.new(0, 80, 0, 60)
+    tabView.BackgroundTransparency = 1
+    tabView.Visible = i == 1
+    tabView.Parent = main
 
-local contentArea = Instance.new("Frame")
-contentArea.Name = "ContentArea"
-contentArea.Size = UDim2.new(1, -65, 1, -55)
-contentArea.Position = UDim2.new(0, 60, 0, 45)
-contentArea.BackgroundTransparency = 1
-contentArea.Parent = main
+    btn.MouseButton1Click:Connect(function()
+        if activeTab then 
+            activeTab.btn.BackgroundColor3 = c.panel
+            activeTab.btn.TextColor3 = c.textMuted
+            activeTab.btn.UIStroke.Color = c.border
+            activeTab.view.Visible = false
+        end
+        tabView.Visible = true
+        activeTab = {btn = btn, view = tabView}
+        btn.BackgroundColor3 = c.accent
+        btn.TextColor3 = c.text
+        btn.UIStroke.Color = c.accent
+    end)
 
--- STRICT COMBAT LISTS (BOSSES & MOBS)
+    table.insert(tabs, {btn = btn, view = tabView, name = t.name})
+end
+
+-- Content Area for each tab
+local tabContent = {}
+
+-- ===== DATA LISTS =====
 local BossList = {
-    "All Bosses",
-    "Abbot Wuxin",
-    "Black Tiger King, Lord of the Black Wind Fortress",
-    "Crimson Moon Priestess",
-    "Foreman Gou",
-    "Grey Fang",
-    "Gu Mingfeng, the Corpse Daoist",
-    "Hebo, the River Lord",
-    "Hu Yaoji",
-    "Iron-Beak Hou",
-    "Jiao, the Flood Dragon",
-    "Khan Temur",
-    "Knife-Hand Lu",
-    "Lei Wuji",
-    "Mo Qingshan, the Deviated",
-    "Old Scar Ma",
-    "Old Scarback",
-    "Qara Ashina",
-    "Red Sail Mao",
-    "Sunni, the Dragon King's Fifth Son",
-    "Sword Wraith of Cloudbreak Peak",
-    "Taotie, the Devouring Maw",
-    "The Nameless General",
-    "The Tiger Elder",
-    "The Unburied General",
-    "The Warden of the Heavenly River"
+    "All Bosses", "Abbot Wuxin", "Black Tiger King, Lord of the Black Wind Fortress", "Crimson Moon Priestess",
+    "Foreman Gou", "Grey Fang", "Gu Mingfeng, the Corpse Daoist", "Hebo, the River Lord", "Hu Yaoji",
+    "Iron-Beak Hou", "Jiao, the Flood Dragon", "Khan Temur", "Knife-Hand Lu", "Lei Wuji",
+    "Mo Qingshan, the Deviated", "Old Scar Ma", "Old Scarback", "Qara Ashina", "Red Sail Mao",
+    "Sunni, the Dragon King's Fifth Son", "Sword Wraith of Cloudbreak Peak", "Taotie, the Devouring Maw",
+    "The Nameless General", "The Tiger Elder", "The Unburied General", "The Warden of the Heavenly River"
 }
 
 local MobList = {
-    "All Mobs",
-    "Bandit Captain Ma",
-    "Bandit Enforcer",
-    "Bandit Swordsman",
-    "Barrow Wight",
-    "Beggars' Union Disciple",
-    "Black Bear",
-    "Black Cult Disciple",
-    "Black Cult Elder",
-    "Black Road Alliance Disciple",
-    "Black Tiger Disciple",
-    "Blight-Gullet Snapper",
-    "Bone-Crusher Demon Ape",
-    "Bronze Corpse",
-    "Bronze Vault Guardian",
-    "Buried Miner",
-    "Caravan Master Hu",
-    "Cave Crawler",
-    "Corpse-Driver Acolyte",
-    "Demonic Cult Zealot",
-    "Dire Wolf",
-    "Drunken Swordsman",
-    "Elder of Mount Hua",
-    "Emei Sect Disciple",
-    "Fallen Monk",
-    "Flood Dragon Pirate",
-    "Gate-Pass Bandit",
-    "Granny Wei",
-    "Green Forest Thug",
-    "Grey Wolf",
-    "Heavenly Demon Cult Disciple",
-    "Herb Gatherer",
-    "Hopping Corpse",
-    "Horse Herder",
-    "Horse Thief",
-    "Huo of the Left Fang",
-    "Iron-Hide Qi Bear",
-    "Iron-Shell Snapper",
-    "Jade-Horn Gorer",
-    "Jade-Horn Rhino",
-    "Kong Wuya",
-    "Kunlun Sect Disciple",
-    "Lei of the Right Fang",
-    "Longyuan Escort",
-    "Marsh Snapper",
-    "Maw-Spawn",
-    "Mine Bandit",
-    "Mount Hua Disciple",
-    "Mount Hua Sect Disciple",
-    "Mountain Brigand",
-    "Mountain Tiger",
-    "Nameless Tomb Guard",
-    "Oj-Touched Wolf",
-    "Outlaw Chief",
-    "Pack Buffalo",
-    "Petty Thief",
-    "Qi-Burning Boar",
-    "Qi-Deviated Madman",
-    "Qi-Maddened Stalker",
-    "Red Sail Raider",
-    "Reed Serpent",
-    "Relay Runner",
-    "Renegade Disciple",
-    "Restless Spirit",
-    "River Buffalo",
-    "Rock Golem",
-    "Salt Trader",
-    "Shaolin Temple Disciple",
-    "Shield-Bearer of the Nameless Host",
-    "Sichuan Tang Clan Disciple",
-    "Sky-Burial Pilgrim",
-    "Spearman of the Nameless Host",
-    "Steppe Hunter",
-    "Steppe Rider",
-    "Steppe Wolf",
-    "Tang Mo",
-    "Tea Picker",
-    "Tempered Demon Ape",
-    "Tempered Stalker Alpha",
-    "Tianshui Fishwife",
-    "Travelling Merchant Qian",
-    "Villager",
-    "Wailing Shade",
-    "Wandering Cultivator",
-    "Wandering Swordsman",
-    "Water Ghoul",
-    "White-Striped Vault Tiger",
-    "Wild Boar",
-    "Wudang Sect Disciple",
-    "Your Reflection",
-    "Zhang Tieniu",
-    "Zhenyuan Escort"
+    "All Mobs", "Bandit Captain Ma", "Bandit Enforcer", "Bandit Swordsman", "Barrow Wight", "Beggars' Union Disciple",
+    "Black Bear", "Black Cult Disciple", "Black Cult Elder", "Black Road Alliance Disciple", "Black Tiger Disciple",
+    "Blight-Gullet Snapper", "Bone-Crusher Demon Ape", "Bronze Corpse", "Bronze Vault Guardian", "Buried Miner",
+    "Caravan Master Hu", "Cave Crawler", "Corpse-Driver Acolyte", "Demonic Cult Zealot", "Dire Wolf",
+    "Drunken Swordsman", "Elder of Mount Hua", "Emei Sect Disciple", "Fallen Monk", "Flood Dragon Pirate",
+    "Gate-Pass Bandit", "Granny Wei", "Green Forest Thug", "Grey Wolf", "Heavenly Demon Cult Disciple",
+    "Herb Gatherer", "Hopping Corpse", "Horse Herder", "Horse Thief", "Huo of the Left Fang",
+    "Iron-Hide Qi Bear", "Iron-Shell Snapper", "Jade-Horn Gorer", "Jade-Horn Rhino", "Kong Wuya",
+    "Kunlun Sect Disciple", "Lei of the Right Fang", "Longyuan Escort", "Marsh Snapper", "Maw-Spawn",
+    "Mine Bandit", "Mount Hua Disciple", "Mount Hua Sect Disciple", "Mountain Brigand", "Mountain Tiger",
+    "Nameless Tomb Guard", "Oj-Touched Wolf", "Outlaw Chief", "Pack Buffalo", "Petty Thief",
+    "Qi-Burning Boar", "Qi-Deviated Madman", "Qi-Maddened Stalker", "Red Sail Raider", "Reed Serpent",
+    "Relay Runner", "Renegade Disciple", "Restless Spirit", "River Buffalo", "Rock Golem", "Salt Trader",
+    "Shaolin Temple Disciple", "Shield-Bearer of the Nameless Host", "Sichuan Tang Clan Disciple",
+    "Sky-Burial Pilgrim", "Spearman of the Nameless Host", "Steppe Hunter", "Steppe Rider", "Steppe Wolf",
+    "Tang Mo", "Tea Picker", "Tempered Demon Ape", "Tempered Stalker Alpha", "Tianshui Fishwife",
+    "Travelling Merchant Qian", "Villager", "Wailing Shade", "Wandering Cultivator", "Wandering Swordsman",
+    "Water Ghoul", "White-Striped Vault Tiger", "Wild Boar", "Wudang Sect Disciple", "Your Reflection",
+    "Zhang Tieniu", "Zhenyuan Escort"
 }
 
 local NpcTpList = {
-    "Auctioneer Qian",
-    "Beggars' Union Elder",
-    "Beggar Boy Xiao",
-    "Black Road Broker",
-    "Blacksmith Old Pak",
-    "Caravan Guard Bo",
-    "Constable Captain Yun Baek",
-    "Constable Tie",
-    "Drunk Swordsman Ma",
-    "Elder Zhou",
-    "Emei Sword Nun",
-    "Envoy Han Jingxu",
-    "Fence Mo",
-    "Ferryman Ou",
-    "Granny Lian",
-    "Granny Tsang",
-    "Guarding Post",
-    "Heavenly Demon Cult Envoy",
-    "Hunter Gao",
-    "Innkeeper Choi",
-    "Kunlun Swordsman",
-    "Little Mei",
-    "Magistrate's Clerk Zhen",
-    "Madam Hong",
-    "Master Smith Ou",
-    "Merchant Wang",
-    "Oathkeeper Shi Wuyan",
-    "Old Fisherman Lao",
-    "Old Woman Guo",
-    "Parrying Post",
-    "Pill Master Yao",
-    "Porter Dong",
-    "Prize-Keeper Lu",
-    "Registrar Wen",
-    "Rice Merchant Fu",
-    "Riddle-Keeper Su",
-    "Salt Merchant Hu",
-    "Scholar Bai",
-    "Storyteller Wu",
-    "Tailor Mei",
-    "Tea Girl Lan",
-    "The Old Wayfarer",
-    "Town Crier Liu",
-    "Training Post",
-    "Wandering Swordsman Ling",
-    "Waiter Xiao Er",
-    "Weaver Jin",
-    "Wu the Younger",
-    "Alliance Clerk Han",
-    "Apprentice Gu"
+    "All Locations", "Auctioneer Qian", "Beggars' Union Elder", "Beggar Boy Xiao", "Black Road Broker",
+    "Blacksmith Old Pak", "Caravan Guard Bo", "Constable Captain Yun Baek", "Constable Tie",
+    "Drunk Swordsman Ma", "Elder Zhou", "Emei Sword Nun", "Envoy Han Jingxu", "Fence Mo", "Ferryman Ou",
+    "Granny Lian", "Granny Tsang", "Guarding Post", "Heavenly Demon Cult Envoy", "Hunter Gao",
+    "Innkeeper Choi", "Kunlun Swordsman", "Little Mei", "Magistrate's Clerk Zhen", "Madam Hong",
+    "Master Smith Ou", "Merchant Wang", "Oathkeeper Shi Wuyan", "Old Fisherman Lao", "Old Woman Guo",
+    "Parrying Post", "Pill Master Yao", "Porter Dong", "Prize-Keeper Lu", "Registrar Wen", "Rice Merchant Fu",
+    "Riddle-Keeper Su", "Salt Merchant Hu", "Scholar Bai", "Storyteller Wu", "Tailor Mei", "Tea Girl Lan",
+    "The Old Wayfarer", "Town Crier Liu", "Training Post", "Wandering Swordsman Ling", "Waiter Xiao Er",
+    "Weaver Jin", "Wu the Younger", "Alliance Clerk Han", "Apprentice Gu"
 }
 
 local MineList = {"All Ores", "Copper Ore", "Iron Ore", "Qi Crystal Shard", "Spirit Jade Shard"}
-local GatherList = {"All Plants", "Bamboo Shoot", "Cloudcap Mushroom", "Crimson Lotus", "Frost Moss", "Heavenly Snow Lotus", "Jade-Dew Grass", "Moonshade Orchid", "Mountain Ginseng", "Spirit Grass", "Spirit Rice", "Sunfire Blossom", "Thunderstruck Root", "Vein-Bloom Orchid", "Wild Ginger"}
-local PickList = {"All Items", "Five Tigers Door-Breaking Saber", "Jade Headband — low-grade", "Steamed Bun", "Tiger Fur Collar — low-grade"}
+local GatherList = {"All Plants", "Bamboo Shoot", "Cloudcap Mushroom", "Crimson Lotus", "Frost Moss",
+    "Heavenly Snow Lotus", "Jade-Dew Grass", "Moonshade Orchid", "Mountain Ginseng", "Spirit Grass",
+    "Spirit Rice", "Sunfire Blossom", "Thunderstruck Root", "Vein-Bloom Orchid", "Wild Ginger"}
+local PickList = {"All Items", "Five Tigers Door-Breaking Saber", "Jade Headband — low-grade",
+    "Steamed Bun", "Tiger Fur Collar — low-grade"}
 
 _G.SelectedBoss = "All Bosses"
 _G.SelectedMob = "All Mobs"
-_G.SelectedTp = NpcTpList[1]
+_G.SelectedTp = "All Locations"
 _G.SelectedMine = "All Ores"
 _G.SelectedGather = "All Plants"
 _G.SelectedPick = "All Items"
 
-_G.fk = false 
-_G.autoMine = false 
-_G.autoGather = false 
+_G.fk = false
+_G.autoMine = false
+_G.autoGather = false
 _G.autoPick = false
 _G.Skills = {Z=false, X=false, C=false, V=false, ["9"]=false, ["8"]=false, ["7"]=false, ["6"]=false}
 
--- HELPER: Create Card
-local function createCard(parentTab, title, xOffset, width)
-    local card = Instance.new("Frame")
-    card.Size = UDim2.new(0, width, 1, -10)
-    card.Position = UDim2.new(0, xOffset, 0, 0)
-    card.BackgroundColor3 = PANEL_COLOR
-    card.BorderSizePixel = 0
-    card.Parent = parentTab
+-- ===== UI COMPONENTS =====
 
-    local cardCorner = Instance.new("UICorner")
-    cardCorner.CornerRadius = UDim.new(0, 6)
-    cardCorner.Parent = card
+-- Section Card
+local function createSection(parent, title, yPos, height)
+    local section = Instance.new("Frame")
+    section.Size = UDim2.new(0.48, -5, 0, height)
+    section.Position = UDim2.new(yPos, 0, 0, 0)
+    section.BackgroundColor3 = c.panel
+    section.BorderSizePixel = 0
+    section.Parent = parent
 
-    local cardTitle = Instance.new("TextLabel")
-    cardTitle.Size = UDim2.new(1, 0, 0, 30)
-    cardTitle.BackgroundTransparency = 1
-    cardTitle.Text = title
-    cardTitle.TextColor3 = TEXT_MAIN
-    cardTitle.TextSize = 13
-    cardTitle.Font = Enum.Font.SourceSansBold
-    cardTitle.Parent = card
+    local secCorner = Instance.new("UICorner")
+    secCorner.CornerRadius = UDim.new(0, 8)
+    secCorner.Parent = section
 
-    local container = Instance.new("ScrollingFrame")
-    container.Size = UDim2.new(1, -10, 1, -35)
-    container.Position = UDim2.new(0, 5, 0, 32)
+    local secStroke = Instance.new("UIStroke")
+    secStroke.Thickness = 1
+    secStroke.Color = c.border
+    secStroke.Parent = section
+
+    local titleLbl = Instance.new("TextLabel")
+    titleLbl.Size = UDim2.new(1, -16, 0, 28)
+    titleLbl.Position = UDim2.new(0, 8, 0, 4)
+    titleLbl.BackgroundTransparency = 1
+    titleLbl.Text = title
+    titleLbl.TextColor3 = c.text
+    titleLbl.TextSize = 13
+    titleLbl.Font = Enum.Font.GothamBold
+    titleLbl.TextXAlignment = Enum.TextXAlignment.Left
+    titleLbl.Parent = section
+
+    local content = Instance.new("Frame")
+    content.Size = UDim2.new(1, -16, 1, -36)
+    content.Position = UDim2.new(0, 8, 0, 32)
+    content.BackgroundTransparency = 1
+    content.Parent = section
+
+    return content
+end
+
+-- Custom Dropdown
+local function createDropdown(parent, y, label, options, selectedVar, onSelect)
+    local container = Instance.new("Frame")
+    container.Size = UDim2.new(1, 0, 0, 50)
+    container.Position = UDim2.new(0, 0, 0, y)
     container.BackgroundTransparency = 1
-    container.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    container.CanvasSize = UDim2.new(0, 0, 0, 0)
-    container.ScrollBarThickness = 4
-    container.ScrollBarImageColor3 = ACCENT_BLUE
-    container.Parent = card
+    container.Parent = parent
+
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(1, 0, 0, 16)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = label
+    lbl.TextColor3 = c.textMuted
+    lbl.TextSize = 10
+    lbl.Font = Enum.Font.Gotham
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.Parent = container
+
+    local dropBtn = Instance.new("TextButton")
+    dropBtn.Size = UDim2.new(1, 0, 0, 30)
+    dropBtn.Position = UDim2.new(0, 0, 0, 18)
+    dropBtn.BackgroundColor3 = c.bg
+    dropBtn.TextColor3 = c.text
+    dropBtn.TextSize = 12
+    dropBtn.Font = Enum.Font.Gotham
+    dropBtn.Text = "  " .. _G[selectedVar]
+    dropBtn.TextXAlignment = Enum.TextXAlignment.Left
+    dropBtn.Parent = container
+
+    local dropCorner = Instance.new("UICorner")
+    dropCorner.CornerRadius = UDim.new(0, 6)
+    dropCorner.Parent = dropBtn
+
+    local dropStroke = Instance.new("UIStroke")
+    dropStroke.Thickness = 1
+    dropStroke.Color = c.border
+    dropStroke.Parent = dropBtn
+
+    local arrow = Instance.new("TextLabel")
+    arrow.Size = UDim2.new(0, 20, 0, 20)
+    arrow.Position = UDim2.new(1, -25, 0.5, -10)
+    arrow.BackgroundTransparency = 1
+    arrow.Text = "▼"
+    arrow.TextColor3 = c.textMuted
+    arrow.TextSize = 10
+    arrow.Font = Enum.Font.Gotham
+    arrow.Parent = dropBtn
+
+    local isOpen = false
+    local listContainer = nil
+
+    dropBtn.MouseButton1Click:Connect(function()
+        isOpen = not isOpen
+        if isOpen then
+            listContainer = Instance.new("ScrollingFrame")
+            listContainer.Size = UDim2.new(1, 0, 0, math.min(#options * 28, 200))
+            listContainer.Position = UDim2.new(0, 0, 1, 4)
+            listContainer.BackgroundColor3 = c.panel
+            listContainer.BorderSizePixel = 0
+            listContainer.ZIndex = 100
+            listContainer.ScrollBarThickness = 4
+            listContainer.ScrollBarImageColor3 = c.accent
+            listContainer.Parent = container
+
+            local listCorner = Instance.new("UICorner")
+            listCorner.CornerRadius = UDim.new(0, 6)
+            listCorner.Parent = listContainer
+
+            local listStroke = Instance.new("UIStroke")
+            listStroke.Thickness = 1
+            listStroke.Color = c.border
+            listStroke.Parent = listContainer
+
+            local layout = Instance.new("UIListLayout")
+            layout.Padding = UDim.new(0, 2)
+            layout.Parent = listContainer
+
+            for i, opt in ipairs(options) do
+                local optBtn = Instance.new("TextButton")
+                optBtn.Size = UDim2.new(1, 0, 0, 26)
+                optBtn.BackgroundColor3 = c.panel
+                optBtn.TextColor3 = c.text
+                optBtn.TextSize = 11
+                optBtn.Font = Enum.Font.Gotham
+                optBtn.Text = "  " .. opt
+                optBtn.TextXAlignment = Enum.TextXAlignment.Left
+                optBtn.ZIndex = 101
+                optBtn.Parent = listContainer
+
+                optBtn.MouseButton1Click:Connect(function()
+                    _G[selectedVar] = opt
+                    dropBtn.Text = "  " .. opt
+                    isOpen = false
+                    if listContainer then listContainer:Destroy() end
+                    if onSelect then onSelect(opt) end
+                end)
+
+                optBtn.MouseEnter:Connect(function()
+                    optBtn.BackgroundColor3 = c.panelHover
+                end)
+
+                optBtn.MouseLeave:Connect(function()
+                    optBtn.BackgroundColor3 = c.panel
+                end)
+            end
+        else
+            if listContainer then listContainer:Destroy() end
+        end
+    end)
 
     return container
 end
 
--- HELPER: Create Toggle
-local function createToggle(parent, y, labelText, callback)
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, -10, 0, 28)
-    frame.Position = UDim2.new(0, 5, 0, y)
-    frame.BackgroundTransparency = 1
-    frame.Parent = parent
+-- Toggle Switch
+local function createToggle(parent, y, label, callback)
+    local container = Instance.new("Frame")
+    container.Size = UDim2.new(1, 0, 0, 32)
+    container.Position = UDim2.new(0, 0, 0, y)
+    container.BackgroundTransparency = 1
+    container.Parent = parent
 
-    local box = Instance.new("TextButton")
-    box.Size = UDim2.new(0, 16, 0, 16)
-    box.Position = UDim2.new(0, 0, 0.5, -8)
-    box.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
-    box.Text = ""
-    box.AutoButtonColor = false
-    box.Parent = frame
+    local toggleBg = Instance.new("Frame")
+    toggleBg.Size = UDim2.new(0, 40, 0, 20)
+    toggleBg.Position = UDim2.new(1, -45, 0.5, -10)
+    toggleBg.BackgroundColor3 = c.bg
+    toggleBg.BorderSizePixel = 0
+    toggleBg.Parent = container
 
-    local boxCorner = Instance.new("UICorner")
-    boxCorner.CornerRadius = UDim.new(0, 3)
-    boxCorner.Parent = box
+    local toggleCorner = Instance.new("UICorner")
+    toggleCorner.CornerRadius = UDim.new(0, 10)
+    toggleCorner.Parent = toggleBg
 
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -25, 1, 0)
-    label.Position = UDim2.new(0, 24, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = labelText
-    label.TextColor3 = TEXT_MAIN
-    label.TextSize = 12
-    label.Font = Enum.Font.SourceSans
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = frame
+    local toggleStroke = Instance.new("UIStroke")
+    toggleStroke.Thickness = 1
+    toggleStroke.Color = c.border
+    toggleStroke.Parent = toggleBg
 
-    local state = false
-    box.MouseButton1Click:Connect(function()
-        state = not state
-        box.BackgroundColor3 = state and ACCENT_BLUE or Color3.fromRGB(35, 35, 42)
-        callback(state)
-    end)
+    local toggleKnob = Instance.new("Frame")
+    toggleKnob.Size = UDim2.new(0, 16, 0, 16)
+    toggleKnob.Position = UDim2.new(0, 2, 0.5, -8)
+    toggleKnob.BackgroundColor3 = c.textMuted
+    toggleKnob.BorderSizePixel = 0
+    toggleKnob.Parent = toggleBg
 
-    return frame
-end
-
--- HELPER: Create Button
-local function createButton(parent, y, btnText, callback)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -10, 0, 32)
-    btn.Position = UDim2.new(0, 5, 0, y)
-    btn.BackgroundColor3 = ACCENT_BLUE
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.TextSize = 13
-    btn.Font = Enum.Font.SourceSansBold
-    btn.Text = btnText
-    btn.Parent = parent
-
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 4)
-    corner.Parent = btn
-
-    btn.MouseButton1Click:Connect(callback)
-    return btn
-end
-
--- HELPER: Create Dropdown
-local function createDropdown(parent, y, labelText, options, callback)
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, -10, 0, 45)
-    frame.Position = UDim2.new(0, 5, 0, y)
-    frame.BackgroundTransparency = 1
-    frame.Parent = parent
+    local knobCorner = Instance.new("UICorner")
+    knobCorner.CornerRadius = UDim.new(0, 8)
+    knobCorner.Parent = toggleKnob
 
     local lbl = Instance.new("TextLabel")
-    lbl.Size = UDim2.new(1, 0, 0, 18)
+    lbl.Size = UDim2.new(1, -50, 1, 0)
     lbl.BackgroundTransparency = 1
-    lbl.Text = labelText
-    lbl.TextColor3 = TEXT_DARK
-    lbl.TextSize = 11
-    lbl.Font = Enum.Font.SourceSans
+    lbl.Text = label
+    lbl.TextColor3 = c.text
+    lbl.TextSize = 12
+    lbl.Font = Enum.Font.Gotham
     lbl.TextXAlignment = Enum.TextXAlignment.Left
-    lbl.Parent = frame
+    lbl.Parent = container
 
-    local dropBtn = Instance.new("TextButton")
-    dropBtn.Size = UDim2.new(1, 0, 0, 24)
-    dropBtn.Position = UDim2.new(0, 0, 0, 20)
-    dropBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
-    dropBtn.TextColor3 = TEXT_MAIN
-    dropBtn.TextSize = 11
-    dropBtn.Font = Enum.Font.SourceSans
-    dropBtn.Text = "  " .. tostring(options[1])
-    dropBtn.TextXAlignment = Enum.TextXAlignment.Left
-    dropBtn.Parent = frame
+    local isOn = false
 
-    local dropCorner = Instance.new("UICorner")
-    dropCorner.CornerRadius = UDim.new(0, 4)
-    dropCorner.Parent = dropBtn
-
-    local open = false
-    local listFrame = nil
-
-    dropBtn.MouseButton1Click:Connect(function()
-        open = not open
-        if not open then
-            if listFrame then listFrame:Destroy() end
-            return
-        end
-
-        listFrame = Instance.new("Frame")
-        listFrame.Size = UDim2.new(1, 0, 0, math.min(#options * 22, 160))
-        listFrame.Position = UDim2.new(0, 0, 1, 2)
-        listFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
-        listFrame.BorderSizePixel = 0
-        listFrame.ZIndex = 500
-        listFrame.Parent = dropBtn
-
-        local listCorner = Instance.new("UICorner")
-        listCorner.CornerRadius = UDim.new(0, 4)
-        listCorner.Parent = listFrame
-
-        local scroll = Instance.new("ScrollingFrame")
-        scroll.Size = UDim2.new(1, 0, 1, 0)
-        scroll.BackgroundTransparency = 1
-        scroll.CanvasSize = UDim2.new(0, 0, 0, #options * 22)
-        scroll.ScrollBarThickness = 5
-        scroll.ScrollBarImageColor3 = ACCENT_BLUE
-        scroll.ZIndex = 501
-        scroll.Parent = listFrame
-
-        for i, opt in ipairs(options) do
-            local optBtn = Instance.new("TextButton")
-            optBtn.Size = UDim2.new(1, 0, 0, 22)
-            optBtn.Position = UDim2.new(0, 0, 0, (i-1)*22)
-            optBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
-            optBtn.TextColor3 = TEXT_MAIN
-            optBtn.TextSize = 11
-            optBtn.Font = Enum.Font.SourceSans
-            optBtn.Text = "  " .. tostring(opt)
-            optBtn.TextXAlignment = Enum.TextXAlignment.Left
-            optBtn.ZIndex = 502
-            optBtn.Parent = scroll
-
-            optBtn.MouseButton1Click:Connect(function()
-                dropBtn.Text = "  " .. tostring(opt)
-                callback(opt)
-                open = false
-                listFrame:Destroy()
-            end)
+    toggleBg.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            isOn = not isOn
+            toggleKnob:TweenPosition(UDim2.new(0, isOn and 22 or 2, 0.5, -8), "Out", "Quad", 0.15)
+            toggleBg.BackgroundColor3 = isOn and c.accent or c.bg
+            toggleKnob.BackgroundColor3 = isOn and c.text or c.textMuted
+            callback(isOn)
         end
     end)
 
-    return frame
+    return container
 end
 
--- TABS SETUP
-local tabs = {}
-local activeTab = nil
-local tabIcons = {"⚔️", "📍", "⛏️", "🌿", "📦"}
-local tabNames = {"Combat", "Teleport", "Mining", "Gathering", "Pickup"}
-
-for i, icon in ipairs(tabIcons) do
+-- Action Button
+local function createButton(parent, y, text, callback)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 35, 0, 35)
-    btn.Position = UDim2.new(0.5, -17, 0, 50 + (i-1)*42)
-    btn.BackgroundColor3 = SIDEBAR_COLOR
-    btn.Text = icon
-    btn.TextColor3 = TEXT_DARK
-    btn.TextSize = 16
-    btn.Font = Enum.Font.SourceSans
-    btn.Parent = sidebar
+    btn.Size = UDim2.new(1, 0, 0, 36)
+    btn.Position = UDim2.new(0, 0, 0, y)
+    btn.BackgroundColor3 = c.accent
+    btn.TextColor3 = c.text
+    btn.TextSize = 13
+    btn.Font = Enum.Font.GothamBold
+    btn.Text = text
+    btn.Parent = parent
 
     local btnCorner = Instance.new("UICorner")
     btnCorner.CornerRadius = UDim.new(0, 6)
     btnCorner.Parent = btn
 
-    local tabView = Instance.new("Frame")
-    tabView.Name = tabNames[i] .. "View"
-    tabView.Size = UDim2.new(1, 0, 1, 0)
-    tabView.BackgroundTransparency = 1
-    tabView.Visible = false
-    tabView.Parent = contentArea
+    btn.MouseButton1Click:Connect(callback)
 
-    btn.MouseButton1Click:Connect(function()
-        if activeTab then activeTab.view.Visible = false end
-        tabView.Visible = true
-        activeTab = {btn = btn, view = tabView}
-
-        pathLbl.Text = "MAW Hub > " .. tabNames[i]
-
-        for _, t in ipairs(tabs) do
-            t.btn.BackgroundColor3 = SIDEBAR_COLOR
-            t.btn.TextColor3 = TEXT_DARK
-        end
-        btn.BackgroundColor3 = ACCENT_BLUE
-        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.MouseEnter:Connect(function()
+        btn.BackgroundColor3 = c.accentHover
     end)
 
-    table.insert(tabs, {btn = btn, view = tabView, name = tabNames[i]})
+    btn.MouseLeave:Connect(function()
+        btn.BackgroundColor3 = c.accent
+    end)
+
+    return btn
 end
 
--- TAB 1: COMBAT (BOSSES & MOBS SEPARATE DROPDOWNS)
-local cLeft = createCard(tabs[1].view, "⚔️ Combat Targets", 0, 260)
-local cRight = createCard(tabs[1].view, "🔥 Auto Skills", 270, 275)
+-- ===== TAB 1: COMBAT =====
+local combatView = tabs[1].view
+local cTop = createSection(combatView, "🎯 Target Selection", 0, 160)
+local cBottom = createSection(combatView, "⚡ Auto Skills", 0.51, 160)
+local cBot = createSection(combatView, "⚔️ Kill Aura", 0, 200)
+cBot.Position = UDim2.new(0.51, 0, 0, 170)
 
-createDropdown(cLeft, 0, "Select Boss Target", BossList, function(v) _G.SelectedBoss = v end)
-createDropdown(cLeft, 55, "Select Mob Target", MobList, function(v) _G.SelectedMob = v end)
-createToggle(cLeft, 110, "Float Kill Aura", function(v) _G.fk = v end)
+createDropdown(cTop, 0, "BOSS TARGET", BossList, "SelectedBoss", nil)
+createDropdown(cTop, 60, "MOB TARGET", MobList, "SelectedMob", nil)
+createToggle(cBot, 0, "Float Kill Aura", function(v) _G.fk = v end)
 
 local skillKeys = {"Z", "X", "C", "V", "9", "8", "7", "6"}
-for idx, k in ipairs(skillKeys) do
-    createToggle(cRight, (idx-1)*30, "Auto Skill " .. k, function(v) _G.Skills[k] = v end)
+for i, k in ipairs(skillKeys) do
+    local col = i <= 4 and 0 or 90
+    local row = (i - 1) % 4
+    createToggle(cBottom, row * 30, "Skill " .. k, function(v) _G.Skills[k] = v end)
 end
 
--- TAB 2: TELEPORT
-local tpLeft = createCard(tabs[2].view, "📍 Select NPC / Dummy Target", 0, 260)
-local tpRight = createCard(tabs[2].view, "⚡ Teleport Action", 270, 275)
+-- ===== TAB 2: TELEPORT =====
+local tpView = tabs[2].view
+local tpLeft = createSection(tpView, "📍 Location", 0, 120)
+local tpRight = createSection(tpView, "⚡ Action", 0.51, 120)
 
-createDropdown(tpLeft, 0, "NPC / Dummy (HP 100 & 1M)", NpcTpList, function(v) _G.SelectedTp = v end)
+createDropdown(tpLeft, 0, "SELECT TARGET", NpcTpList, "SelectedTp", nil)
 
-createButton(tpRight, 10, "Teleport Now (1-Click)", function()
+createButton(tpRight, 0, "Teleport Now", function()
     local char = plr.Character
     local hrp = char and char:FindFirstChild("HumanoidRootPart")
     if hrp then
-        local target = nil
+        local targetName = _G.SelectedTp
+        if targetName == "All Locations" then
+            warn("[TP] Please select a specific location")
+            return
+        end
         for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
-            if obj:IsA("Model") and obj ~= char and obj.Name == _G.SelectedTp and obj:FindFirstChild("HumanoidRootPart") then
-                target = obj
+            if obj:IsA("Model") and obj ~= char and obj.Name == targetName and obj:FindFirstChild("HumanoidRootPart") then
+                hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
                 break
             end
-        end
-        if target then
-            hrp.CFrame = target.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
         end
     end
 end)
 
--- TAB 3: MINING
-local mLeft = createCard(tabs[3].view, "⛏️ Target Ores", 0, 260)
-local mRight = createCard(tabs[3].view, "⚡ Mining Farm", 270, 275)
-createDropdown(mLeft, 0, "Select Ore Type", MineList, function(v) _G.SelectedMine = v end)
-createToggle(mRight, 0, "Auto Mine (Continuous)", function(v) _G.autoMine = v end)
+-- ===== TAB 3: MINING =====
+local mineView = tabs[3].view
+local mLeft = createSection(mineView, "⛏️ Ore Type", 0, 120)
+local mRight = createSection(mineView, "⚡ Auto Mine", 0.51, 120)
 
--- TAB 4: GATHERING
-local gLeft = createCard(tabs[4].view, "🌿 Target Plants", 0, 260)
-local gRight = createCard(tabs[4].view, "⚡ Gathering Farm", 270, 275)
-createDropdown(gLeft, 0, "Select Plant Type", GatherList, function(v) _G.SelectedGather = v end)
-createToggle(gRight, 0, "Auto Gather (Continuous)", function(v) _G.autoGather = v end)
+createDropdown(mLeft, 0, "SELECT ORE", MineList, "SelectedMine", nil)
+createToggle(mRight, 0, "Auto Mine", function(v) _G.autoMine = v end)
 
--- TAB 5: PICKUP
-local pLeft = createCard(tabs[5].view, "📦 Target Items", 0, 260)
-local pRight = createCard(tabs[5].view, "⚡ Item Pickup", 270, 275)
-createDropdown(pLeft, 0, "Select Item Type", PickList, function(v) _G.SelectedPick = v end)
-createToggle(pRight, 0, "Auto Pick Up (Continuous)", function(v) _G.autoPick = v end)
+-- ===== TAB 4: GATHERING =====
+local gatherView = tabs[4].view
+local gLeft = createSection(gatherView, "🌿 Plant Type", 0, 120)
+local gRight = createSection(gatherView, "⚡ Auto Gather", 0.51, 120)
 
--- FOOTER
+createDropdown(gLeft, 0, "SELECT PLANT", GatherList, "SelectedGather", nil)
+createToggle(gRight, 0, "Auto Gather", function(v) _G.autoGather = v end)
+
+-- ===== TAB 5: PICKUP =====
+local pickView = tabs[5].view
+local pLeft = createSection(pickView, "📦 Item Type", 0, 120)
+local pRight = createSection(pickView, "⚡ Auto Pickup", 0.51, 120)
+
+createDropdown(pLeft, 0, "SELECT ITEM", PickList, "SelectedPick", nil)
+createToggle(pRight, 0, "Auto Pick Up", function(v) _G.autoPick = v end)
+
+-- ===== FOOTER =====
 local footer = Instance.new("TextLabel")
-footer.Size = UDim2.new(0, 200, 0, 20)
-footer.Position = UDim2.new(1, -210, 1, -22)
+footer.Size = UDim2.new(1, -100, 0, 20)
+footer.Position = UDim2.new(0, 80, 1, -25)
 footer.BackgroundTransparency = 1
 footer.Text = "made by akiwe"
-footer.TextColor3 = TEXT_DARK
+footer.TextColor3 = c.textMuted
 footer.TextSize = 11
-footer.Font = Enum.Font.SourceSansItalic
+footer.Font = Enum.Font.GothamItalic
 footer.TextXAlignment = Enum.TextXAlignment.Right
 footer.Parent = main
 
--- SET DEFAULT TAB
-tabs[1].btn.BackgroundColor3 = ACCENT_BLUE
-tabs[1].btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-tabs[1].view.Visible = true
-activeTab = {btn = tabs[1].btn, view = tabs[1].view}
-
-print("[MAW] UI Loaded - Bosses & Mobs separated!")
-
--- ============ LOGIC LOOPS ============
+-- ===== LOGIC LOOPS =====
 
 local function chainLoop(toggleKey, selectedVar, keyword)
     task.spawn(function()
@@ -651,7 +660,7 @@ chainLoop("autoMine", "SelectedMine", "mine")
 chainLoop("autoGather", "SelectedGather", "gather")
 chainLoop("autoPick", "SelectedPick", "pick")
 
--- FLOAT KILL AURA (TARGETS BOSSES OR MOBS)
+-- FLOAT KILL AURA
 task.spawn(function()
     while true do
         if _G.fk then
@@ -661,15 +670,28 @@ task.spawn(function()
                 char.Humanoid.PlatformStand = true
                 hrp.AssemblyLinearVelocity = Vector3.zero
                 local target = nil
-                local minDist = math.huge
                 
-                for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
-                    if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") and obj.Humanoid.Health > 0 then
-                        local name = obj.Name
-                        local matchBoss = (_G.SelectedBoss == "All Bosses") or (name == _G.SelectedBoss)
-                        local matchMob = (_G.SelectedMob == "All Mobs") or (name == _G.SelectedMob)
-                        
-                        if matchBoss or matchMob then
+                local wantSpecificBoss = _G.SelectedBoss and _G.SelectedBoss ~= "All Bosses"
+                local wantSpecificMob = _G.SelectedMob and _G.SelectedMob ~= "All Mobs"
+                
+                if wantSpecificBoss then
+                    for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                        if obj:IsA("Model") and obj ~= char and obj.Name == _G.SelectedBoss and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") and obj.Humanoid.Health > 0 then
+                            target = obj
+                            break
+                        end
+                    end
+                elseif wantSpecificMob then
+                    for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                        if obj:IsA("Model") and obj ~= char and obj.Name == _G.SelectedMob and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") and obj.Humanoid.Health > 0 then
+                            target = obj
+                            break
+                        end
+                    end
+                else
+                    local minDist = math.huge
+                    for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                        if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") and obj.Humanoid.Health > 0 then
                             local d = (hrp.Position - obj.HumanoidRootPart.Position).Magnitude
                             if d < minDist then minDist = d; target = obj end
                         end
@@ -693,3 +715,5 @@ task.spawn(function()
         task.wait(0.05)
     end
 end)
+
+print("[MAW] Professional UI Loaded!")
