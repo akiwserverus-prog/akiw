@@ -548,6 +548,7 @@ print("[MAW] UI Loaded - Bosses & Mobs separated!")
 
 local function chainLoop(toggleKey, selectedVar, keyword)
     task.spawn(function()
+        local harvestedLocations = {}
         while true do
             if _G[toggleKey] then
                 local char = plr.Character
@@ -566,21 +567,32 @@ local function chainLoop(toggleKey, selectedVar, keyword)
                             if selected:find("All") or string.lower(objName):find(string.lower(selected)) then
                                 local part = v.Parent:IsA("BasePart") and v.Parent or model:FindFirstChildWhichIsA("BasePart")
                                 if part then
-                                    local dist = (hrp.Position - part.Position).Magnitude
-                                    if dist < minDist then minDist = dist; targetPrompt = v; targetPart = part end
+                                    local locKey = tostring(part.Position)
+                                    if not harvestedLocations[locKey] then
+                                        local dist = (hrp.Position - part.Position).Magnitude
+                                        if dist < minDist then minDist = dist; targetPrompt = v; targetPart = part end
+                                    end
                                 end
                             end
                         end
                     end
 
                     if targetPrompt and targetPart then
+                        local locKey = tostring(targetPart.Position)
                         hrp.CFrame = targetPart.CFrame + Vector3.new(0, 3, 0)
                         task.wait(0.2)
                         if fireproximityprompt then fireproximityprompt(targetPrompt)
                         else pcall(function() game:GetService("ReplicatedStorage").Remotes.Interact:FireServer(targetPrompt.Parent) end) end
-                        task.wait(targetPrompt.HoldDuration + 0.1)
+                        task.wait(targetPrompt.HoldDuration + 0.5)
+                        harvestedLocations[locKey] = true
+                        task.wait(0.3)
+                    else
+                        harvestedLocations = {}
+                        task.wait(0.5)
                     end
                 end
+            else
+                harvestedLocations = {}
             end
             task.wait(0.1)
         end
