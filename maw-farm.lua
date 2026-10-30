@@ -218,13 +218,61 @@ local MobList = {
 }
 
 local NpcTpList = {
-    "Training Post", "Parrying Post", "Guarding Post",
-    "Porter Dong", "Constable Tie", "Apprentice Gu", "Salt Merchant Hu", "Wandering Swordsman Ling", "Old Woman Guo", "Magistrate’s Clerk Zhen", "Pill Master Yao", "Beggars’ Union Elder", "Scholar Bai", "Black Road Broker", "Constable Captain Yun Baek", "Rice Merchant Fu", "Alliance Clerk Han", "Envoy Han Jingxu", "Granny Tsang", "Oathkeeper Shi Wuyan", "Town Crier Liu", "Riddle-Keeper Su", "Prize-Keeper Lu", "Beggar Boy Xiao", "Drunk Swordsman Ma", "Merchant Wang", "Tailor Mei", "Storyteller Wu", "Tea Girl Lan", "Blacksmith Old Pak", "Master Smith Ou", "Madam Hong", "Kunlun Swordsman", "Innkeeper Choi", "Waiter Xiao Er", "Caravan Guard Bo", "The Old Wayfarer", "Granny Lian", "Auctioneer Qian", "Emei Sword Nun", "Registrar Wen", "Weaver Jin", "Wu the Younger", "Hunter Gao", "Old Fisherman Lao", "Elder Zhou", "Ferryman Ou", "Little Mei", "Fence Mo", "Heavenly Demon Cult Envoy"
+    "Auctioneer Qian",
+    "Beggars' Union Elder",
+    "Beggar Boy Xiao",
+    "Black Road Broker",
+    "Blacksmith Old Pak",
+    "Caravan Guard Bo",
+    "Constable Captain Yun Baek",
+    "Constable Tie",
+    "Drunk Swordsman Ma",
+    "Elder Zhou",
+    "Emei Sword Nun",
+    "Envoy Han Jingxu",
+    "Fence Mo",
+    "Ferryman Ou",
+    "Granny Lian",
+    "Granny Tsang",
+    "Guarding Post",
+    "Heavenly Demon Cult Envoy",
+    "Hunter Gao",
+    "Innkeeper Choi",
+    "Kunlun Swordsman",
+    "Little Mei",
+    "Magistrate's Clerk Zhen",
+    "Madam Hong",
+    "Master Smith Ou",
+    "Merchant Wang",
+    "Oathkeeper Shi Wuyan",
+    "Old Fisherman Lao",
+    "Old Woman Guo",
+    "Parrying Post",
+    "Pill Master Yao",
+    "Porter Dong",
+    "Prize-Keeper Lu",
+    "Registrar Wen",
+    "Rice Merchant Fu",
+    "Riddle-Keeper Su",
+    "Salt Merchant Hu",
+    "Scholar Bai",
+    "Storyteller Wu",
+    "Tailor Mei",
+    "Tea Girl Lan",
+    "The Old Wayfarer",
+    "Town Crier Liu",
+    "Training Post",
+    "Wandering Swordsman Ling",
+    "Waiter Xiao Er",
+    "Weaver Jin",
+    "Wu the Younger",
+    "Alliance Clerk Han",
+    "Apprentice Gu"
 }
 
-local MineList = {"All Ores", "Iron Ore", "Copper Ore", "Spirit Jade Shard", "Qi Crystal Shard"}
-local GatherList = {"All Plants", "Wild Ginger", "Bamboo Shoot", "Sunfire Blossom", "Spirit Rice", "Moonshade Orchid", "Cloudcap Mushroom", "Jade-Dew Grass", "Vein-Bloom Orchid", "Crimson Lotus", "Spirit Grass", "Heavenly Snow Lotus", "Mountain Ginseng", "Thunderstruck Root", "Frost Moss"}
-local PickList = {"All Items", "Steamed Bun", "Tiger Fur Collar — low-grade", "Five Tigers Door-Breaking Saber", "Jade Headband — low-grade"}
+local MineList = {"All Ores", "Copper Ore", "Iron Ore", "Qi Crystal Shard", "Spirit Jade Shard"}
+local GatherList = {"All Plants", "Bamboo Shoot", "Cloudcap Mushroom", "Crimson Lotus", "Frost Moss", "Heavenly Snow Lotus", "Jade-Dew Grass", "Moonshade Orchid", "Mountain Ginseng", "Spirit Grass", "Spirit Rice", "Sunfire Blossom", "Thunderstruck Root", "Vein-Bloom Orchid", "Wild Ginger"}
+local PickList = {"All Items", "Five Tigers Door-Breaking Saber", "Jade Headband — low-grade", "Steamed Bun", "Tiger Fur Collar — low-grade"}
 
 _G.SelectedBoss = "All Bosses"
 _G.SelectedMob = "All Mobs"
