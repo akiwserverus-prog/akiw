@@ -4,15 +4,16 @@ local T = W:CreateTab("Main")
 
 T:CreateButton({Name="Hapus UI",Callback=function()Rayfield:Destroy()end})
 T:CreateToggle({Name="Float Kill Aura",CurrentValue=false,Flag="fk",Callback=function(v)_G.fk=v end})
-T:CreateToggle({Name="Auto Collect Plant",CurrentValue=false,Flag="plant",Callback=function(v)_G.plant=v end})
+T:CreateToggle({Name="Plant ESP",CurrentValue=false,Flag="esp",Callback=function(v)_G.esp=v end})
 
 pcall(function() W.Enabled = true; Rayfield.Enabled = true end)
 
-Rayfield:Notify({Title="OK",Content="Nyalakan Float Kill Aura atau Auto Collect Plant.",Duration=6})
+Rayfield:Notify({Title="OK",Content="Nyalakan Float Kill Aura atau Plant ESP.",Duration=6})
 
 _G.TargetNPC = ""
-_G.PlantCollecting = false
+_G.ESPObjects = {}
 
+-- FLOAT KILL AURA LOOP
 task.spawn(function()
     while true do
         if _G.fk then
@@ -77,53 +78,55 @@ task.spawn(function()
     end
 end)
 
+-- PLANT ESP LOOP
 task.spawn(function()
     while true do
-        if _G.plant and not _G.PlantCollecting then
+        if _G.esp then
             local plr = game:GetService("Players").LocalPlayer
             local char = plr.Character
             local hrp = char and char:FindFirstChild("HumanoidRootPart")
-
-            if hrp then
-                local target = nil
-                local minDist = math.huge
-
-                for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
-                    if obj:IsA("Model") and not obj:FindFirstChild("Humanoid") then
-                        local part = obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")
-                        if part then
-                            local d = (hrp.Position - part.Position).Magnitude
-                            if d < minDist then
-                                minDist = d
-                                target = obj
-                            end
-                        end
-                    end
-                end
-
-                if target then
-                    local part = target.PrimaryPart or target:FindFirstChildWhichIsA("BasePart")
+            
+            for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                if obj:IsA("Model") and not obj:FindFirstChild("Humanoid") and not _G.ESPObjects[obj] then
+                    local part = obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")
                     if part then
-                        _G.PlantCollecting = true
-                        hrp.CFrame = part.CFrame + Vector3.new(0, 2, 0)
-                        task.wait(0.2)
-
-                        for i = 1, 30 do
-                            if not _G.plant then break end
-                            pcall(function()
-                                local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-                                if remotes and remotes:FindFirstChild("Interact") then
-                                    remotes.Interact:FireServer(target)
-                                end
-                            end)
-                            task.wait(0.1)
-                        end
-
-                        _G.PlantCollecting = false
+                        local bb = Instance.new("BillboardGui")
+                        bb.Name = "PlantESP"
+                        bb.Adornee = part
+                        bb.Size = UDim2.new(0, 100, 0, 50)
+                        bb.StudsOffset = Vector3.new(0, 2, 0)
+                        bb.AlwaysOnTop = true
+                        
+                        local txt = Instance.new("TextLabel")
+                        txt.Size = UDim2.new(1, 0, 1, 0)
+                        txt.BackgroundTransparency = 1
+                        txt.Text = obj.Name
+                        txt.TextColor3 = Color3.fromRGB(0, 255, 100)
+                        txt.TextStrokeTransparency = 0
+                        txt.TextSize = 14
+                        txt.Font = Enum.Font.SourceSansBold
+                        txt.Parent = bb
+                        
+                        bb.Parent = part
+                        _G.ESPObjects[obj] = bb
+                        
+                        task.spawn(function()
+                            while bb and bb.Parent and hrp do
+                                if not _G.esp then break end
+                                local d = (hrp.Position - part.Position).Magnitude
+                                txt.Text = obj.Name .. "\n[" .. math.floor(d) .. " studs]"
+                                task.wait(0.5)
+                            end
+                        end)
                     end
                 end
             end
+        else
+            for obj, bb in pairs(_G.ESPObjects) do
+                if bb then bb:Destroy() end
+            end
+            _G.ESPObjects = {}
         end
-        task.wait(0.3)
+        task.wait(2)
     end
 end)
