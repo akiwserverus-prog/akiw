@@ -6,7 +6,7 @@ local pgui = plr:WaitForChild("PlayerGui")
 
 if pgui:FindFirstChild("AKIW_HUB") then pgui.AKIW_HUB:Destroy() end
 
--- ScreenGui with top-level ZIndex
+-- ScreenGui Setup
 local sg = Instance.new("ScreenGui")
 sg.Name = "AKIW_HUB"
 sg.ResetOnSpawn = false
@@ -14,22 +14,17 @@ sg.ZIndexBehavior = Enum.ZIndexBehavior.Global
 sg.DisplayOrder = 9999
 sg.Parent = pgui
 
--- Professional Color Palette
+-- Palette
 local c = {
     bg = Color3.fromRGB(18, 18, 22),
     panel = Color3.fromRGB(26, 26, 32),
-    panelHover = Color3.fromRGB(32, 32, 40),
     sidebar = Color3.fromRGB(12, 12, 16),
     accent = Color3.fromRGB(0, 162, 255),
-    accentHover = Color3.fromRGB(40, 180, 255),
     text = Color3.fromRGB(245, 245, 250),
     textMuted = Color3.fromRGB(120, 120, 135),
-    border = Color3.fromRGB(40, 40, 50),
-    success = Color3.fromRGB(46, 204, 113),
-    danger = Color3.fromRGB(231, 76, 60)
+    border = Color3.fromRGB(40, 40, 50)
 }
 
--- Use SourceSans for compatibility
 local MAIN_FONT = Enum.Font.SourceSans
 local BOLD_FONT = Enum.Font.SourceSansBold
 
@@ -44,19 +39,17 @@ main.Active = true
 main.Draggable = true
 main.Parent = sg
 
--- Main Corner
 local mainCorner = Instance.new("UICorner")
 mainCorner.CornerRadius = UDim.new(0, 12)
 mainCorner.Parent = main
 
--- Border Stroke
 local mainStroke = Instance.new("UIStroke")
 mainStroke.Thickness = 1
 mainStroke.Color = c.border
 mainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 mainStroke.Parent = main
 
--- Top Header
+-- Header
 local header = Instance.new("Frame")
 header.Name = "Header"
 header.Size = UDim2.new(1, 0, 0, 50)
@@ -68,7 +61,6 @@ local headerCorner = Instance.new("UICorner")
 headerCorner.CornerRadius = UDim.new(0, 12)
 headerCorner.Parent = header
 
--- Title
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(0, 200, 1, 0)
 title.Position = UDim2.new(0, 15, 0, 0)
@@ -80,7 +72,6 @@ title.Font = BOLD_FONT
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = header
 
--- Close Button
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0, 32, 0, 32)
 closeBtn.Position = UDim2.new(1, -42, 0.5, -16)
@@ -94,10 +85,9 @@ closeBtn.Parent = header
 local closeCorner = Instance.new("UICorner")
 closeCorner.CornerRadius = UDim.new(0, 8)
 closeCorner.Parent = closeBtn
-
 closeBtn.MouseButton1Click:Connect(function() sg:Destroy() end)
 
--- Sidebar Tabs
+-- Sidebar
 local sidebar = Instance.new("Frame")
 sidebar.Name = "Sidebar"
 sidebar.Size = UDim2.new(0, 60, 0, 390)
@@ -154,11 +144,11 @@ for i, t in ipairs(tabData) do
         btn.BackgroundColor3 = c.accent
         btn.TextColor3 = c.text
     end)
-
+    if i == 1 then activeTab = {btn = btn, view = tabView} end
     table.insert(tabs, {btn = btn, view = tabView, name = t.name})
 end
 
--- Data Lists
+-- Data
 local BossList = {"All Bosses", "Abbot Wuxin", "Black Tiger King, Lord of the Black Wind Fortress", "Crimson Moon Priestess", "Foreman Gou", "Grey Fang", "Gu Mingfeng, the Corpse Daoist", "Hebo, the River Lord", "Hu Yaoji", "Iron-Beak Hou", "Jiao, the Flood Dragon", "Khan Temur", "Knife-Hand Lu", "Lei Wuji", "Mo Qingshan, the Deviated", "Old Scar Ma", "Old Scarback", "Qara Ashina", "Red Sail Mao", "Sunni, the Dragon King's Fifth Son", "Sword Wraith of Cloudbreak Peak", "Taotie, the Devouring Maw", "The Nameless General", "The Tiger Elder", "The Unburied General", "The Warden of the Heavenly River"}
 local MobList = {"All Mobs", "Bandit Captain Ma", "Bandit Enforcer", "Bandit Swordsman", "Barrow Wight", "Beggars' Union Disciple", "Black Bear", "Black Cult Disciple", "Black Cult Elder", "Black Road Alliance Disciple", "Black Tiger Disciple", "Blight-Gullet Snapper", "Bone-Crusher Demon Ape", "Bronze Corpse", "Bronze Vault Guardian", "Buried Miner", "Caravan Master Hu", "Cave Crawler", "Corpse-Driver Acolyte", "Demonic Cult Zealot", "Dire Wolf", "Drunken Swordsman", "Elder of Mount Hua", "Emei Sect Disciple", "Fallen Monk", "Flood Dragon Pirate", "Gate-Pass Bandit", "Granny Wei", "Green Forest Thug", "Grey Wolf", "Heavenly Demon Cult Disciple", "Herb Gatherer", "Hopping Corpse", "Horse Herder", "Horse Thief", "Huo of the Left Fang", "Iron-Hide Qi Bear", "Iron-Shell Snapper", "Jade-Horn Gorer", "Jade-Horn Rhino", "Kong Wuya", "Kunlun Sect Disciple", "Lei of the Right Fang", "Longyuan Escort", "Marsh Snapper", "Maw-Spawn", "Mine Bandit", "Mount Hua Disciple", "Mount Hua Sect Disciple", "Mountain Brigand", "Mountain Tiger", "Nameless Tomb Guard", "Oj-Touched Wolf", "Outlaw Chief", "Pack Buffalo", "Petty Thief", "Qi-Burning Boar", "Qi-Deviated Madman", "Qi-Maddened Stalker", "Red Sail Raider", "Reed Serpent", "Relay Runner", "Renegade Disciple", "Restless Spirit", "River Buffalo", "Rock Golem", "Salt Trader", "Shaolin Temple Disciple", "Shield-Bearer of the Nameless Host", "Sichuan Tang Clan Disciple", "Sky-Burial Pilgrim", "Spearman of the Nameless Host", "Steppe Hunter", "Steppe Rider", "Steppe Wolf", "Tang Mo", "Tea Picker", "Tempered Demon Ape", "Tempered Stalker Alpha", "Tianshui Fishwife", "Travelling Merchant Qian", "Villager", "Wailing Shade", "Wandering Cultivator", "Wandering Swordsman", "Water Ghoul", "White-Striped Vault Tiger", "Wild Boar", "Wudang Sect Disciple", "Your Reflection", "Zhang Tieniu", "Zhenyuan Escort"}
 local NpcTpList = {"All Locations", "Auctioneer Qian", "Beggars' Union Elder", "Beggar Boy Xiao", "Black Road Broker", "Blacksmith Old Pak", "Caravan Guard Bo", "Constable Captain Yun Baek", "Constable Tie", "Drunk Swordsman Ma", "Elder Zhou", "Emei Sword Nun", "Envoy Han Jingxu", "Fence Mo", "Ferryman Ou", "Granny Lian", "Granny Tsang", "Guarding Post", "Heavenly Demon Cult Envoy", "Hunter Gao", "Innkeeper Choi", "Kunlun Swordsman", "Little Mei", "Magistrate's Clerk Zhen", "Madam Hong", "Master Smith Ou", "Merchant Wang", "Oathkeeper Shi Wuyan", "Old Fisherman Lao", "Old Woman Guo", "Parrying Post", "Pill Master Yao", "Porter Dong", "Prize-Keeper Lu", "Registrar Wen", "Rice Merchant Fu", "Riddle-Keeper Su", "Salt Merchant Hu", "Scholar Bai", "Storyteller Wu", "Tailor Mei", "Tea Girl Lan", "The Old Wayfarer", "Town Crier Liu", "Training Post", "Wandering Swordsman Ling", "Waiter Xiao Er", "Weaver Jin", "Wu the Younger", "Alliance Clerk Han", "Apprentice Gu"}
@@ -179,7 +169,7 @@ _G.autoGather = false
 _G.autoPick = false
 _G.Skills = {Z=false, X=false, C=false, V=false, ["9"]=false, ["8"]=false, ["7"]=false, ["6"]=false}
 
--- UI Helper Functions
+-- UI Helpers
 local function createSection(parent, title, pos, size)
     local section = Instance.new("Frame")
     section.Size = size
@@ -257,6 +247,9 @@ local function createDropdown(parent, y, label, options, selectedVar)
             listContainer.ZIndex = 100
             listContainer.Parent = container
 
+            local layout = Instance.new("UIListLayout")
+            layout.Parent = listContainer
+
             for _, opt in ipairs(options) do
                 local optBtn = Instance.new("TextButton")
                 optBtn.Size = UDim2.new(1, 0, 0, 26)
@@ -296,6 +289,10 @@ local function createToggle(parent, y, label, callback)
     toggleBg.Text = ""
     toggleBg.Parent = container
 
+    local toggleCorner = Instance.new("UICorner")
+    toggleCorner.CornerRadius = UDim.new(0, 10)
+    toggleCorner.Parent = toggleBg
+
     local lbl = Instance.new("TextLabel")
     lbl.Size = UDim2.new(1, -50, 1, 0)
     lbl.BackgroundTransparency = 1
@@ -314,11 +311,29 @@ local function createToggle(parent, y, label, callback)
     end)
 end
 
--- TAB 1: COMBAT - Re-arranged Layout
+local function createButton(parent, y, text, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 0, 36)
+    btn.Position = UDim2.new(0, 0, 0, y)
+    btn.BackgroundColor3 = c.accent
+    btn.TextColor3 = c.text
+    btn.TextSize = 13
+    btn.Font = BOLD_FONT
+    btn.Text = text
+    btn.Parent = parent
+
+    local btnCorner = Instance.new("UICorner")
+    btnCorner.CornerRadius = UDim.new(0, 6)
+    btnCorner.Parent = btn
+    btn.MouseButton1Click:Connect(callback)
+    return btn
+end
+
+-- TAB 1: COMBAT
 local combatView = tabs[1].view
 local cLeftTop = createSection(combatView, "🎯 Target Selection", UDim2.new(0,0,0,0), UDim2.new(0.48, 0, 0, 150))
 local cLeftBot = createSection(combatView, "⚔️ Kill Aura", UDim2.new(0,0,0,160), UDim2.new(0.48, 0, 0, 80))
-local cRight = createSection(combatView, "⚡ Auto Skills", UDim2.new(0.52,0,0,0), UDim2.new(0.48, 0, 0, 300))
+local cRight = createSection(combatView, "⚡ Auto Skills", UDim2.new(0.52,0,0,0), UDim2.new(0.48, 0, 0, 310))
 
 createDropdown(cLeftTop, 0, "BOSS TARGET", BossList, "SelectedBoss")
 createDropdown(cLeftTop, 60, "MOB TARGET", MobList, "SelectedMob")
@@ -329,13 +344,146 @@ for i, k in ipairs(skillKeys) do
     createToggle(cRight, (i - 1) * 35, "Skill " .. k, function(v) _G.Skills[k] = v end)
 end
 
--- Tab 2-5 placeholders
--- (Skipped for brevity, but structure is identical)
+-- TAB 2: TELEPORT
 local tpView = tabs[2].view
-local mView = tabs[3].view
-local gView = tabs[4].view
-local pView = tabs[5].view
+local tpLeft = createSection(tpView, "📍 Location", UDim2.new(0,0,0,0), UDim2.new(0.48, 0, 0, 120))
+local tpRight = createSection(tpView, "⚡ Action", UDim2.new(0.52,0,0,0), UDim2.new(0.48, 0, 0, 120))
 
--- Logic Loops (Same as before)
--- ...
-print("[AKIW] Professional UI Loaded!")
+createDropdown(tpLeft, 0, "SELECT TARGET", NpcTpList, "SelectedTp")
+createButton(tpRight, 0, "Teleport Now", function()
+    local char = plr.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        local targetName = _G.SelectedTp
+        if targetName == "All Locations" then return end
+        for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+            if obj:IsA("Model") and obj ~= char and obj.Name == targetName and obj:FindFirstChild("HumanoidRootPart") then
+                hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+                break
+            end
+        end
+    end
+end)
+
+-- TAB 3: MINING
+local mView = tabs[3].view
+local mLeft = createSection(mView, "⛏️ Ore", UDim2.new(0,0,0,0), UDim2.new(0.48, 0, 0, 120))
+local mRight = createSection(mView, "⚡ Auto", UDim2.new(0.52,0,0,0), UDim2.new(0.48, 0, 0, 120))
+createDropdown(mLeft, 0, "SELECT ORE", MineList, "SelectedMine")
+createToggle(mRight, 0, "Auto Mine", function(v) _G.autoMine = v end)
+
+-- TAB 4: GATHERING
+local gView = tabs[4].view
+local gLeft = createSection(gView, "🌿 Plant", UDim2.new(0,0,0,0), UDim2.new(0.48, 0, 0, 120))
+local gRight = createSection(gView, "⚡ Auto", UDim2.new(0.52,0,0,0), UDim2.new(0.48, 0, 0, 120))
+createDropdown(gLeft, 0, "SELECT PLANT", GatherList, "SelectedGather")
+createToggle(gRight, 0, "Auto Gather", function(v) _G.autoGather = v end)
+
+-- TAB 5: PICKUP
+local pView = tabs[5].view
+local pLeft = createSection(pView, "📦 Item", UDim2.new(0,0,0,0), UDim2.new(0.48, 0, 0, 120))
+local pRight = createSection(pView, "⚡ Auto", UDim2.new(0.52,0,0,0), UDim2.new(0.48, 0, 0, 120))
+createDropdown(pLeft, 0, "SELECT ITEM", PickList, "SelectedPick")
+createToggle(pRight, 0, "Auto Pickup", function(v) _G.autoPick = v end)
+
+-- Logic Loops
+local function chainLoop(toggleKey, selectedVar, keyword)
+    task.spawn(function()
+        local harvestedLocations = {}
+        while true do
+            if _G[toggleKey] then
+                local char = plr.Character
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    local targetPrompt = nil
+                    local targetPart = nil
+                    local minDist = math.huge
+                    local selected = _G[selectedVar] or "All"
+                    for _, v in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                        if v:IsA("ProximityPrompt") and string.find(string.lower(v.ActionText), keyword) then
+                            local model = v:FindFirstAncestorOfClass("Model") or v.Parent
+                            local objName = v.ObjectText ~= "" and v.ObjectText or model.Name
+                            if selected:find("All") or string.lower(objName):find(string.lower(selected)) then
+                                local part = v.Parent:IsA("BasePart") and v.Parent or model:FindFirstChildWhichIsA("BasePart")
+                                if part then
+                                    local locKey = tostring(part.Position)
+                                    if not harvestedLocations[locKey] then
+                                        local dist = (hrp.Position - part.Position).Magnitude
+                                        if dist < minDist then minDist = dist; targetPrompt = v; targetPart = part end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                    if targetPrompt and targetPart then
+                        local locKey = tostring(targetPart.Position)
+                        hrp.CFrame = targetPart.CFrame + Vector3.new(0, 3, 0)
+                        task.wait(0.2)
+                        if fireproximityprompt then fireproximityprompt(targetPrompt)
+                        else pcall(function() game:GetService("ReplicatedStorage").Remotes.Interact:FireServer(targetPrompt.Parent) end) end
+                        task.wait(targetPrompt.HoldDuration + 0.5)
+                        harvestedLocations[locKey] = true
+                    else
+                        harvestedLocations = {}
+                        task.wait(0.5)
+                    end
+                end
+            else harvestedLocations = {} end
+            task.wait(0.1)
+        end
+    end)
+end
+
+chainLoop("autoMine", "SelectedMine", "mine")
+chainLoop("autoGather", "SelectedGather", "gather")
+chainLoop("autoPick", "SelectedPick", "pick")
+
+task.spawn(function()
+    while true do
+        if _G.fk then
+            local char = plr.Character
+            local hrp = char and char:FindFirstChild("HumanoidRootPart")
+            if hrp and char:FindFirstChild("Humanoid") then
+                char.Humanoid.PlatformStand = true
+                hrp.AssemblyLinearVelocity = Vector3.zero
+                local target = nil
+                local wantBoss = _G.SelectedBoss ~= "All Bosses"
+                local wantMob = _G.SelectedMob ~= "All Mobs"
+                if wantBoss then
+                    for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                        if obj:IsA("Model") and obj ~= char and obj.Name == _G.SelectedBoss and obj:FindFirstChild("Humanoid") and obj.Humanoid.Health > 0 then
+                            target = obj; break
+                        end
+                    end
+                elseif wantMob then
+                    for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                        if obj:IsA("Model") and obj ~= char and obj.Name == _G.SelectedMob and obj:FindFirstChild("Humanoid") and obj.Humanoid.Health > 0 then
+                            target = obj; break
+                        end
+                    end
+                else
+                    local minDist = math.huge
+                    for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                        if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") and obj.Humanoid.Health > 0 then
+                            local d = (hrp.Position - obj.HumanoidRootPart.Position).Magnitude
+                            if d < minDist then minDist = d; target = obj end
+                        end
+                    end
+                end
+                if target then
+                    hrp.CFrame = CFrame.lookAt(target.HumanoidRootPart.Position + Vector3.new(0, 8.5, 0), target.HumanoidRootPart.Position)
+                    pcall(function() 
+                        game:GetService("ReplicatedStorage").Remotes.CombatInput:FireServer()
+                        for k, v in pairs(_G.Skills) do if v then VIM:SendKeyEvent(true, Enum.KeyCode[k], false, game) end end
+                    end)
+                end
+            end
+        else
+            local char = plr.Character
+            if char and char:FindFirstChild("Humanoid") then char.Humanoid.PlatformStand = false end
+        end
+        task.wait(0.05)
+    end
+end)
+
+print("[AKIW] Hub Ready")
