@@ -1,8 +1,9 @@
--- MAW AUTO FARM PRO - GUI KIRI
+-- MAW AUTO FARM PRO - POPUP DRAGGABLE
 local Players = game:GetService("Players")
 local VIM = game:GetService("VirtualInputManager")
 local plr = Players.LocalPlayer
 local pgui = plr:WaitForChild("PlayerGui")
+local UIS = game:GetService("UserInputService")
 
 -- Hapus UI lama
 if pgui:FindFirstChild("MAW_HUB") then pgui.MAW_HUB:Destroy() end
@@ -13,33 +14,133 @@ sg.Name = "MAW_HUB"
 sg.ResetOnSpawn = false
 sg.Parent = pgui
 
--- MAIN FRAME (Kiri)
-local mainFrame = Instance.new("Frame")
-mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 220, 0, 600)
-mainFrame.Position = UDim2.new(0, 10, 0.5, -300)
-mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
-mainFrame.BorderColor3 = Color3.fromRGB(0, 255, 150)
-mainFrame.BorderSizePixel = 2
-mainFrame.Parent = sg
+-- MAIN POPUP FRAME
+local popupFrame = Instance.new("Frame")
+popupFrame.Name = "PopupFrame"
+popupFrame.Size = UDim2.new(0, 300, 0, 500)
+popupFrame.Position = UDim2.new(0.5, -150, 0.5, -250)
+popupFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+popupFrame.BorderColor3 = Color3.fromRGB(0, 255, 150)
+popupFrame.BorderSizePixel = 2
+popupFrame.Active = true
+popupFrame.Draggable = true
+popupFrame.Parent = sg
 
--- Title
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 40)
-title.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-title.Text = "MAW FARM PRO"
-title.TextColor3 = Color3.fromRGB(0, 255, 150)
-title.TextSize = 16
-title.Font = Enum.Font.SourceSansBold
-title.Parent = mainFrame
+-- HEADER
+local header = Instance.new("Frame")
+header.Size = UDim2.new(1, 0, 0, 45)
+header.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+header.BorderColor3 = Color3.fromRGB(0, 255, 150)
+header.BorderSizePixel = 1
+header.Parent = popupFrame
 
--- CONTENT FRAME
-local contentFrame = Instance.new("Frame")
-contentFrame.Name = "ContentFrame"
-contentFrame.Size = UDim2.new(1, 0, 1, -40)
-contentFrame.Position = UDim2.new(0, 0, 0, 40)
-contentFrame.BackgroundTransparency = 1
-contentFrame.Parent = mainFrame
+local titleLbl = Instance.new("TextLabel")
+titleLbl.Size = UDim2.new(1, -70, 1, 0)
+titleLbl.Position = UDim2.new(0, 10, 0, 0)
+titleLbl.BackgroundTransparency = 1
+titleLbl.Text = "MAW FARM PRO"
+titleLbl.TextColor3 = Color3.fromRGB(0, 255, 150)
+titleLbl.TextSize = 16
+titleLbl.Font = Enum.Font.SourceSansBold
+titleLbl.TextXAlignment = Enum.TextXAlignment.Left
+titleLbl.Parent = header
+
+local minimizeBtn = Instance.new("TextButton")
+minimizeBtn.Size = UDim2.new(0, 30, 0, 30)
+minimizeBtn.Position = UDim2.new(1, -65, 0.5, -15)
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeBtn.TextSize = 16
+minimizeBtn.Font = Enum.Font.SourceSansBold
+minimizeBtn.Text = "−"
+minimizeBtn.Parent = header
+
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -30, 0.5, -15)
+closeBtn.BackgroundColor3 = Color3.fromRGB(100, 50, 50)
+closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.TextSize = 16
+closeBtn.Font = Enum.Font.SourceSansBold
+closeBtn.Text = "×"
+closeBtn.Parent = header
+
+closeBtn.MouseButton1Click:Connect(function()
+    sg:Destroy()
+end)
+
+local minimized = false
+minimizeBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    if minimized then
+        popupFrame.Size = UDim2.new(0, 300, 0, 45)
+        minimizeBtn.Text = "□"
+    else
+        popupFrame.Size = UDim2.new(0, 300, 0, 500)
+        minimizeBtn.Text = "−"
+    end
+end)
+
+-- TAB BUTTONS
+local tabFrame = Instance.new("Frame")
+tabFrame.Size = UDim2.new(1, 0, 0, 40)
+tabFrame.Position = UDim2.new(0, 0, 0, 45)
+tabFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+tabFrame.BorderSizePixel = 0
+tabFrame.Parent = popupFrame
+
+local tabs = {}
+local currentTab = nil
+local tabNames = {"⚔️", "💎", "⛏️", "🌿", "📦"}
+local tabFullNames = {"Combat", "Dummy", "Mine", "Gather", "Pick"}
+
+for i, icon in ipairs(tabNames) do
+    local tabBtn = Instance.new("TextButton")
+    tabBtn.Size = UDim2.new(0, 60, 1, 0)
+    tabBtn.Position = UDim2.new(0, (i-1)*60, 0, 0)
+    tabBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+    tabBtn.TextColor3 = Color3.fromRGB(150, 150, 150)
+    tabBtn.TextSize = 20
+    tabBtn.Font = Enum.Font.SourceSansBold
+    tabBtn.Text = icon
+    tabBtn.BorderSizePixel = 0
+    tabBtn.Parent = tabFrame
+
+    local tabContent = Instance.new("ScrollingFrame")
+    tabContent.Name = tabFullNames[i]
+    tabContent.Size = UDim2.new(1, 0, 1, -85)
+    tabContent.Position = UDim2.new(0, 0, 0, 85)
+    tabContent.BackgroundTransparency = 1
+    tabContent.CanvasSize = UDim2.new(0, 0, 0, 400)
+    tabContent.ScrollBarThickness = 6
+    tabContent.Visible = false
+    tabContent.Parent = popupFrame
+
+    tabBtn.MouseButton1Click:Connect(function()
+        if currentTab then currentTab.Visible = false end
+        tabContent.Visible = true
+        currentTab = tabContent
+        for _, btn in ipairs(tabFrame:GetChildren()) do
+            if btn:IsA("TextButton") then
+                btn.BackgroundColor3 = btn == tabBtn and Color3.fromRGB(0, 150, 100) or Color3.fromRGB(40, 40, 50)
+                btn.TextColor3 = btn == tabBtn and Color3.fromRGB(0, 255, 150) or Color3.fromRGB(150, 150, 150)
+            end
+        end
+    end)
+
+    table.insert(tabs, {btn=tabBtn, content=tabContent})
+end
+
+-- FOOTER
+local footer = Instance.new("TextLabel")
+footer.Size = UDim2.new(1, 0, 0, 20)
+footer.Position = UDim2.new(0, 0, 1, -20)
+footer.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+footer.TextColor3 = Color3.fromRGB(100, 100, 100)
+footer.TextSize = 10
+footer.Font = Enum.Font.SourceSans
+footer.Text = "made by akiwe"
+footer.Parent = popupFrame
 
 -- GLOBAL VAR
 local MobList = {"All Mobs", "Martial Alliance Guard", "Blacksmith's Apprentice", "Travelling Scholar", "Village Constable", "Tang Clans Envoy", "Green Forest Thug", "Road Cutpurse", "Suanni, the Dragon King's Fifth Son", "Marshal Tie Yan, the Burnt Marshal", "Black Tiger King, Lord of the Green Forest", "Jiao, the Flood Dragon", "Sad Cultivator", "Bonewrath, the War-Qilin of the Ninefold Lord", "Commander Shen Tingjun", "Crimson Moon Priestess", "Mo Qingshan, the Deviated", "Lü Jiugong, Master of the Shattered Array", "Snack-Seller Hua", "Drum-Master Feng", "Auntie Tangyuan", "Mount Hua Disciple", "Plum Blossom Trainee", "Travelling Martial Artist", "Alley Rat", "Carpenter Lu", "Forest Bandit", "Heavenly Demon Disciple", "Old Tuskers", "Iron-Shell Snapper", "Ox-Fist Brute", "Mount Hua Outer Elder", "Old Snapjaw", "Wild Boar", "Grey Wolf", "Highway Robber", "Drunken Fist Master", "Stable-Master Gong", "Qi-Touched Wolf", "Old Blackpaw", "Scarback", "Mountain Brigand", "Pass Reaver", "Jade-Horn Rhino", "Stoneplate Rhino", "Ashen Demon Ape", "Hungry Ghost", "Wailing Shade", "Restless Spirit", "Blood-Eyed Demon Ape", "Lean Grey Wolf", "Moon-Eyed Wolf", "Dire Wolf", "Green Forest Blade", "Iron-Beak Hou", "Abbot Wuxin", "Flood Dragon Pirate", "Bandit Captain Ma", "Grey Fang", "Fishmonger", "Black Wind Lookout", "Pass Reaver Wind", "Tusked Boar", "Tempered Old Tusker", "Fallen Monk", "Hollow-Eyed Novice", "Lake Cutthroat", "Tempered Grey Wolf", "Bandit Enforcer", "Thunder-Striped Tiger", "Widow Lin", "Red Sail Raider", "Demonic Cult Zealot", "Black Moon Assassin", "Black Moon Warrior", "Shaolin Warrior Monk", "Red Sail Cutthroat", "Red Sail Mao", "Blood Cult Acolyte", "Innkeeper's Daughter", "Jade-Tusk Boar", "Crimson Heretic"}
@@ -80,13 +181,20 @@ local function createDropdown(parent, y, options, callback)
 
     dropBtn.MouseButton1Click:Connect(function()
         local listFrame = Instance.new("Frame")
-        listFrame.Size = UDim2.new(1, 0, 0, #options * 20)
+        listFrame.Size = UDim2.new(1, 0, 0, math.min(#options * 20, 150))
         listFrame.Position = UDim2.new(0, 0, 1, 0)
         listFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
         listFrame.BorderColor3 = Color3.fromRGB(0, 255, 150)
         listFrame.BorderSizePixel = 1
         listFrame.Parent = dropFrame
         listFrame.ZIndex = 100
+
+        local scroll = Instance.new("ScrollingFrame")
+        scroll.Size = UDim2.new(1, 0, 1, 0)
+        scroll.BackgroundTransparency = 1
+        scroll.CanvasSize = UDim2.new(0, 0, 0, #options * 20)
+        scroll.ScrollBarThickness = 4
+        scroll.Parent = listFrame
 
         for i, opt in ipairs(options) do
             local optBtn = Instance.new("TextButton")
@@ -97,7 +205,7 @@ local function createDropdown(parent, y, options, callback)
             optBtn.TextSize = 10
             optBtn.Font = Enum.Font.SourceSans
             optBtn.Text = opt
-            optBtn.Parent = listFrame
+            optBtn.Parent = scroll
             optBtn.ZIndex = 101
 
             optBtn.MouseButton1Click:Connect(function()
@@ -151,112 +259,60 @@ local function createToggle(parent, y, label, callback)
     return togFrame
 end
 
--- TAB BUTTONS (Vertical kiri)
-local tabs = {}
-local currentTab = nil
-
-local function createTab(name)
-    local tabBtn = Instance.new("TextButton")
-    tabBtn.Size = UDim2.new(1, 0, 0, 30)
-    tabBtn.Position = UDim2.new(0, 0, 0, #tabs * 30)
-    tabBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
-    tabBtn.TextColor3 = Color3.fromRGB(0, 255, 150)
-    tabBtn.TextSize = 12
-    tabBtn.Font = Enum.Font.SourceSansBold
-    tabBtn.Text = name
-    tabBtn.Parent = mainFrame
-
-    local tabContent = Instance.new("Frame")
-    tabContent.Name = name
-    tabContent.Size = UDim2.new(1, -10, 1, -40-#tabs*30)
-    tabContent.Position = UDim2.new(0, 5, 0, 40)
-    tabContent.BackgroundTransparency = 1
-    tabContent.Visible = false
-    tabContent.Parent = contentFrame
-
-    local scrollFrame = Instance.new("ScrollingFrame")
-    scrollFrame.Size = UDim2.new(1, 0, 1, 0)
-    scrollFrame.BackgroundTransparency = 1
-    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 500)
-    scrollFrame.ScrollBarThickness = 8
-    scrollFrame.Parent = tabContent
-
-    tabBtn.MouseButton1Click:Connect(function()
-        if currentTab then currentTab.Visible = false end
-        tabContent.Visible = true
-        currentTab = tabContent
-        for _, v in ipairs(mainFrame:GetChildren()) do
-            if v:IsA("TextButton") then
-                v.BackgroundColor3 = v == tabBtn and Color3.fromRGB(0, 150, 100) or Color3.fromRGB(50, 50, 60)
-            end
-        end
-    end)
-
-    table.insert(tabs, {btn=tabBtn, content=tabContent, scroll=scrollFrame})
-    return scrollFrame
-end
-
--- CREATE TABS
-local combatTab = createTab("⚔️ Combat")
-local dummyTab = createTab("💎 Dummy")
-local mineTab = createTab("⛏️ Mine")
-local gatherTab = createTab("🌿 Gather")
-local pickTab = createTab("📦 Pick")
-
 -- POPULATE TABS
-local yOffset = 0
-
 -- Combat Tab
-createDropdown(combatTab, yOffset, MobList, function(v) _G.SelectedMob = v end)
+local yOffset = 0
+createDropdown(tabs[1].content, yOffset, MobList, function(v) _G.SelectedMob = v end)
 yOffset = yOffset + 30
-createToggle(combatTab, yOffset, "Float Kill Aura", function(v) _G.fk = v end)
+createToggle(tabs[1].content, yOffset, "Float Kill Aura", function(v) _G.fk = v end)
 yOffset = yOffset + 30
-createToggle(combatTab, yOffset, "Skill Z", function(v) _G.Skills.Z = v end)
+createToggle(tabs[1].content, yOffset, "Skill Z", function(v) _G.Skills.Z = v end)
 yOffset = yOffset + 30
-createToggle(combatTab, yOffset, "Skill X", function(v) _G.Skills.X = v end)
+createToggle(tabs[1].content, yOffset, "Skill X", function(v) _G.Skills.X = v end)
 yOffset = yOffset + 30
-createToggle(combatTab, yOffset, "Skill C", function(v) _G.Skills.C = v end)
+createToggle(tabs[1].content, yOffset, "Skill C", function(v) _G.Skills.C = v end)
 yOffset = yOffset + 30
-createToggle(combatTab, yOffset, "Skill V", function(v) _G.Skills.V = v end)
+createToggle(tabs[1].content, yOffset, "Skill V", function(v) _G.Skills.V = v end)
 yOffset = yOffset + 30
-createToggle(combatTab, yOffset, "Skill 9", function(v) _G.Skills["9"] = v end)
+createToggle(tabs[1].content, yOffset, "Skill 9", function(v) _G.Skills["9"] = v end)
 yOffset = yOffset + 30
-createToggle(combatTab, yOffset, "Skill 8", function(v) _G.Skills["8"] = v end)
+createToggle(tabs[1].content, yOffset, "Skill 8", function(v) _G.Skills["8"] = v end)
 yOffset = yOffset + 30
-createToggle(combatTab, yOffset, "Skill 7", function(v) _G.Skills["7"] = v end)
+createToggle(tabs[1].content, yOffset, "Skill 7", function(v) _G.Skills["7"] = v end)
 yOffset = yOffset + 30
-createToggle(combatTab, yOffset, "Skill 6", function(v) _G.Skills["6"] = v end)
+createToggle(tabs[1].content, yOffset, "Skill 6", function(v) _G.Skills["6"] = v end)
 
 -- Dummy Tab
 yOffset = 0
-createDropdown(dummyTab, yOffset, TpList, function(v) _G.SelectedTp = v end)
+createDropdown(tabs[2].content, yOffset, TpList, function(v) _G.SelectedTp = v end)
 yOffset = yOffset + 30
-createToggle(dummyTab, yOffset, "Teleport & Farm", function(v) _G.autoTp = v end)
+createToggle(tabs[2].content, yOffset, "Teleport & Farm", function(v) _G.autoTp = v end)
 
 -- Mine Tab
 yOffset = 0
-createDropdown(mineTab, yOffset, MineList, function(v) _G.SelectedMine = v end)
+createDropdown(tabs[3].content, yOffset, MineList, function(v) _G.SelectedMine = v end)
 yOffset = yOffset + 30
-createToggle(mineTab, yOffset, "Auto Mine", function(v) _G.autoMine = v end)
+createToggle(tabs[3].content, yOffset, "Auto Mine", function(v) _G.autoMine = v end)
 
 -- Gather Tab
 yOffset = 0
-createDropdown(gatherTab, yOffset, GatherList, function(v) _G.SelectedGather = v end)
+createDropdown(tabs[4].content, yOffset, GatherList, function(v) _G.SelectedGather = v end)
 yOffset = yOffset + 30
-createToggle(gatherTab, yOffset, "Auto Gather", function(v) _G.autoGather = v end)
+createToggle(tabs[4].content, yOffset, "Auto Gather", function(v) _G.autoGather = v end)
 
 -- Pick Tab
 yOffset = 0
-createDropdown(pickTab, yOffset, PickList, function(v) _G.SelectedPick = v end)
+createDropdown(tabs[5].content, yOffset, PickList, function(v) _G.SelectedPick = v end)
 yOffset = yOffset + 30
-createToggle(pickTab, yOffset, "Auto Pick", function(v) _G.autoPick = v end)
+createToggle(tabs[5].content, yOffset, "Auto Pick", function(v) _G.autoPick = v end)
 
 -- Set first tab active
 tabs[1].content.Visible = true
 currentTab = tabs[1].content
 tabs[1].btn.BackgroundColor3 = Color3.fromRGB(0, 150, 100)
+tabs[1].btn.TextColor3 = Color3.fromRGB(0, 255, 150)
 
-print("[MAW] GUI Loaded di kiri!")
+print("[MAW] GUI Popup Loaded!")
 
 -- ============ LOGIC LOOPS ============
 
