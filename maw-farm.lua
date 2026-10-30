@@ -1,13 +1,11 @@
--- MAW AUTO FARM PRO - MODERN STAND/LINORIA STYLE GUI (FIXED TABS & SCROLLING)
+-- MAW AUTO FARM PRO - COMBAT BOSSES & MOBS (SORTED A-Z)
 local Players = game:GetService("Players")
 local VIM = game:GetService("VirtualInputManager")
 local plr = Players.LocalPlayer
 local pgui = plr:WaitForChild("PlayerGui")
 
--- Hapus UI lama jika ada
 if pgui:FindFirstChild("MAW_HUB") then pgui.MAW_HUB:Destroy() end
 
--- ScreenGui Setup
 local sg = Instance.new("ScreenGui")
 sg.Name = "MAW_HUB"
 sg.ResetOnSpawn = false
@@ -15,7 +13,6 @@ sg.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 sg.DisplayOrder = 9999
 sg.Parent = pgui
 
--- Colors Palette
 local BG_COLOR = Color3.fromRGB(15, 15, 18)
 local PANEL_COLOR = Color3.fromRGB(24, 24, 28)
 local SIDEBAR_COLOR = Color3.fromRGB(10, 10, 12)
@@ -23,7 +20,6 @@ local ACCENT_BLUE = Color3.fromRGB(0, 162, 255)
 local TEXT_MAIN = Color3.fromRGB(240, 240, 240)
 local TEXT_DARK = Color3.fromRGB(130, 130, 140)
 
--- MAIN CONTAINER (Draggable)
 local main = Instance.new("Frame")
 main.Name = "Main"
 main.Size = UDim2.new(0, 620, 0, 420)
@@ -38,7 +34,6 @@ local mainCorner = Instance.new("UICorner")
 mainCorner.CornerRadius = UDim.new(0, 8)
 mainCorner.Parent = main
 
--- SIDEBAR
 local sidebar = Instance.new("Frame")
 sidebar.Name = "Sidebar"
 sidebar.Size = UDim2.new(0, 55, 1, 0)
@@ -50,7 +45,6 @@ local sideCorner = Instance.new("UICorner")
 sideCorner.CornerRadius = UDim.new(0, 8)
 sideCorner.Parent = sidebar
 
--- LOGO ICON
 local logo = Instance.new("TextLabel")
 logo.Size = UDim2.new(1, 0, 0, 50)
 logo.BackgroundTransparency = 1
@@ -60,7 +54,6 @@ logo.TextSize = 24
 logo.Font = Enum.Font.SourceSansBold
 logo.Parent = sidebar
 
--- TOP BAR
 local topbar = Instance.new("Frame")
 topbar.Name = "TopBar"
 topbar.Size = UDim2.new(1, -55, 0, 45)
@@ -92,7 +85,6 @@ closeBtn.Parent = topbar
 
 closeBtn.MouseButton1Click:Connect(function() sg:Destroy() end)
 
--- CONTENT AREA
 local contentArea = Instance.new("Frame")
 contentArea.Name = "ContentArea"
 contentArea.Size = UDim2.new(1, -65, 1, -55)
@@ -100,27 +92,154 @@ contentArea.Position = UDim2.new(0, 60, 0, 45)
 contentArea.BackgroundTransparency = 1
 contentArea.Parent = main
 
--- GLOBAL DATA
-local MobList = {"All Mobs", "Martial Alliance Guard", "Blacksmith's Apprentice", "Travelling Scholar", "Village Constable", "Tang Clans Envoy", "Green Forest Thug", "Road Cutpurse", "Suanni, the Dragon King's Fifth Son", "Marshal Tie Yan, the Burnt Marshal", "Black Tiger King, Lord of the Green Forest", "Jiao, the Flood Dragon", "Sad Cultivator", "Bonewrath, the War-Qilin of the Ninefold Lord", "Commander Shen Tingjun", "Crimson Moon Priestess", "Mo Qingshan, the Deviated", "Lü Jiugong, Master of the Shattered Array", "Snack-Seller Hua", "Drum-Master Feng", "Auntie Tangyuan", "Mount Hua Disciple", "Plum Blossom Trainee", "Travelling Martial Artist", "Alley Rat", "Carpenter Lu", "Forest Bandit", "Heavenly Demon Disciple", "Old Tuskers", "Iron-Shell Snapper", "Ox-Fist Brute", "Mount Hua Outer Elder", "Old Snapjaw", "Wild Boar", "Grey Wolf", "Highway Robber", "Drunken Fist Master", "Stable-Master Gong", "Qi-Touched Wolf", "Old Blackpaw", "Scarback", "Mountain Brigand", "Pass Reaver", "Jade-Horn Rhino", "Stoneplate Rhino", "Ashen Demon Ape", "Hungry Ghost", "Wailing Shade", "Restless Spirit", "Blood-Eyed Demon Ape", "Lean Grey Wolf", "Moon-Eyed Wolf", "Dire Wolf", "Green Forest Blade", "Iron-Beak Hou", "Abbot Wuxin", "Flood Dragon Pirate", "Bandit Captain Ma", "Grey Fang", "Fishmonger", "Black Wind Lookout", "Pass Reaver Wind", "Tusked Boar", "Tempered Old Tusker", "Fallen Monk", "Hollow-Eyed Novice", "Lake Cutthroat", "Tempered Grey Wolf", "Bandit Enforcer", "Thunder-Striped Tiger", "Widow Lin", "Red Sail Raider", "Demonic Cult Zealot", "Black Moon Assassin", "Black Moon Warrior", "Shaolin Warrior Monk", "Red Sail Cutthroat", "Red Sail Mao", "Blood Cult Acolyte", "Innkeeper's Daughter", "Jade-Tusk Boar", "Crimson Heretic"}
-local TpList = {"Training Post", "Parrying Post", "Guarding Post"}
+-- STRICT COMBAT LISTS (BOSSES & MOBS)
+local BossList = {
+    "All Bosses",
+    "Abbot Wuxin",
+    "Black Tiger King, Lord of the Black Wind Fortress",
+    "Crimson Moon Priestess",
+    "Foreman Gou",
+    "Grey Fang",
+    "Gu Mingfeng, the Corpse Daoist",
+    "Hebo, the River Lord",
+    "Hu Yaoji",
+    "Iron-Beak Hou",
+    "Jiao, the Flood Dragon",
+    "Khan Temur",
+    "Knife-Hand Lu",
+    "Lei Wuji",
+    "Mo Qingshan, the Deviated",
+    "Old Scar Ma",
+    "Old Scarback",
+    "Qara Ashina",
+    "Red Sail Mao",
+    "Sunni, the Dragon King's Fifth Son",
+    "Sword Wraith of Cloudbreak Peak",
+    "Taotie, the Devouring Maw",
+    "The Nameless General",
+    "The Tiger Elder",
+    "The Unburied General",
+    "The Warden of the Heavenly River"
+}
+
+local MobList = {
+    "All Mobs",
+    "Bandit Captain Ma",
+    "Bandit Enforcer",
+    "Bandit Swordsman",
+    "Barrow Wight",
+    "Beggars' Union Disciple",
+    "Black Bear",
+    "Black Cult Disciple",
+    "Black Cult Elder",
+    "Black Road Alliance Disciple",
+    "Black Tiger Disciple",
+    "Blight-Gullet Snapper",
+    "Bone-Crusher Demon Ape",
+    "Bronze Corpse",
+    "Bronze Vault Guardian",
+    "Buried Miner",
+    "Caravan Master Hu",
+    "Cave Crawler",
+    "Corpse-Driver Acolyte",
+    "Demonic Cult Zealot",
+    "Dire Wolf",
+    "Drunken Swordsman",
+    "Elder of Mount Hua",
+    "Emei Sect Disciple",
+    "Fallen Monk",
+    "Flood Dragon Pirate",
+    "Gate-Pass Bandit",
+    "Granny Wei",
+    "Green Forest Thug",
+    "Grey Wolf",
+    "Heavenly Demon Cult Disciple",
+    "Herb Gatherer",
+    "Hopping Corpse",
+    "Horse Herder",
+    "Horse Thief",
+    "Huo of the Left Fang",
+    "Iron-Hide Qi Bear",
+    "Iron-Shell Snapper",
+    "Jade-Horn Gorer",
+    "Jade-Horn Rhino",
+    "Kong Wuya",
+    "Kunlun Sect Disciple",
+    "Lei of the Right Fang",
+    "Longyuan Escort",
+    "Marsh Snapper",
+    "Maw-Spawn",
+    "Mine Bandit",
+    "Mount Hua Disciple",
+    "Mount Hua Sect Disciple",
+    "Mountain Brigand",
+    "Mountain Tiger",
+    "Nameless Tomb Guard",
+    "Oj-Touched Wolf",
+    "Outlaw Chief",
+    "Pack Buffalo",
+    "Petty Thief",
+    "Qi-Burning Boar",
+    "Qi-Deviated Madman",
+    "Qi-Maddened Stalker",
+    "Red Sail Raider",
+    "Reed Serpent",
+    "Relay Runner",
+    "Renegade Disciple",
+    "Restless Spirit",
+    "River Buffalo",
+    "Rock Golem",
+    "Salt Trader",
+    "Shaolin Temple Disciple",
+    "Shield-Bearer of the Nameless Host",
+    "Sichuan Tang Clan Disciple",
+    "Sky-Burial Pilgrim",
+    "Spearman of the Nameless Host",
+    "Steppe Hunter",
+    "Steppe Rider",
+    "Steppe Wolf",
+    "Tang Mo",
+    "Tea Picker",
+    "Tempered Demon Ape",
+    "Tempered Stalker Alpha",
+    "Tianshui Fishwife",
+    "Travelling Merchant Qian",
+    "Villager",
+    "Wailing Shade",
+    "Wandering Cultivator",
+    "Wandering Swordsman",
+    "Water Ghoul",
+    "White-Striped Vault Tiger",
+    "Wild Boar",
+    "Wudang Sect Disciple",
+    "Your Reflection",
+    "Zhang Tieniu",
+    "Zhenyuan Escort"
+}
+
+local NpcTpList = {
+    "Training Post", "Parrying Post", "Guarding Post",
+    "Porter Dong", "Constable Tie", "Apprentice Gu", "Salt Merchant Hu", "Wandering Swordsman Ling", "Old Woman Guo", "Magistrate’s Clerk Zhen", "Pill Master Yao", "Beggars’ Union Elder", "Scholar Bai", "Black Road Broker", "Constable Captain Yun Baek", "Rice Merchant Fu", "Alliance Clerk Han", "Envoy Han Jingxu", "Granny Tsang", "Oathkeeper Shi Wuyan", "Town Crier Liu", "Riddle-Keeper Su", "Prize-Keeper Lu", "Beggar Boy Xiao", "Drunk Swordsman Ma", "Merchant Wang", "Tailor Mei", "Storyteller Wu", "Tea Girl Lan", "Blacksmith Old Pak", "Master Smith Ou", "Madam Hong", "Kunlun Swordsman", "Innkeeper Choi", "Waiter Xiao Er", "Caravan Guard Bo", "The Old Wayfarer", "Granny Lian", "Auctioneer Qian", "Emei Sword Nun", "Registrar Wen", "Weaver Jin", "Wu the Younger", "Hunter Gao", "Old Fisherman Lao", "Elder Zhou", "Ferryman Ou", "Little Mei", "Fence Mo", "Heavenly Demon Cult Envoy"
+}
+
 local MineList = {"All Ores", "Iron Ore", "Copper Ore", "Spirit Jade Shard", "Qi Crystal Shard"}
 local GatherList = {"All Plants", "Wild Ginger", "Bamboo Shoot", "Sunfire Blossom", "Spirit Rice", "Moonshade Orchid", "Cloudcap Mushroom", "Jade-Dew Grass", "Vein-Bloom Orchid", "Crimson Lotus", "Spirit Grass", "Heavenly Snow Lotus", "Mountain Ginseng", "Thunderstruck Root", "Frost Moss"}
 local PickList = {"All Items", "Steamed Bun", "Tiger Fur Collar — low-grade", "Five Tigers Door-Breaking Saber", "Jade Headband — low-grade"}
 
+_G.SelectedBoss = "All Bosses"
 _G.SelectedMob = "All Mobs"
-_G.SelectedTp = "Training Post"
+_G.SelectedTp = NpcTpList[1]
 _G.SelectedMine = "All Ores"
 _G.SelectedGather = "All Plants"
 _G.SelectedPick = "All Items"
 
 _G.fk = false 
-_G.autoTp = false
 _G.autoMine = false 
 _G.autoGather = false 
 _G.autoPick = false
 _G.Skills = {Z=false, X=false, C=false, V=false, ["9"]=false, ["8"]=false, ["7"]=false, ["6"]=false}
 
--- HELPER: Create Card inside Parent Tab
+-- HELPER: Create Card
 local function createCard(parentTab, title, xOffset, width)
     local card = Instance.new("Frame")
     card.Size = UDim2.new(0, width, 1, -10)
@@ -155,7 +274,7 @@ local function createCard(parentTab, title, xOffset, width)
     return container
 end
 
--- HELPER: Create Checkbox Toggle
+-- HELPER: Create Toggle
 local function createToggle(parent, y, labelText, callback)
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(1, -10, 0, 28)
@@ -196,7 +315,27 @@ local function createToggle(parent, y, labelText, callback)
     return frame
 end
 
--- HELPER: Create Dropdown with Working Scroll
+-- HELPER: Create Button
+local function createButton(parent, y, btnText, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, -10, 0, 32)
+    btn.Position = UDim2.new(0, 5, 0, y)
+    btn.BackgroundColor3 = ACCENT_BLUE
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextSize = 13
+    btn.Font = Enum.Font.SourceSansBold
+    btn.Text = btnText
+    btn.Parent = parent
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 4)
+    corner.Parent = btn
+
+    btn.MouseButton1Click:Connect(callback)
+    return btn
+end
+
+-- HELPER: Create Dropdown
 local function createDropdown(parent, y, labelText, options, callback)
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(1, -10, 0, 45)
@@ -285,11 +424,11 @@ local function createDropdown(parent, y, labelText, options, callback)
     return frame
 end
 
--- TABS CREATION
+-- TABS SETUP
 local tabs = {}
 local activeTab = nil
-local tabIcons = {"⚔️", "💎", "⛏️", "🌿", "📦"}
-local tabNames = {"Combat", "Dummy", "Mining", "Gathering", "Pickup"}
+local tabIcons = {"⚔️", "📍", "⛏️", "🌿", "📦"}
+local tabNames = {"Combat", "Teleport", "Mining", "Gathering", "Pickup"}
 
 for i, icon in ipairs(tabIcons) do
     local btn = Instance.new("TextButton")
@@ -331,23 +470,41 @@ for i, icon in ipairs(tabIcons) do
     table.insert(tabs, {btn = btn, view = tabView, name = tabNames[i]})
 end
 
--- POPULATE TABS PROPERLY
-
--- TAB 1: COMBAT
-local cLeft = createCard(tabs[1].view, "⚔️ Target Mobs", 0, 260)
+-- TAB 1: COMBAT (BOSSES & MOBS SEPARATE DROPDOWNS)
+local cLeft = createCard(tabs[1].view, "⚔️ Combat Targets", 0, 260)
 local cRight = createCard(tabs[1].view, "🔥 Auto Skills", 270, 275)
-createDropdown(cLeft, 0, "Select Mob Target", MobList, function(v) _G.SelectedMob = v end)
-createToggle(cLeft, 55, "Float Kill Aura", function(v) _G.fk = v end)
+
+createDropdown(cLeft, 0, "Select Boss Target", BossList, function(v) _G.SelectedBoss = v end)
+createDropdown(cLeft, 55, "Select Mob Target", MobList, function(v) _G.SelectedMob = v end)
+createToggle(cLeft, 110, "Float Kill Aura", function(v) _G.fk = v end)
+
 local skillKeys = {"Z", "X", "C", "V", "9", "8", "7", "6"}
 for idx, k in ipairs(skillKeys) do
     createToggle(cRight, (idx-1)*30, "Auto Skill " .. k, function(v) _G.Skills[k] = v end)
 end
 
--- TAB 2: DUMMY
-local dLeft = createCard(tabs[2].view, "💎 Target Dummy (1M HP)", 0, 260)
-local dRight = createCard(tabs[2].view, "⚙️ Controls", 270, 275)
-createDropdown(dLeft, 0, "Select Dummy", TpList, function(v) _G.SelectedTp = v end)
-createToggle(dRight, 0, "Teleport & Auto Farm", function(v) _G.autoTp = v end)
+-- TAB 2: TELEPORT
+local tpLeft = createCard(tabs[2].view, "📍 Select NPC / Dummy Target", 0, 260)
+local tpRight = createCard(tabs[2].view, "⚡ Teleport Action", 270, 275)
+
+createDropdown(tpLeft, 0, "NPC / Dummy (HP 100 & 1M)", NpcTpList, function(v) _G.SelectedTp = v end)
+
+createButton(tpRight, 10, "Teleport Now (1-Click)", function()
+    local char = plr.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        local target = nil
+        for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+            if obj:IsA("Model") and obj ~= char and obj.Name == _G.SelectedTp and obj:FindFirstChild("HumanoidRootPart") then
+                target = obj
+                break
+            end
+        end
+        if target then
+            hrp.CFrame = target.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+        end
+    end
+end)
 
 -- TAB 3: MINING
 local mLeft = createCard(tabs[3].view, "⛏️ Target Ores", 0, 260)
@@ -385,11 +542,10 @@ tabs[1].btn.TextColor3 = Color3.fromRGB(255, 255, 255)
 tabs[1].view.Visible = true
 activeTab = {btn = tabs[1].btn, view = tabs[1].view}
 
-print("[MAW] Stand UI Fixed Tabs & Scrolling!")
+print("[MAW] UI Loaded - Bosses & Mobs separated!")
 
 -- ============ LOGIC LOOPS ============
 
--- CHAIN FARM LOOP
 local function chainLoop(toggleKey, selectedVar, keyword)
     task.spawn(function()
         while true do
@@ -435,31 +591,7 @@ chainLoop("autoMine", "SelectedMine", "mine")
 chainLoop("autoGather", "SelectedGather", "gather")
 chainLoop("autoPick", "SelectedPick", "pick")
 
--- TELEPORT & FARM DUMMY
-task.spawn(function()
-    while true do
-        if _G.autoTp then
-            local char = plr.Character
-            local hrp = char and char:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                local target = nil
-                for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
-                    if obj:IsA("Model") and obj ~= char and obj.Name == _G.SelectedTp and obj:FindFirstChild("HumanoidRootPart") then
-                        target = obj
-                        break
-                    end
-                end
-                if target then
-                    hrp.CFrame = target.HumanoidRootPart.CFrame + Vector3.new(0, 8.5, 0)
-                    pcall(function() game:GetService("ReplicatedStorage").Remotes.CombatInput:FireServer() end)
-                end
-            end
-        end
-        task.wait(0.1)
-    end
-end)
-
--- FLOAT KILL AURA
+-- FLOAT KILL AURA (TARGETS BOSSES OR MOBS)
 task.spawn(function()
     while true do
         if _G.fk then
@@ -470,14 +602,20 @@ task.spawn(function()
                 hrp.AssemblyLinearVelocity = Vector3.zero
                 local target = nil
                 local minDist = math.huge
+                
                 for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
                     if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") and obj.Humanoid.Health > 0 then
-                        if (_G.SelectedMob == "All Mobs") or string.lower(obj.Name):find(string.lower(_G.SelectedMob or "")) then
+                        local name = obj.Name
+                        local matchBoss = (_G.SelectedBoss == "All Bosses") or (name == _G.SelectedBoss)
+                        local matchMob = (_G.SelectedMob == "All Mobs") or (name == _G.SelectedMob)
+                        
+                        if matchBoss or matchMob then
                             local d = (hrp.Position - obj.HumanoidRootPart.Position).Magnitude
                             if d < minDist then minDist = d; target = obj end
                         end
                     end
                 end
+                
                 if target then
                     hrp.CFrame = CFrame.lookAt(target.HumanoidRootPart.Position + Vector3.new(0, 8.5, 0), target.HumanoidRootPart.Position)
                     pcall(function() 
