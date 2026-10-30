@@ -240,19 +240,25 @@ local function createDropdown(parent, y, label, options, selectedVar)
         isOpen = not isOpen
         if isOpen then
             listContainer = Instance.new("ScrollingFrame")
-            listContainer.Size = UDim2.new(1, 0, 0, 150)
+            listContainer.Size = UDim2.new(1, 0, 0, math.min(#options * 28, 200))
             listContainer.Position = UDim2.new(0, 0, 1, 4)
             listContainer.BackgroundColor3 = c.panel
             listContainer.BorderSizePixel = 0
             listContainer.ZIndex = 100
+            listContainer.ScrollBarThickness = 6
+            listContainer.ScrollBarImageColor3 = c.accent
+            listContainer.CanvasSize = UDim2.new(0, 0, 0, #options * 28)
             listContainer.Parent = container
 
             local layout = Instance.new("UIListLayout")
+            layout.Padding = UDim.new(0, 2)
+            layout.FillDirection = Enum.FillDirection.Vertical
+            layout.SortOrder = Enum.SortOrder.LayoutOrder
             layout.Parent = listContainer
 
-            for _, opt in ipairs(options) do
+            for i, opt in ipairs(options) do
                 local optBtn = Instance.new("TextButton")
-                optBtn.Size = UDim2.new(1, 0, 0, 26)
+                optBtn.Size = UDim2.new(1, -6, 0, 26)
                 optBtn.BackgroundColor3 = c.panel
                 optBtn.TextColor3 = c.text
                 optBtn.TextSize = 11
@@ -260,7 +266,16 @@ local function createDropdown(parent, y, label, options, selectedVar)
                 optBtn.Text = "  " .. opt
                 optBtn.TextXAlignment = Enum.TextXAlignment.Left
                 optBtn.ZIndex = 101
+                optBtn.LayoutOrder = i
                 optBtn.Parent = listContainer
+                
+                optBtn.MouseEnter:Connect(function()
+                    optBtn.BackgroundColor3 = c.accent
+                end)
+                optBtn.MouseLeave:Connect(function()
+                    optBtn.BackgroundColor3 = c.panel
+                end)
+                
                 optBtn.MouseButton1Click:Connect(function()
                     _G[selectedVar] = opt
                     dropBtn.Text = "  " .. opt
