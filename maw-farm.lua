@@ -1,148 +1,106 @@
--- MAW AUTO FARM PRO - POPUP DRAGGABLE
+-- MAW AUTO FARM PRO - MODERN STAND/LINORIA STYLE GUI
 local Players = game:GetService("Players")
 local VIM = game:GetService("VirtualInputManager")
 local plr = Players.LocalPlayer
 local pgui = plr:WaitForChild("PlayerGui")
-local UIS = game:GetService("UserInputService")
 
--- Hapus UI lama
+-- Hapus UI lama jika ada
 if pgui:FindFirstChild("MAW_HUB") then pgui.MAW_HUB:Destroy() end
 
--- ScreenGui
+-- ScreenGui Setup (Paling Atas)
 local sg = Instance.new("ScreenGui")
 sg.Name = "MAW_HUB"
 sg.ResetOnSpawn = false
+sg.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+sg.DisplayOrder = 9999
 sg.Parent = pgui
 
--- MAIN POPUP FRAME
-local popupFrame = Instance.new("Frame")
-popupFrame.Name = "PopupFrame"
-popupFrame.Size = UDim2.new(0, 300, 0, 500)
-popupFrame.Position = UDim2.new(0.5, -150, 0.5, -250)
-popupFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
-popupFrame.BorderColor3 = Color3.fromRGB(0, 255, 150)
-popupFrame.BorderSizePixel = 2
-popupFrame.Active = true
-popupFrame.Draggable = true
-popupFrame.Parent = sg
+-- Colors Palette (Sesuai Gambar)
+local BG_COLOR = Color3.fromRGB(15, 15, 18)
+local PANEL_COLOR = Color3.fromRGB(24, 24, 28)
+local SIDEBAR_COLOR = Color3.fromRGB(10, 10, 12)
+local ACCENT_BLUE = Color3.fromRGB(0, 162, 255)
+local TEXT_MAIN = Color3.fromRGB(240, 240, 240)
+local TEXT_DARK = Color3.fromRGB(130, 130, 140)
 
--- HEADER
-local header = Instance.new("Frame")
-header.Size = UDim2.new(1, 0, 0, 45)
-header.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-header.BorderColor3 = Color3.fromRGB(0, 255, 150)
-header.BorderSizePixel = 1
-header.Parent = popupFrame
+-- MAIN CONTAINER (Draggable)
+local main = Instance.new("Frame")
+main.Name = "Main"
+main.Size = UDim2.new(0, 620, 0, 420)
+main.Position = UDim2.new(0.5, -310, 0.5, -210)
+main.BackgroundColor3 = BG_COLOR
+main.BorderSizePixel = 0
+main.Active = true
+main.Draggable = true
+main.Parent = sg
 
-local titleLbl = Instance.new("TextLabel")
-titleLbl.Size = UDim2.new(1, -70, 1, 0)
-titleLbl.Position = UDim2.new(0, 10, 0, 0)
-titleLbl.BackgroundTransparency = 1
-titleLbl.Text = "MAW FARM PRO"
-titleLbl.TextColor3 = Color3.fromRGB(0, 255, 150)
-titleLbl.TextSize = 16
-titleLbl.Font = Enum.Font.SourceSansBold
-titleLbl.TextXAlignment = Enum.TextXAlignment.Left
-titleLbl.Parent = header
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 8)
+mainCorner.Parent = main
 
-local minimizeBtn = Instance.new("TextButton")
-minimizeBtn.Size = UDim2.new(0, 30, 0, 30)
-minimizeBtn.Position = UDim2.new(1, -65, 0.5, -15)
-minimizeBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
-minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-minimizeBtn.TextSize = 16
-minimizeBtn.Font = Enum.Font.SourceSansBold
-minimizeBtn.Text = "−"
-minimizeBtn.Parent = header
+-- SIDEBAR (Kiri)
+local sidebar = Instance.new("Frame")
+sidebar.Name = "Sidebar"
+sidebar.Size = UDim2.new(0, 55, 1, 0)
+sidebar.BackgroundColor3 = SIDEBAR_COLOR
+sidebar.BorderSizePixel = 0
+sidebar.Parent = main
 
+local sideCorner = Instance.new("UICorner")
+sideCorner.CornerRadius = UDim.new(0, 8)
+sideCorner.Parent = sidebar
+
+-- LOGO ICON
+local logo = Instance.new("TextLabel")
+logo.Size = UDim2.new(1, 0, 0, 50)
+logo.BackgroundTransparency = 1
+logo.Text = "⚡"
+logo.TextColor3 = ACCENT_BLUE
+logo.TextSize = 24
+logo.Font = Enum.Font.SourceSansBold
+logo.Parent = sidebar
+
+-- TOP BAR (Header)
+local topbar = Instance.new("Frame")
+topbar.Name = "TopBar"
+topbar.Size = UDim2.new(1, -55, 0, 45)
+topbar.Position = UDim2.new(0, 55, 0, 0)
+topbar.BackgroundTransparency = 1
+topbar.Parent = main
+
+local pathLbl = Instance.new("TextLabel")
+pathLbl.Name = "PathLbl"
+pathLbl.Size = UDim2.new(1, -80, 1, 0)
+pathLbl.Position = UDim2.new(0, 15, 0, 0)
+pathLbl.BackgroundTransparency = 1
+pathLbl.Text = "MAW Hub > Combat"
+pathLbl.TextColor3 = TEXT_DARK
+pathLbl.TextSize = 13
+pathLbl.Font = Enum.Font.SourceSans
+pathLbl.TextXAlignment = Enum.TextXAlignment.Left
+pathLbl.Parent = topbar
+
+-- CONTROLS (Min/Close)
 local closeBtn = Instance.new("TextButton")
-closeBtn.Size = UDim2.new(0, 30, 0, 30)
-closeBtn.Position = UDim2.new(1, -30, 0.5, -15)
-closeBtn.BackgroundColor3 = Color3.fromRGB(100, 50, 50)
-closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.Size = UDim2.new(0, 25, 0, 25)
+closeBtn.Position = UDim2.new(1, -35, 0.5, -12)
+closeBtn.BackgroundTransparency = 1
+closeBtn.Text = "✕"
+closeBtn.TextColor3 = TEXT_DARK
 closeBtn.TextSize = 16
 closeBtn.Font = Enum.Font.SourceSansBold
-closeBtn.Text = "×"
-closeBtn.Parent = header
+closeBtn.Parent = topbar
 
-closeBtn.MouseButton1Click:Connect(function()
-    sg:Destroy()
-end)
+closeBtn.MouseButton1Click:Connect(function() sg:Destroy() end)
 
-local minimized = false
-minimizeBtn.MouseButton1Click:Connect(function()
-    minimized = not minimized
-    if minimized then
-        popupFrame.Size = UDim2.new(0, 300, 0, 45)
-        minimizeBtn.Text = "□"
-    else
-        popupFrame.Size = UDim2.new(0, 300, 0, 500)
-        minimizeBtn.Text = "−"
-    end
-end)
+-- CONTENT AREA (2 Columns)
+local contentArea = Instance.new("Frame")
+contentArea.Size = UDim2.new(1, -65, 1, -55)
+contentArea.Position = UDim2.new(0, 60, 0, 45)
+contentArea.BackgroundTransparency = 1
+contentArea.Parent = main
 
--- TAB BUTTONS
-local tabFrame = Instance.new("Frame")
-tabFrame.Size = UDim2.new(1, 0, 0, 40)
-tabFrame.Position = UDim2.new(0, 0, 0, 45)
-tabFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-tabFrame.BorderSizePixel = 0
-tabFrame.Parent = popupFrame
-
-local tabs = {}
-local currentTab = nil
-local tabNames = {"⚔️", "💎", "⛏️", "🌿", "📦"}
-local tabFullNames = {"Combat", "Dummy", "Mine", "Gather", "Pick"}
-
-for i, icon in ipairs(tabNames) do
-    local tabBtn = Instance.new("TextButton")
-    tabBtn.Size = UDim2.new(0, 60, 1, 0)
-    tabBtn.Position = UDim2.new(0, (i-1)*60, 0, 0)
-    tabBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-    tabBtn.TextColor3 = Color3.fromRGB(150, 150, 150)
-    tabBtn.TextSize = 20
-    tabBtn.Font = Enum.Font.SourceSansBold
-    tabBtn.Text = icon
-    tabBtn.BorderSizePixel = 0
-    tabBtn.Parent = tabFrame
-
-    local tabContent = Instance.new("ScrollingFrame")
-    tabContent.Name = tabFullNames[i]
-    tabContent.Size = UDim2.new(1, 0, 1, -85)
-    tabContent.Position = UDim2.new(0, 0, 0, 85)
-    tabContent.BackgroundTransparency = 1
-    tabContent.CanvasSize = UDim2.new(0, 0, 0, 400)
-    tabContent.ScrollBarThickness = 6
-    tabContent.Visible = false
-    tabContent.Parent = popupFrame
-
-    tabBtn.MouseButton1Click:Connect(function()
-        if currentTab then currentTab.Visible = false end
-        tabContent.Visible = true
-        currentTab = tabContent
-        for _, btn in ipairs(tabFrame:GetChildren()) do
-            if btn:IsA("TextButton") then
-                btn.BackgroundColor3 = btn == tabBtn and Color3.fromRGB(0, 150, 100) or Color3.fromRGB(40, 40, 50)
-                btn.TextColor3 = btn == tabBtn and Color3.fromRGB(0, 255, 150) or Color3.fromRGB(150, 150, 150)
-            end
-        end
-    end)
-
-    table.insert(tabs, {btn=tabBtn, content=tabContent})
-end
-
--- FOOTER
-local footer = Instance.new("TextLabel")
-footer.Size = UDim2.new(1, 0, 0, 20)
-footer.Position = UDim2.new(0, 0, 1, -20)
-footer.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-footer.TextColor3 = Color3.fromRGB(100, 100, 100)
-footer.TextSize = 10
-footer.Font = Enum.Font.SourceSans
-footer.Text = "made by akiwe"
-footer.Parent = popupFrame
-
--- GLOBAL VAR
+-- GLOBAL VARIABLES
 local MobList = {"All Mobs", "Martial Alliance Guard", "Blacksmith's Apprentice", "Travelling Scholar", "Village Constable", "Tang Clans Envoy", "Green Forest Thug", "Road Cutpurse", "Suanni, the Dragon King's Fifth Son", "Marshal Tie Yan, the Burnt Marshal", "Black Tiger King, Lord of the Green Forest", "Jiao, the Flood Dragon", "Sad Cultivator", "Bonewrath, the War-Qilin of the Ninefold Lord", "Commander Shen Tingjun", "Crimson Moon Priestess", "Mo Qingshan, the Deviated", "Lü Jiugong, Master of the Shattered Array", "Snack-Seller Hua", "Drum-Master Feng", "Auntie Tangyuan", "Mount Hua Disciple", "Plum Blossom Trainee", "Travelling Martial Artist", "Alley Rat", "Carpenter Lu", "Forest Bandit", "Heavenly Demon Disciple", "Old Tuskers", "Iron-Shell Snapper", "Ox-Fist Brute", "Mount Hua Outer Elder", "Old Snapjaw", "Wild Boar", "Grey Wolf", "Highway Robber", "Drunken Fist Master", "Stable-Master Gong", "Qi-Touched Wolf", "Old Blackpaw", "Scarback", "Mountain Brigand", "Pass Reaver", "Jade-Horn Rhino", "Stoneplate Rhino", "Ashen Demon Ape", "Hungry Ghost", "Wailing Shade", "Restless Spirit", "Blood-Eyed Demon Ape", "Lean Grey Wolf", "Moon-Eyed Wolf", "Dire Wolf", "Green Forest Blade", "Iron-Beak Hou", "Abbot Wuxin", "Flood Dragon Pirate", "Bandit Captain Ma", "Grey Fang", "Fishmonger", "Black Wind Lookout", "Pass Reaver Wind", "Tusked Boar", "Tempered Old Tusker", "Fallen Monk", "Hollow-Eyed Novice", "Lake Cutthroat", "Tempered Grey Wolf", "Bandit Enforcer", "Thunder-Striped Tiger", "Widow Lin", "Red Sail Raider", "Demonic Cult Zealot", "Black Moon Assassin", "Black Moon Warrior", "Shaolin Warrior Monk", "Red Sail Cutthroat", "Red Sail Mao", "Blood Cult Acolyte", "Innkeeper's Daughter", "Jade-Tusk Boar", "Crimson Heretic"}
 local TpList = {"Training Post", "Parrying Post", "Guarding Post"}
 local MineList = {"All Ores", "Iron Ore", "Copper Ore", "Spirit Jade Shard", "Qi Crystal Shard"}
@@ -162,157 +120,268 @@ _G.autoGather = false
 _G.autoPick = false
 _G.Skills = {Z=false, X=false, C=false, V=false, ["9"]=false, ["8"]=false, ["7"]=false, ["6"]=false}
 
+-- HELPER: Create Column Card
+local function createCard(title, xOffset, width)
+    local card = Instance.new("Frame")
+    card.Size = UDim2.new(0, width, 1, -10)
+    card.Position = UDim2.new(0, xOffset, 0, 0)
+    card.BackgroundColor3 = PANEL_COLOR
+    card.BorderSizePixel = 0
+    card.Parent = contentArea
+
+    local cardCorner = Instance.new("UICorner")
+    cardCorner.CornerRadius = UDim.new(0, 6)
+    cardCorner.Parent = card
+
+    local cardTitle = Instance.new("TextLabel")
+    cardTitle.Size = UDim2.new(1, 0, 0, 30)
+    cardTitle.BackgroundTransparency = 1
+    cardTitle.Text = title
+    cardTitle.TextColor3 = TEXT_MAIN
+    cardTitle.TextSize = 13
+    cardTitle.Font = Enum.Font.SourceSansBold
+    cardTitle.Parent = card
+
+    local container = Instance.new("ScrollingFrame")
+    container.Size = UDim2.new(1, -10, 1, -35)
+    container.Position = UDim2.new(0, 5, 0, 32)
+    container.BackgroundTransparency = 1
+    container.CanvasSize = UDim2.new(0, 0, 0, 400)
+    container.ScrollBarThickness = 3
+    container.ScrollBarImageColor3 = ACCENT_BLUE
+    container.Parent = card
+
+    return container
+end
+
+-- HELPER: Create Checkbox Toggle (Stand style)
+local function createToggle(parent, y, labelText, callback)
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, -10, 0, 28)
+    frame.Position = UDim2.new(0, 5, 0, y)
+    frame.BackgroundTransparency = 1
+    frame.Parent = parent
+
+    local box = Instance.new("TextButton")
+    box.Size = UDim2.new(0, 16, 0, 16)
+    box.Position = UDim2.new(0, 0, 0.5, -8)
+    box.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+    box.Text = ""
+    box.AutoButtonColor = false
+    box.Parent = frame
+
+    local boxCorner = Instance.new("UICorner")
+    boxCorner.CornerRadius = UDim.new(0, 3)
+    boxCorner.Parent = box
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -25, 1, 0)
+    label.Position = UDim2.new(0, 24, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = labelText
+    label.TextColor3 = TEXT_MAIN
+    label.TextSize = 12
+    label.Font = Enum.Font.SourceSans
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = frame
+
+    local state = false
+    local function update()
+        box.BackgroundColor3 = state and ACCENT_BLUE or Color3.fromRGB(35, 35, 42)
+    end
+
+    box.MouseButton1Click:Connect(function()
+        state = not state
+        update()
+        callback(state)
+    end)
+
+    return frame
+end
+
 -- HELPER: Create Dropdown
-local function createDropdown(parent, y, options, callback)
-    local dropFrame = Instance.new("Frame")
-    dropFrame.Size = UDim2.new(1, -10, 0, 25)
-    dropFrame.Position = UDim2.new(0, 5, 0, y)
-    dropFrame.BackgroundTransparency = 1
-    dropFrame.Parent = parent
+local function createDropdown(parent, y, labelText, options, callback)
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, -10, 0, 45)
+    frame.Position = UDim2.new(0, 5, 0, y)
+    frame.BackgroundTransparency = 1
+    frame.Parent = parent
+
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(1, 0, 0, 18)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = labelText
+    lbl.TextColor3 = TEXT_DARK
+    lbl.TextSize = 11
+    lbl.Font = Enum.Font.SourceSans
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.Parent = frame
 
     local dropBtn = Instance.new("TextButton")
-    dropBtn.Size = UDim2.new(1, 0, 1, 0)
-    dropBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-    dropBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+    dropBtn.Size = UDim2.new(1, 0, 0, 24)
+    dropBtn.Position = UDim2.new(0, 0, 0, 20)
+    dropBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+    dropBtn.TextColor3 = TEXT_MAIN
     dropBtn.TextSize = 11
     dropBtn.Font = Enum.Font.SourceSans
-    dropBtn.Text = options[1]
-    dropBtn.Parent = dropFrame
+    dropBtn.Text = "  " .. tostring(options[1])
+    dropBtn.TextXAlignment = Enum.TextXAlignment.Left
+    dropBtn.Parent = frame
+
+    local dropCorner = Instance.new("UICorner")
+    dropCorner.CornerRadius = UDim.new(0, 4)
+    dropCorner.Parent = dropBtn
 
     dropBtn.MouseButton1Click:Connect(function()
         local listFrame = Instance.new("Frame")
-        listFrame.Size = UDim2.new(1, 0, 0, math.min(#options * 20, 150))
-        listFrame.Position = UDim2.new(0, 0, 1, 0)
-        listFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
-        listFrame.BorderColor3 = Color3.fromRGB(0, 255, 150)
-        listFrame.BorderSizePixel = 1
-        listFrame.Parent = dropFrame
+        listFrame.Size = UDim2.new(1, 0, 0, math.min(#options * 22, 140))
+        listFrame.Position = UDim2.new(0, 0, 1, 2)
+        listFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
+        listFrame.BorderSizePixel = 0
         listFrame.ZIndex = 100
+        listFrame.Parent = dropBtn
+
+        local listCorner = Instance.new("UICorner")
+        listCorner.CornerRadius = UDim.new(0, 4)
+        listCorner.Parent = listFrame
 
         local scroll = Instance.new("ScrollingFrame")
         scroll.Size = UDim2.new(1, 0, 1, 0)
         scroll.BackgroundTransparency = 1
-        scroll.CanvasSize = UDim2.new(0, 0, 0, #options * 20)
-        scroll.ScrollBarThickness = 4
+        scroll.CanvasSize = UDim2.new(0, 0, 0, #options * 22)
+        scroll.ScrollBarThickness = 3
+        scroll.ZIndex = 101
         scroll.Parent = listFrame
 
         for i, opt in ipairs(options) do
             local optBtn = Instance.new("TextButton")
-            optBtn.Size = UDim2.new(1, 0, 0, 20)
-            optBtn.Position = UDim2.new(0, 0, 0, (i-1)*20)
-            optBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-            optBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
-            optBtn.TextSize = 10
+            optBtn.Size = UDim2.new(1, 0, 0, 22)
+            optBtn.Position = UDim2.new(0, 0, 0, (i-1)*22)
+            optBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
+            optBtn.TextColor3 = TEXT_MAIN
+            optBtn.TextSize = 11
             optBtn.Font = Enum.Font.SourceSans
-            optBtn.Text = opt
+            optBtn.Text = "  " .. tostring(opt)
+            optBtn.TextXAlignment = Enum.TextXAlignment.Left
+            optBtn.ZIndex = 102
             optBtn.Parent = scroll
-            optBtn.ZIndex = 101
 
             optBtn.MouseButton1Click:Connect(function()
-                dropBtn.Text = opt
+                dropBtn.Text = "  " .. tostring(opt)
                 callback(opt)
                 listFrame:Destroy()
             end)
         end
     end)
 
-    return dropFrame
+    return frame
 end
 
--- HELPER: Create Toggle
-local function createToggle(parent, y, label, callback)
-    local togFrame = Instance.new("Frame")
-    togFrame.Size = UDim2.new(1, -10, 0, 25)
-    togFrame.Position = UDim2.new(0, 5, 0, y)
-    togFrame.BackgroundTransparency = 1
-    togFrame.Parent = parent
+-- TAB SYSTEM
+local tabs = {}
+local activeTab = nil
+local tabIcons = {"⭐", "💎", "⛏️", "🌿", "📦"}
+local tabNames = {"Combat", "Dummy", "Mining", "Gathering", "Pickup"}
 
-    local togBtn = Instance.new("TextButton")
-    togBtn.Size = UDim2.new(0, 25, 0, 25)
-    togBtn.Position = UDim2.new(0, 0, 0, 0)
-    togBtn.BackgroundColor3 = Color3.fromRGB(100, 50, 50)
-    togBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    togBtn.TextSize = 12
-    togBtn.Font = Enum.Font.SourceSansBold
-    togBtn.Text = "OFF"
-    togBtn.Parent = togFrame
+for i, icon in ipairs(tabIcons) do
+    -- Tab Button in Sidebar
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 35, 0, 35)
+    btn.Position = UDim2.new(0.5, -17, 0, 50 + (i-1)*42)
+    btn.BackgroundColor3 = SIDEBAR_COLOR
+    btn.Text = icon
+    btn.TextColor3 = TEXT_DARK
+    btn.TextSize = 16
+    btn.Font = Enum.Font.SourceSans
+    btn.Parent = sidebar
 
-    local togLbl = Instance.new("TextLabel")
-    togLbl.Size = UDim2.new(1, -35, 0, 25)
-    togLbl.Position = UDim2.new(0, 30, 0, 0)
-    togLbl.BackgroundTransparency = 1
-    togLbl.TextColor3 = Color3.fromRGB(200, 200, 200)
-    togLbl.TextSize = 11
-    togLbl.Font = Enum.Font.SourceSans
-    togLbl.Text = label
-    togLbl.TextXAlignment = Enum.TextXAlignment.Left
-    togLbl.Parent = togFrame
+    local btnCorner = Instance.new("UICorner")
+    btnCorner.CornerRadius = UDim.new(0, 6)
+    btnCorner.Parent = btn
 
-    local state = false
-    togBtn.MouseButton1Click:Connect(function()
-        state = not state
-        togBtn.BackgroundColor3 = state and Color3.fromRGB(50, 150, 80) or Color3.fromRGB(100, 50, 50)
-        togBtn.Text = state and "ON" or "OFF"
-        callback(state)
+    -- Content Frame for Tab
+    local tabView = Instance.new("Frame")
+    tabView.Name = tabNames[i] .. "Tab"
+    tabView.Size = UDim2.new(1, 0, 1, 0)
+    tabView.BackgroundTransparency = 1
+    tabView.Visible = false
+    tabView.Parent = contentArea
+
+    btn.MouseButton1Click:Connect(function()
+        if activeTab then activeTab.frame.Visible = false end
+        tabView.Visible = true
+        activeTab = {btn = btn, frame = tabView}
+
+        pathLbl.Text = "MAW Hub > " .. tabNames[i]
+
+        for _, t in ipairs(tabs) do
+            t.btn.BackgroundColor3 = SIDEBAR_COLOR
+            t.btn.TextColor3 = TEXT_DARK
+        end
+        btn.BackgroundColor3 = ACCENT_BLUE
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     end)
 
-    return togFrame
+    table.insert(tabs, {btn = btn, frame = tabView, name = tabNames[i]})
 end
 
--- POPULATE TABS
--- Combat Tab
-local yOffset = 0
-createDropdown(tabs[1].content, yOffset, MobList, function(v) _G.SelectedMob = v end)
-yOffset = yOffset + 30
-createToggle(tabs[1].content, yOffset, "Float Kill Aura", function(v) _G.fk = v end)
-yOffset = yOffset + 30
-createToggle(tabs[1].content, yOffset, "Skill Z", function(v) _G.Skills.Z = v end)
-yOffset = yOffset + 30
-createToggle(tabs[1].content, yOffset, "Skill X", function(v) _G.Skills.X = v end)
-yOffset = yOffset + 30
-createToggle(tabs[1].content, yOffset, "Skill C", function(v) _G.Skills.C = v end)
-yOffset = yOffset + 30
-createToggle(tabs[1].content, yOffset, "Skill V", function(v) _G.Skills.V = v end)
-yOffset = yOffset + 30
-createToggle(tabs[1].content, yOffset, "Skill 9", function(v) _G.Skills["9"] = v end)
-yOffset = yOffset + 30
-createToggle(tabs[1].content, yOffset, "Skill 8", function(v) _G.Skills["8"] = v end)
-yOffset = yOffset + 30
-createToggle(tabs[1].content, yOffset, "Skill 7", function(v) _G.Skills["7"] = v end)
-yOffset = yOffset + 30
-createToggle(tabs[1].content, yOffset, "Skill 6", function(v) _G.Skills["6"] = v end)
+-- POPULATE TABS (Two Columns Each)
 
--- Dummy Tab
-yOffset = 0
-createDropdown(tabs[2].content, yOffset, TpList, function(v) _G.SelectedTp = v end)
-yOffset = yOffset + 30
-createToggle(tabs[2].content, yOffset, "Teleport & Farm", function(v) _G.autoTp = v end)
+-- 1. COMBAT TAB
+local cLeft = createCard("Conditions / Targets", 0, 260)
+local cRight = createCard("Auto Skills", 270, 275)
 
--- Mine Tab
-yOffset = 0
-createDropdown(tabs[3].content, yOffset, MineList, function(v) _G.SelectedMine = v end)
-yOffset = yOffset + 30
-createToggle(tabs[3].content, yOffset, "Auto Mine", function(v) _G.autoMine = v end)
+createDropdown(cLeft, 0, "Select Target Mob", MobList, function(v) _G.SelectedMob = v end)
+createToggle(cLeft, 50, "Float Kill Aura", function(v) _G.fk = v end)
 
--- Gather Tab
-yOffset = 0
-createDropdown(tabs[4].content, yOffset, GatherList, function(v) _G.SelectedGather = v end)
-yOffset = yOffset + 30
-createToggle(tabs[4].content, yOffset, "Auto Gather", function(v) _G.autoGather = v end)
+local skillKeys = {"Z", "X", "C", "V", "9", "8", "7", "6"}
+for idx, k in ipairs(skillKeys) do
+    createToggle(cRight, (idx-1)*30, "Auto Skill " .. k, function(v) _G.Skills[k] = v end)
+end
 
--- Pick Tab
-yOffset = 0
-createDropdown(tabs[5].content, yOffset, PickList, function(v) _G.SelectedPick = v end)
-yOffset = yOffset + 30
-createToggle(tabs[5].content, yOffset, "Auto Pick", function(v) _G.autoPick = v end)
+-- 2. DUMMY TAB
+local dLeft = createCard("Target Settings", 0, 260)
+local dRight = createCard("Actions", 270, 275)
+createDropdown(dLeft, 0, "Select Dummy Target", TpList, function(v) _G.SelectedTp = v end)
+createToggle(dRight, 0, "Teleport & Auto Farm Dummy", function(v) _G.autoTp = v end)
 
--- Set first tab active
-tabs[1].content.Visible = true
-currentTab = tabs[1].content
-tabs[1].btn.BackgroundColor3 = Color3.fromRGB(0, 150, 100)
-tabs[1].btn.TextColor3 = Color3.fromRGB(0, 255, 150)
+-- 3. MINING TAB
+local mLeft = createCard("Ore Selection", 0, 260)
+local mRight = createCard("Automation", 270, 275)
+createDropdown(mLeft, 0, "Select Ore Type", MineList, function(v) _G.SelectedMine = v end)
+createToggle(mRight, 0, "Auto Mine (Continuous)", function(v) _G.autoMine = v end)
 
-print("[MAW] GUI Popup Loaded!")
+-- 4. GATHERING TAB
+local gLeft = createCard("Plant Selection", 0, 260)
+local gRight = createCard("Automation", 270, 275)
+createDropdown(gLeft, 0, "Select Plant Type", GatherList, function(v) _G.SelectedGather = v end)
+createToggle(gRight, 0, "Auto Gather (Continuous)", function(v) _G.autoGather = v end)
+
+-- 5. PICKUP TAB
+local pLeft = createCard("Item Selection", 0, 260)
+local pRight = createCard("Automation", 270, 275)
+createDropdown(pLeft, 0, "Select Item Type", PickList, function(v) _G.SelectedPick = v end)
+createToggle(pRight, 0, "Auto Pick Up (Continuous)", function(v) _G.autoPick = v end)
+
+-- FOOTER
+local footer = Instance.new("TextLabel")
+footer.Size = UDim2.new(0, 200, 0, 20)
+footer.Position = UDim2.new(1, -210, 1, -22)
+footer.BackgroundTransparency = 1
+footer.Text = "made by akiwe"
+footer.TextColor3 = TEXT_DARK
+footer.TextSize = 11
+footer.Font = Enum.Font.SourceSansItalic
+footer.TextXAlignment = Enum.TextXAlignment.Right
+footer.Parent = main
+
+-- Set First Tab Active
+tabs[1].btn.BackgroundColor3 = ACCENT_BLUE
+tabs[1].btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+tabs[1].frame.Visible = true
+activeTab = {btn = tabs[1].btn, frame = tabs[1].frame}
+
+print("[MAW] Stand-style UI Loaded!")
 
 -- ============ LOGIC LOOPS ============
 
