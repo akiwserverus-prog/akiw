@@ -1,6 +1,10 @@
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
-local W = Rayfield:CreateWindow({Name="MAW Auto Farm Pro",KeySystem=false,ConfigurationSaving={Enabled=false}})
-local VIM = game:GetService("VirtualInputManager")
+local W = Rayfield:CreateWindow({
+    Name="MAW Auto Farm Pro",
+    KeySystem=false,
+    ConfigurationSaving={Enabled=false},
+    Position=UDim2.new(0, 10, 0, 10) -- Posisi kiri atas
+})
 
 -- LIST NPC DARI USER
 local MobList = {"All Mobs", "Martial Alliance Guard", "Blacksmith’s Apprentice", "Travelling Scholar", "Village Constable", "Tang Clans Envoy", "Green Forest Thug", "Road Cutpurse", "Suanni, the Dragon King’s Fifth Son", "Marshal Tie Yan, the Burnt Marshal", "Black Tiger King, Lord of the Green Forest", "Jiao, the Flood Dragon", "Sad Cultivator", "Bonewrath, the War-Qilin of the Ninefold Lord", "Commander Shen Tingjun", "Crimson Moon Priestess", "Mo Qingshan, the Deviated", "Lü Jiugong, Master of the Shattered Array", "Snack-Seller Hua", "Drum-Master Feng", "Auntie Tangyuan", "Mount Hua Disciple", "Plum Blossom Trainee", "Travelling Martial Artist", "Alley Rat", "Carpenter Lu", "Forest Bandit", "Heavenly Demon Disciple", "Old Tuskers", "Iron-Shell Snapper", "Ox-Fist Brute", "Mount Hua Outer Elder", "Old Snapjaw", "Wild Boar", "Grey Wolf", "Highway Robber", "Drunken Fist Master", "Stable-Master Gong", "Qi-Touched Wolf", "Old Blackpaw", "Scarback", "Mountain Brigand", "Pass Reaver", "Jade-Horn Rhino", "Stoneplate Rhino", "Ashen Demon Ape", "Hungry Ghost", "Wailing Shade", "Restless Spirit", "Blood-Eyed Demon Ape", "Lean Grey Wolf", "Moon-Eyed Wolf", "Dire Wolf", "Green Forest Blade", "Iron-Beak Hou", "Abbot Wuxin", "Flood Dragon Pirate", "Bandit Captain Ma", "Grey Fang", "Fishmonger", "Black Wind Lookout", "Pass Reaver Wind", "Tusked Boar", "Tempered Old Tusker", "Fallen Monk", "Hollow-Eyed Novice", "Lake Cutthroat", "Tempered Grey Wolf", "Bandit Enforcer", "Thunder-Striped Tiger", "Widow Lin", "Red Sail Raider", "Demonic Cult Zealot", "Black Moon Assassin", "Black Moon Warrior", "Shaolin Warrior Monk", "Red Sail Cutthroat", "Red Sail Mao", "Blood Cult Acolyte", "Innkeeper’s Daughter", "Jade-Tusk Boar", "Crimson Heretic"}
