@@ -206,6 +206,7 @@ local function createDropdown(parent, y, label, options, selectedVar)
     container.Size = UDim2.new(1, 0, 0, 50)
     container.Position = UDim2.new(0, 0, 0, y)
     container.BackgroundTransparency = 1
+    container.ZIndex = 10
     container.Parent = parent
 
     local lbl = Instance.new("TextLabel")
@@ -227,6 +228,7 @@ local function createDropdown(parent, y, label, options, selectedVar)
     dropBtn.Font = MAIN_FONT
     dropBtn.Text = "  " .. _G[selectedVar]
     dropBtn.TextXAlignment = Enum.TextXAlignment.Left
+    dropBtn.ZIndex = 11
     dropBtn.Parent = container
 
     local dropCorner = Instance.new("UICorner")
@@ -240,25 +242,28 @@ local function createDropdown(parent, y, label, options, selectedVar)
         isOpen = not isOpen
         if isOpen then
             listContainer = Instance.new("ScrollingFrame")
-            listContainer.Size = UDim2.new(1, 0, 0, math.min(#options * 28, 200))
-            listContainer.Position = UDim2.new(0, 0, 1, 4)
+            listContainer.Size = UDim2.new(1, 0, 0, 200)
+            listContainer.Position = UDim2.new(0, 0, 0, 52)
             listContainer.BackgroundColor3 = c.panel
             listContainer.BorderSizePixel = 0
             listContainer.ZIndex = 100
             listContainer.ScrollBarThickness = 6
             listContainer.ScrollBarImageColor3 = c.accent
             listContainer.CanvasSize = UDim2.new(0, 0, 0, #options * 28)
+            listContainer.TopImage = ""
+            listContainer.BottomImage = ""
+            listContainer.MidImage = ""
             listContainer.Parent = container
 
             local layout = Instance.new("UIListLayout")
-            layout.Padding = UDim.new(0, 2)
+            layout.Padding = UDim.new(0, 1)
             layout.FillDirection = Enum.FillDirection.Vertical
             layout.SortOrder = Enum.SortOrder.LayoutOrder
             layout.Parent = listContainer
 
             for i, opt in ipairs(options) do
                 local optBtn = Instance.new("TextButton")
-                optBtn.Size = UDim2.new(1, -6, 0, 26)
+                optBtn.Size = UDim2.new(1, -8, 0, 26)
                 optBtn.BackgroundColor3 = c.panel
                 optBtn.TextColor3 = c.text
                 optBtn.TextSize = 11
@@ -281,10 +286,12 @@ local function createDropdown(parent, y, label, options, selectedVar)
                     dropBtn.Text = "  " .. opt
                     isOpen = false
                     listContainer:Destroy()
+                    listContainer = nil
                 end)
             end
         elseif listContainer then
             listContainer:Destroy()
+            listContainer = nil
         end
     end)
     return container
