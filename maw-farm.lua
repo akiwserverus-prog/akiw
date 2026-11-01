@@ -230,7 +230,7 @@ chainLoop("autoMine","SelectedMine","mine")
 chainLoop("autoGather","SelectedGather","gather")
 chainLoop("autoPick","SelectedPick","pick")
 
--- Wild Qi Loop (Scan with type filter)
+-- Wild Qi Loop (Scan entire map)
 task.spawn(function()
 	while true do
 		if _G.autoCultivate then
@@ -240,17 +240,28 @@ task.spawn(function()
 				local targetQi = nil
 				local minDist = math.huge
 				local filter = _G.SelectedWildQiType
-				local filter_lower = string.lower(filter)
 				
 				for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
-					if string.find(string.lower(obj.Name), "wild qi") then
-						if filter == "All Wild Qi" or string.find(string.lower(obj.Name), filter_lower) then
-							local part = obj:IsA("BasePart") and obj or obj:FindFirstChildWhichIsA("BasePart")
-							if part then
-								local dist = (hrp.Position - part.Position).Magnitude
+					local nameLower = string.lower(obj.Name)
+					if string.find(nameLower, "wild qi") then
+						-- Check if filter matches
+						if filter == "All Wild Qi" or nameLower == string.lower(filter) then
+							-- Try get position from Part or Model
+							local targetPos = nil
+							if obj:IsA("BasePart") then
+								targetPos = obj.Position
+							elseif obj:IsA("Model") and obj.PrimaryPart then
+								targetPos = obj.PrimaryPart.Position
+							elseif obj:IsA("Model") then
+								local part = obj:FindFirstChildWhichIsA("BasePart")
+								if part then targetPos = part.Position end
+							end
+							
+							if targetPos then
+								local dist = (hrp.Position - targetPos).Magnitude
 								if dist < minDist then
 									minDist = dist
-									targetQi = part
+									targetQi = targetPos
 								end
 							end
 						end
@@ -260,7 +271,7 @@ task.spawn(function()
 				if targetQi then
 					char.Humanoid.PlatformStand=true
 					hrp.AssemblyLinearVelocity=Vector3.zero
-					hrp.CFrame=CFrame.new(targetQi.Position + Vector3.new(0,15,0))
+					hrp.CFrame=CFrame.new(targetQi + Vector3.new(0,15,0))
 				end
 			end
 		else
