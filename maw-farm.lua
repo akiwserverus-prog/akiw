@@ -14,6 +14,7 @@ _G.SelectedMine = "All Ores"
 _G.SelectedGather = "All Plants"
 _G.SelectedPick = "All Items"
 _G.SelectedQiSpot = "QiSpot_QingyunGarden"
+_G.SelectedWildQiType = "All Wild Qi"
 
 _G.fk = false
 _G.autoMine = false
@@ -120,7 +121,7 @@ T_Farm:CreateToggle({Name="Auto Mine",CurrentValue=false,Flag="AutoMine",Callbac
 
 -- Gathering Tab
 T_Farm:CreateSection("Gathering")
-T_Farm:CreateDropdown({Name="Select Plant",Options=GatherList,CurrentOption={"All Plants"},MultipleOptions=false,Flag="PlantDropdown",Callback=function(Option)_G.SelectedGather=Option[1]end,})
+T_Farm:CreateDropdown({Name="Select Plant",Options={"All Plants", "Wild Qi", "Bamboo Shoot", "Cloudcap Mushroom", "Crimson Lotus", "Frost Moss", "Heavenly Snow Lotus", "Jade-Dew Grass", "Moonshade Orchid", "Mountain Ginseng", "Spirit Grass", "Spirit Rice", "Sunfire Blossom", "Thunderstruck Root", "Vein-Bloom Orchid", "Wild Ginger"},CurrentOption={"All Plants"},MultipleOptions=false,Flag="PlantDropdown",Callback=function(Option)_G.SelectedGather=Option[1]end,})
 T_Farm:CreateToggle({Name="Auto Gathering",CurrentValue=false,Flag="AutoGather",Callback=function(V)_G.autoGather=V end,})
 
 -- Pickup Tab
@@ -129,7 +130,7 @@ T_Farm:CreateDropdown({Name="Select Item",Options=PickList,CurrentOption={"All I
 T_Farm:CreateToggle({Name="Auto Pickup",CurrentValue=false,Flag="AutoPickup",Callback=function(V)_G.autoPick=V end,})
 
 -- Wild Qi Tab
-T_WildQi:CreateDropdown({Name="Select Qi Spot",Options=QiSpotList,CurrentOption={"QiSpot_QingyunGarden"},MultipleOptions=false,Flag="QiSpotDropdown",Callback=function(Option)_G.SelectedQiSpot=Option[1]end,})
+T_WildQi:CreateDropdown({Name="Wild Qi Type",Options={"All Wild Qi", "Blackgold Fog wild qi", "Torrent wild qi", "Thin wild qi", "Surging wild qi"},CurrentOption={"All Wild Qi"},MultipleOptions=false,Flag="WildQiTypeDropdown",Callback=function(Option)_G.SelectedWildQiType=Option[1]end,})
 T_WildQi:CreateToggle({Name="Auto Cultivate (+15)",CurrentValue=false,Flag="AutoCultivate",Callback=function(V)_G.autoCultivate=V end,})
 
 -- Map Section (Inside Teleport)
@@ -229,34 +230,47 @@ chainLoop("autoMine","SelectedMine","mine")
 chainLoop("autoGather","SelectedGather","gather")
 chainLoop("autoPick","SelectedPick","pick")
 
--- Wild Qi Loop
+-- Wild Qi Loop (Scan with type filter)
 task.spawn(function()
 	while true do
 		if _G.autoCultivate then
 			local char=plr.Character
 			local hrp=char and char:FindFirstChild("HumanoidRootPart")
 			if hrp and char:FindFirstChild("Humanoid")then
-				local qiSpot=nil
+				local targetQi = nil
+				local minDist = math.huge
+				local filter = _G.SelectedWildQiType
+				local filter_lower = string.lower(filter)
+				
 				for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
-					if obj.Name==_G.SelectedQiSpot and obj:FindFirstChild("Position")then
-						qiSpot=obj
-						break
+					if string.find(string.lower(obj.Name), "wild qi") then
+						if filter == "All Wild Qi" or string.find(string.lower(obj.Name), filter_lower) then
+							local part = obj:IsA("BasePart") and obj or obj:FindFirstChildWhichIsA("BasePart")
+							if part then
+								local dist = (hrp.Position - part.Position).Magnitude
+								if dist < minDist then
+									minDist = dist
+									targetQi = part
+								end
+							end
+						end
 					end
 				end
-				if qiSpot then
+				
+				if targetQi then
 					char.Humanoid.PlatformStand=true
 					hrp.AssemblyLinearVelocity=Vector3.zero
-					hrp.CFrame=CFrame.new(qiSpot.Position.Value+Vector3.new(0,15,0))
-					task.wait(0.1)
+					hrp.CFrame=CFrame.new(targetQi.Position + Vector3.new(0,15,0))
 				end
 			end
 		else
 			local char=plr.Character
 			if char and char:FindFirstChild("Humanoid")then char.Humanoid.PlatformStand=false end
 		end
-		task.wait(0.1)
+		task.wait(0.2)
 	end
 end)
+
 
 -- Kill Aura Loop
 task.spawn(function()
