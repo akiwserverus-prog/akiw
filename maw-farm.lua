@@ -265,7 +265,8 @@ task.spawn(function()
 				if targetQi then
 					char.Humanoid.PlatformStand=true
 					hrp.AssemblyLinearVelocity=Vector3.zero
-					hrp.CFrame=CFrame.new(targetQi + Vector3.new(0,15,0))
+					-- Teleport 10 studs below Qi spot
+					hrp.CFrame=CFrame.new(targetQi + Vector3.new(0,-10,0))
 				else
 					if tick() - lastNotify > 10 then
 						lastNotify = tick()
