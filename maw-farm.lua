@@ -133,7 +133,41 @@ T_Farm:CreateDropdown({Name="Select Item",Options=PickList,CurrentOption={"All I
 T_Farm:CreateToggle({Name="Auto Pickup",CurrentValue=false,Flag="AutoPickup",Callback=function(V)_G.autoPick=V end,})
 
 -- Wild Qi Tab
-T_WildQi:CreateToggle({Name="Auto Cultivate Wild Qi (+15)",CurrentValue=false,Flag="AutoCultivate",Callback=function(V)_G.autoCultivate=V end,})
+T_WildQi:CreateButton({Name="Teleport to Wild Qi", Callback=function()
+	local char = plr.Character
+	local hrp = char and char:FindFirstChild("HumanoidRootPart")
+	if hrp and char:FindFirstChild("Humanoid") then
+		local targetQi = nil
+		local minDist = math.huge
+		for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+			if obj.Name == "WildQi" and obj:IsA("Model") then
+				local targetPos = nil
+				if obj.PrimaryPart then
+					targetPos = obj.PrimaryPart.Position
+				else
+					local part = obj:FindFirstChildWhichIsA("BasePart")
+					if part then targetPos = part.Position end
+				end
+				
+				if targetPos then
+					local dist = (hrp.Position - targetPos).Magnitude
+					if dist < minDist then minDist = dist; targetQi = targetPos end
+				end
+			end
+		end
+		
+		if targetQi then
+			-- Teleport + Lock
+			char.Humanoid.PlatformStand = true
+			hrp.Anchored = true
+			hrp.AssemblyLinearVelocity = Vector3.zero
+			hrp.AssemblyAngularVelocity = Vector3.zero
+			hrp.CFrame = CFrame.new(targetQi + Vector3.new(math.random(-5, 5), -10, math.random(-5, 5)))
+		else
+			Rayfield:Notify({Title = "AKIW HUB v1.2", Content = "No Wild Qi found!", Duration = 3, Image = 4483362458})
+		end
+	end
+end})
 
 -- Map Section (Inside Teleport)
 T_Teleport:CreateSection("2x2 Map Teleport")
@@ -232,78 +266,7 @@ chainLoop("autoMine","SelectedMine","mine")
 chainLoop("autoGather","SelectedGather","gather")
 chainLoop("autoPick","SelectedPick","pick")
 
--- Wild Qi Loop (Scan for "WildQi" model + notification)
-task.spawn(function()
-	local lastNotify = 0
-	local currentTargetQi = nil
-	local currentOffset = nil
-	while true do
-		if _G.autoCultivate then
-			local char=plr.Character
-			local hrp=char and char:FindFirstChild("HumanoidRootPart")
-			if hrp and char:FindFirstChild("Humanoid")then
-				local targetQi = nil
-				local minDist = math.huge
-				
-				for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
-					if obj.Name=="WildQi" and obj:IsA("Model") then
-						local targetPos = nil
-						if obj.PrimaryPart then
-							targetPos = obj.PrimaryPart.Position
-						else
-							local part = obj:FindFirstChildWhichIsA("BasePart")
-							if part then targetPos = part.Position end
-						end
-						
-						if targetPos then
-							local dist = (hrp.Position - targetPos).Magnitude
-							if dist < minDist then
-								minDist = dist
-								targetQi = targetPos
-							end
-						end
-					end
-				end
-				
-				if targetQi then
-					if targetQi ~= currentTargetQi then
-						currentTargetQi = targetQi
-						currentOffset = Vector3.new(math.random(-5, 5), -10, math.random(-5, 5))
-					end
-					
-					-- Lock physics completely
-					char.Humanoid.PlatformStand = true
-					hrp.Anchored = true
-					hrp.AssemblyLinearVelocity = Vector3.zero
-					hrp.AssemblyAngularVelocity = Vector3.zero
-					
-					-- Force position every frame
-					hrp.CFrame = CFrame.new(currentTargetQi + currentOffset)
-				else
-					if tick() - lastNotify > 10 then
-						lastNotify = tick()
-						Rayfield:Notify({
-							Title = "AKIW HUB v1.2",
-							Content = "No Wild Qi found in map!",
-							Duration = 3,
-							Image = 4483362458,
-						})
-					end
-				end
-			end
-		else
-			currentTargetQi = nil
-			currentOffset = nil
-			local char=plr.Character
-			if char and char:FindFirstChild("Humanoid")then
-				char.Humanoid.PlatformStand=false
-				local hrp=char:FindFirstChild("HumanoidRootPart")
-				if hrp then hrp.Anchored=false end
-			end
-		end
-		task.wait(0.2)
-	end
-end)
+
 
 
 -- Kill Aura Loop (Float 8.5 + Target Lock + Safe Zone, No Auto Attack)
