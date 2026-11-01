@@ -6,12 +6,12 @@ local pgui = plr:WaitForChild("PlayerGui")
 
 if pgui:FindFirstChild("AKIW_HUB") then pgui.AKIW_HUB:Destroy() end
 
--- ScreenGui Setup
+SubagentsShellTerminalsescshow inactive ctrl+atabs ←/→… Switch agent… One-shot answer from the session's context without adding to the conversation… Change working directory… Clear session… Compact session… Connect an integration… Switch session… Copy last assistant message… View debug info… Open diff viewer… Open editor… Switch model variant… Exit the app… Export session transcript… Fork session… keep working until an objective is met [pause|resume|clear]… Help… Show release highlights… guided AGENTS.md setup… MCP servers… Switch model… New session… Open session or project… Pair device… Plugins… Open session or project… Open session or project… Exit the app… Exit the app… Reload configuration… Rename session… Restart service… Switch session… review changes [commit|branch|pr], defaults to uncommitted… Switch session… Open settings… Skills… Usage statistics… View status… New terminal… Switch theme… Switch model variant… Jump to message… Undo previous message… Update OpenCode… View usage… Switch model variant… Pair device… Manage workspaces-- ScreenGui Setup
 local sg = Instance.new("ScreenGui")
 sg.Name = "AKIW_HUB"
-sg.ResetOnSpawn = false
+sg.ResetOnSpawn = falseBuild·ngodingmendangmending9router
 sg.ZIndexBehavior = Enum.ZIndexBehavior.Global
-sg.DisplayOrder = 9999
+~sg.DisplayOrder = 9999
 sg.Parent = pgui
 
 -- Palette
@@ -114,17 +114,17 @@ local tabData = {
 
 for i, t in ipairs(tabData) do
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 44, 0, 44)
-    btn.Position = UDim2.new(0.5, -22, 0, 15 + (i-1) * 70)
+    btn.Size = UDim2.new(0, 40, 0, 40)
+    btn.Position = UDim2.new(0.5, -20, 0, 10 + (i-1) * 52)
     btn.BackgroundColor3 = i == 1 and c.accent or c.panel
     btn.Text = t.icon
     btn.TextColor3 = i == 1 and c.text or c.textMuted
-    btn.TextSize = 18
+    btn.TextSize = 16
     btn.Font = MAIN_FONT
     btn.Parent = sidebar
 
     local btnCorner = Instance.new("UICorner")
-    btnCorner.CornerRadius = UDim.new(0, 10)
+    btnCorner.CornerRadius = UDim.new(0, 8)
     btnCorner.Parent = btn
 
     local tabView = Instance.new("Frame")
@@ -405,14 +405,9 @@ createButton(tpRight, 45, "Go to West Region (+18km East)", function()
         end
         
         if qingyun then
-            -- 18 km = 18000 studs (assuming 1 stud = 1 meter approx, or adjust distance multiplier)
-            -- East is typically +X direction in Roblox
             hrp.CFrame = qingyun.CFrame + Vector3.new(18000, 5, 0)
-            print("Teleported 18km East from Qingyun Town")
         else
-            -- Fallback: just move +18000 on X from current pos
             hrp.CFrame = hrp.CFrame + Vector3.new(18000, 5, 0)
-            warn("Qingyun Town not found, moved +18000 studs X from current pos")
         end
     end
 end)
@@ -425,7 +420,6 @@ createButton(tpRight, 90, "Go to Pill Seller", function()
         for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
             if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("HumanoidRootPart") then
                 if string.lower(obj.Name):find("pill") and string.lower(obj.Name):find("seller") then
-                    print("Found Pill Seller:", obj.Name)
                     hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
                     found = true
                     break
@@ -433,19 +427,6 @@ createButton(tpRight, 90, "Go to Pill Seller", function()
             end
         end
         if not found then warn("Pill Seller not found") end
-    end
-end)
-
-createButton(tpRight, 90, "Go to Pill Seller", function()
-    local char = plr.Character
-    local hrp = char and char:FindFirstChild("HumanoidRootPart")
-    if hrp then
-        for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
-            if obj:IsA("Model") and obj ~= char and obj.Name == "Pill Seller" and obj:FindFirstChild("HumanoidRootPart") then
-                hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
-                break
-            end
-        end
     end
 end)
 
