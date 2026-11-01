@@ -391,12 +391,18 @@ createButton(tpRight, 45, "Go to Pill Master Yao", function()
     local char = plr.Character
     local hrp = char and char:FindFirstChild("HumanoidRootPart")
     if hrp then
+        local found = false
         for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
-            if obj:IsA("Model") and obj ~= char and obj.Name == "Pill Master Yao" and obj:FindFirstChild("HumanoidRootPart") then
-                hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
-                break
+            if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("HumanoidRootPart") then
+                if string.lower(obj.Name):find("pill") or string.lower(obj.Name):find("master") then
+                    print("Found:", obj.Name)
+                    hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+                    found = true
+                    break
+                end
             end
         end
+        if not found then warn("Pill NPC not found") end
     end
 end)
 
