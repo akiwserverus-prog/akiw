@@ -132,8 +132,7 @@ T_Farm:CreateDropdown({Name="Select Item",Options=PickList,CurrentOption={"All I
 T_Farm:CreateToggle({Name="Auto Pickup",CurrentValue=false,Flag="AutoPickup",Callback=function(V)_G.autoPick=V end,})
 
 -- Wild Qi Tab
-T_WildQi:CreateDropdown({Name="Wild Qi Type",Options={"All Wild Qi", "Blackgold Fog wild qi", "Torrent wild qi", "Thin wild qi", "Surging wild qi"},CurrentOption={"All Wild Qi"},MultipleOptions=false,Flag="WildQiTypeDropdown",Callback=function(Option)_G.SelectedWildQiType=Option[1]end,})
-T_WildQi:CreateToggle({Name="Auto Cultivate (+15)",CurrentValue=false,Flag="AutoCultivate",Callback=function(V)_G.autoCultivate=V end,})
+T_WildQi:CreateToggle({Name="Auto Cultivate Wild Qi (+15)",CurrentValue=false,Flag="AutoCultivate",Callback=function(V)_G.autoCultivate=V end,})
 
 -- Map Section (Inside Teleport)
 T_Teleport:CreateSection("2x2 Map Teleport")
@@ -232,7 +231,7 @@ chainLoop("autoMine","SelectedMine","mine")
 chainLoop("autoGather","SelectedGather","gather")
 chainLoop("autoPick","SelectedPick","pick")
 
--- Wild Qi Loop (Scan entire map + notification)
+-- Wild Qi Loop (Scan for "WildQi" model + notification)
 task.spawn(function()
 	local lastNotify = 0
 	while true do
@@ -242,30 +241,22 @@ task.spawn(function()
 			if hrp and char:FindFirstChild("Humanoid")then
 				local targetQi = nil
 				local minDist = math.huge
-				local filter = _G.SelectedWildQiType
 				
 				for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
-					local nameLower = string.lower(obj.Name)
-					if string.find(nameLower, "wild qi") then
-						-- Check if filter matches
-						if filter == "All Wild Qi" or nameLower == string.lower(filter) then
-							-- Try get position from Part or Model
-							local targetPos = nil
-							if obj:IsA("BasePart") then
-								targetPos = obj.Position
-							elseif obj:IsA("Model") and obj.PrimaryPart then
-								targetPos = obj.PrimaryPart.Position
-							elseif obj:IsA("Model") then
-								local part = obj:FindFirstChildWhichIsA("BasePart")
-								if part then targetPos = part.Position end
-							end
-							
-							if targetPos then
-								local dist = (hrp.Position - targetPos).Magnitude
-								if dist < minDist then
-									minDist = dist
-									targetQi = targetPos
-								end
+					if obj.Name=="WildQi" and obj:IsA("Model") then
+						local targetPos = nil
+						if obj.PrimaryPart then
+							targetPos = obj.PrimaryPart.Position
+						else
+							local part = obj:FindFirstChildWhichIsA("BasePart")
+							if part then targetPos = part.Position end
+						end
+						
+						if targetPos then
+							local dist = (hrp.Position - targetPos).Magnitude
+							if dist < minDist then
+								minDist = dist
+								targetQi = targetPos
 							end
 						end
 					end
@@ -276,12 +267,11 @@ task.spawn(function()
 					hrp.AssemblyLinearVelocity=Vector3.zero
 					hrp.CFrame=CFrame.new(targetQi + Vector3.new(0,15,0))
 				else
-					-- No target found: notify every 10 seconds
 					if tick() - lastNotify > 10 then
 						lastNotify = tick()
 						Rayfield:Notify({
 							Title = "AKIW HUB",
-							Content = "No " .. filter .. " found in map!",
+							Content = "No Wild Qi found in map!",
 							Duration = 3,
 							Image = 4483362458,
 						})
