@@ -387,23 +387,28 @@ createButton(tpRight, 0, "Teleport Now", function()
     end
 end)
 
-createButton(tpRight, 45, "Go to West Region", function()
+createButton(tpRight, 45, "Go to West Region (+18km East)", function()
     local char = plr.Character
     local hrp = char and char:FindFirstChild("HumanoidRootPart")
     if hrp then
-        local found = false
+        local qingyun = nil
         for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
-            if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("HumanoidRootPart") then
-                local n = string.lower(obj.Name)
-                if n:find("west") and (n:find("region") or n:find("area") or n:find("zone")) then
-                    print("Found West Region:", obj.Name)
-                    hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
-                    found = true
-                    break
-                end
+            if obj:IsA("Model") and obj ~= char and (string.lower(obj.Name):find("qingyun") or string.lower(obj.Name):find("town")) and obj:FindFirstChild("HumanoidRootPart") then
+                qingyun = obj.HumanoidRootPart
+                break
             end
         end
-        if not found then warn("West Region not found") end
+        
+        if qingyun then
+            -- 18 km = 18000 studs (assuming 1 stud = 1 meter approx, or adjust distance multiplier)
+            -- East is typically +X direction in Roblox
+            hrp.CFrame = qingyun.CFrame + Vector3.new(18000, 5, 0)
+            print("Teleported 18km East from Qingyun Town")
+        else
+            -- Fallback: just move +18000 on X from current pos
+            hrp.CFrame = hrp.CFrame + Vector3.new(18000, 5, 0)
+            warn("Qingyun Town not found, moved +18000 studs X from current pos")
+        end
     end
 end)
 
