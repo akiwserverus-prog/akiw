@@ -148,13 +148,13 @@ T_Teleport:CreateButton({Name="Qingyun Garden",Callback=function()
 	end
 end,})
 
-T_Map:CreateButton({Name="West Region",Callback=function()
+T_Teleport:CreateButton({Name="West Region",Callback=function()
 	local char=plr.Character
 	local hrp=char and char:FindFirstChild("HumanoidRootPart")
 	if hrp then hrp.CFrame=hrp.CFrame+Vector3.new(18000,5,0)end
 end,})
 
-T_Map:CreateButton({Name="Eastfield Shrine",Callback=function()
+T_Teleport:CreateButton({Name="Eastfield Shrine",Callback=function()
 	local char=plr.Character
 	local hrp=char and char:FindFirstChild("HumanoidRootPart")
 	if hrp then
