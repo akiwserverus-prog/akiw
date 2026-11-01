@@ -230,8 +230,9 @@ chainLoop("autoMine","SelectedMine","mine")
 chainLoop("autoGather","SelectedGather","gather")
 chainLoop("autoPick","SelectedPick","pick")
 
--- Wild Qi Loop (Scan entire map)
+-- Wild Qi Loop (Scan entire map + notification)
 task.spawn(function()
+	local lastNotify = 0
 	while true do
 		if _G.autoCultivate then
 			local char=plr.Character
@@ -272,6 +273,17 @@ task.spawn(function()
 					char.Humanoid.PlatformStand=true
 					hrp.AssemblyLinearVelocity=Vector3.zero
 					hrp.CFrame=CFrame.new(targetQi + Vector3.new(0,15,0))
+				else
+					-- No target found: notify every 10 seconds
+					if tick() - lastNotify > 10 then
+						lastNotify = tick()
+						Rayfield:Notify({
+							Title = "AKIW HUB",
+							Content = "No " .. filter .. " found in map!",
+							Duration = 3,
+							Image = 4483362458,
+						})
+					end
 				end
 			end
 		else
