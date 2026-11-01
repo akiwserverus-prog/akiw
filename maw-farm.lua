@@ -387,22 +387,42 @@ createButton(tpRight, 0, "Teleport Now", function()
     end
 end)
 
-createButton(tpRight, 45, "Go to Pill Master Yao", function()
+createButton(tpRight, 45, "Go to West Region", function()
     local char = plr.Character
     local hrp = char and char:FindFirstChild("HumanoidRootPart")
     if hrp then
         local found = false
         for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
             if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("HumanoidRootPart") then
-                if string.lower(obj.Name):find("pill") or string.lower(obj.Name):find("master") then
-                    print("Found:", obj.Name)
+                local n = string.lower(obj.Name)
+                if n:find("west") and (n:find("region") or n:find("area") or n:find("zone")) then
+                    print("Found West Region:", obj.Name)
                     hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
                     found = true
                     break
                 end
             end
         end
-        if not found then warn("Pill NPC not found") end
+        if not found then warn("West Region not found") end
+    end
+end)
+
+createButton(tpRight, 90, "Go to Pill Seller", function()
+    local char = plr.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        local found = false
+        for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+            if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("HumanoidRootPart") then
+                if string.lower(obj.Name):find("pill") and string.lower(obj.Name):find("seller") then
+                    print("Found Pill Seller:", obj.Name)
+                    hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+                    found = true
+                    break
+                end
+            end
+        end
+        if not found then warn("Pill Seller not found") end
     end
 end)
 
