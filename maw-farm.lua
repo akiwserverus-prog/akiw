@@ -277,11 +277,8 @@ task.spawn(function()
 					hrp.AssemblyLinearVelocity = Vector3.zero
 					hrp.AssemblyAngularVelocity = Vector3.zero
 					
-					-- Set position once per frame
-					local targetCFrame = CFrame.new(currentTargetQi + currentOffset)
-					if hrp.CFrame ~= targetCFrame then
-						hrp.CFrame = targetCFrame
-					end
+					-- Force position every frame
+					hrp.CFrame = CFrame.new(currentTargetQi + currentOffset)
 				else
 					if tick() - lastNotify > 10 then
 						lastNotify = tick()
