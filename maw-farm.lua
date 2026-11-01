@@ -265,6 +265,7 @@ task.spawn(function()
 				if targetQi then
 					char.Humanoid.PlatformStand=true
 					hrp.AssemblyLinearVelocity=Vector3.zero
+					hrp.Anchored = true
 					-- Teleport 10 studs below Qi spot
 					hrp.CFrame=CFrame.new(targetQi + Vector3.new(0,-10,0))
 				else
@@ -281,7 +282,11 @@ task.spawn(function()
 			end
 		else
 			local char=plr.Character
-			if char and char:FindFirstChild("Humanoid")then char.Humanoid.PlatformStand=false end
+			if char and char:FindFirstChild("Humanoid")then
+				char.Humanoid.PlatformStand=false
+				local hrp=char:FindFirstChild("HumanoidRootPart")
+				if hrp then hrp.Anchored=false end
+			end
 		end
 		task.wait(0.2)
 	end
