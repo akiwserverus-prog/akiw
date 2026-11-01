@@ -267,10 +267,12 @@ task.spawn(function()
 					hrp.AssemblyLinearVelocity=Vector3.zero
 					hrp.Anchored = true
 					for _, p in ipairs(char:GetDescendants()) do
-						if p:IsA("BasePart") then p.CanCollide = false end
+						if p:IsA("BasePart") then p.CanCollide = true end
 					end
-					-- Teleport 10 studs below Qi spot
-					hrp.CFrame=CFrame.new(targetQi + Vector3.new(0,-10,0))
+					-- Offset horizontal random ±5 studs agar tidak di tengah sekat
+					local offsetX = math.random(-5, 5)
+					local offsetZ = math.random(-5, 5)
+					hrp.CFrame=CFrame.new(targetQi + Vector3.new(offsetX, -10, offsetZ))
 				else
 					if tick() - lastNotify > 10 then
 						lastNotify = tick()
