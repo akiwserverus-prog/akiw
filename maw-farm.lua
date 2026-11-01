@@ -266,6 +266,9 @@ task.spawn(function()
 					char.Humanoid.PlatformStand=true
 					hrp.AssemblyLinearVelocity=Vector3.zero
 					hrp.Anchored = true
+					for _, p in ipairs(char:GetDescendants()) do
+						if p:IsA("BasePart") then p.CanCollide = false end
+					end
 					-- Teleport 10 studs below Qi spot
 					hrp.CFrame=CFrame.new(targetQi + Vector3.new(0,-10,0))
 				else
@@ -286,6 +289,9 @@ task.spawn(function()
 				char.Humanoid.PlatformStand=false
 				local hrp=char:FindFirstChild("HumanoidRootPart")
 				if hrp then hrp.Anchored=false end
+				for _, p in ipairs(char:GetDescendants()) do
+					if p:IsA("BasePart") then p.CanCollide = true end
+				end
 			end
 		end
 		task.wait(0.2)
