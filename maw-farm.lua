@@ -234,6 +234,8 @@ chainLoop("autoPick","SelectedPick","pick")
 -- Wild Qi Loop (Scan for "WildQi" model + notification)
 task.spawn(function()
 	local lastNotify = 0
+	local currentTargetQi = nil
+	local currentOffset = nil
 	while true do
 		if _G.autoCultivate then
 			local char=plr.Character
@@ -263,16 +265,14 @@ task.spawn(function()
 				end
 				
 				if targetQi then
+					if targetQi ~= currentTargetQi then
+						currentTargetQi = targetQi
+						currentOffset = Vector3.new(math.random(-5, 5), -10, math.random(-5, 5))
+					end
 					char.Humanoid.PlatformStand=true
 					hrp.AssemblyLinearVelocity=Vector3.zero
 					hrp.Anchored = true
-					for _, p in ipairs(char:GetDescendants()) do
-						if p:IsA("BasePart") then p.CanCollide = true end
-					end
-					-- Offset horizontal random ±5 studs agar tidak di tengah sekat
-					local offsetX = math.random(-5, 5)
-					local offsetZ = math.random(-5, 5)
-					hrp.CFrame=CFrame.new(targetQi + Vector3.new(offsetX, -10, offsetZ))
+					hrp.CFrame=CFrame.new(currentTargetQi + currentOffset)
 				else
 					if tick() - lastNotify > 10 then
 						lastNotify = tick()
@@ -286,14 +286,13 @@ task.spawn(function()
 				end
 			end
 		else
+			currentTargetQi = nil
+			currentOffset = nil
 			local char=plr.Character
 			if char and char:FindFirstChild("Humanoid")then
 				char.Humanoid.PlatformStand=false
 				local hrp=char:FindFirstChild("HumanoidRootPart")
 				if hrp then hrp.Anchored=false end
-				for _, p in ipairs(char:GetDescendants()) do
-					if p:IsA("BasePart") then p.CanCollide = true end
-				end
 			end
 		end
 		task.wait(0.2)
