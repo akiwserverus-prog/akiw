@@ -1,5 +1,6 @@
+-- AKIW HUB v1.2 (Wild Qi Physics Lock Fix)
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
-local W = Rayfield:CreateWindow({Name="AKIW HUB",KeySystem=false,ConfigurationSaving={Enabled=false}})
+local W = Rayfield:CreateWindow({Name="AKIW HUB v1.2",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
 local T_Combat = W:CreateTab("⚔️ Combat", 4483362458)
 local T_Teleport = W:CreateTab("📍 Teleport & Map", 4483362458)
@@ -269,13 +270,23 @@ task.spawn(function()
 						currentTargetQi = targetQi
 						currentOffset = Vector3.new(math.random(-5, 5), -10, math.random(-5, 5))
 					end
+					
+					-- Lock physics completely
+					char.Humanoid.PlatformStand = true
 					hrp.Anchored = true
-					hrp.CFrame=CFrame.new(currentTargetQi + currentOffset)
+					hrp.AssemblyLinearVelocity = Vector3.zero
+					hrp.AssemblyAngularVelocity = Vector3.zero
+					
+					-- Set position once per frame
+					local targetCFrame = CFrame.new(currentTargetQi + currentOffset)
+					if hrp.CFrame ~= targetCFrame then
+						hrp.CFrame = targetCFrame
+					end
 				else
 					if tick() - lastNotify > 10 then
 						lastNotify = tick()
 						Rayfield:Notify({
-							Title = "AKIW HUB",
+							Title = "AKIW HUB v1.2",
 							Content = "No Wild Qi found in map!",
 							Duration = 3,
 							Image = 4483362458,
@@ -412,4 +423,4 @@ task.spawn(function()
 	end
 end)
 
-print("[AKIW] Hub Loaded - Rayfield UI")
+print("[AKIW] Hub v1.2 Loaded - Rayfield UI")
