@@ -269,8 +269,6 @@ task.spawn(function()
 						currentTargetQi = targetQi
 						currentOffset = Vector3.new(math.random(-5, 5), -10, math.random(-5, 5))
 					end
-					char.Humanoid.PlatformStand=true
-					hrp.AssemblyLinearVelocity=Vector3.zero
 					hrp.Anchored = true
 					hrp.CFrame=CFrame.new(currentTargetQi + currentOffset)
 				else
