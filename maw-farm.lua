@@ -17,6 +17,7 @@ _G.SelectedQiSpot = "QiSpot_QingyunGarden"
 _G.SelectedWildQiType = "All Wild Qi"
 
 _G.fk = false
+_G.autoAttack = false
 _G.autoMine = false
 _G.autoGather = false
 _G.autoPick = false
@@ -40,10 +41,11 @@ local Section1 = T_Combat:CreateSection("Target Selection")
 T_Combat:CreateDropdown({Name="Boss Target",Options=BossList,CurrentOption={"All Bosses"},MultipleOptions=false,Flag="BossDropdown",Callback=function(Option)_G.SelectedBoss=Option[1]end,})
 T_Combat:CreateDropdown({Name="Mob Target",Options=MobList,CurrentOption={"All Mobs"},MultipleOptions=false,Flag="MobDropdown",Callback=function(Option)_G.SelectedMob=Option[1]end,})
 
-local Section2 = T_Combat:CreateSection("Kill Aura")
+local Section2 = T_Combat:CreateSection("Combat")
 T_Combat:CreateToggle({Name="Float Kill Aura (8.5)",CurrentValue=false,Flag="FK",Callback=function(V)_G.fk=V end,})
+T_Combat:CreateToggle({Name="Auto Attack (Punch & Skill)",CurrentValue=false,Flag="AutoAttack",Callback=function(V)_G.autoAttack=V end,})
 
-local Section3 = T_Combat:CreateSection("Auto Skills")
+local Section3 = T_Combat:CreateSection("Auto Skills Toggle")
 for _, k in ipairs({"Z","X","C","V","9","8","7","6"}) do
 	T_Combat:CreateToggle({Name="Skill "..k,CurrentValue=false,Flag="Skill"..k,Callback=function(V)_G.Skills[k]=V end,})
 end
@@ -295,7 +297,7 @@ task.spawn(function()
 end)
 
 
--- Kill Aura Loop
+-- Kill Aura Loop (Float 8.5 + Target Lock + Safe Zone, No Auto Attack)
 task.spawn(function()
 	local lockedTarget=nil
 	while true do
@@ -307,7 +309,7 @@ task.spawn(function()
 				hrp.AssemblyLinearVelocity=Vector3.zero
 				
 				if lockedTarget and lockedTarget:FindFirstChild("Humanoid")and lockedTarget.Humanoid.Health>0 then
-				elseif lockedTarget and (not lockedTarget:FindFirstChild("Humanoid")or lockedTarget.Humanoid.Health<=0)then
+				elseif lockedTarget and (not lockedTarget:FindFirstChild("Humanoid")or lockedTarget.Humanoid.Health<=0) then
 					hrp.CFrame=hrp.CFrame+Vector3.new(0,50,0)
 					task.wait(1)
 					lockedTarget=nil
@@ -339,10 +341,6 @@ task.spawn(function()
 				
 				if lockedTarget and lockedTarget:FindFirstChild("HumanoidRootPart")then
 					hrp.CFrame=CFrame.lookAt(lockedTarget.HumanoidRootPart.Position+Vector3.new(0,8.5,0),lockedTarget.HumanoidRootPart.Position)
-					pcall(function()
-						game:GetService("ReplicatedStorage").Remotes.CombatInput:FireServer()
-						for k,v in pairs(_G.Skills)do if v then VIM:SendKeyEvent(true,Enum.KeyCode[k],false,game)end end
-					end)
 				end
 			end
 		else
@@ -351,6 +349,65 @@ task.spawn(function()
 			if char and char:FindFirstChild("Humanoid")then char.Humanoid.PlatformStand=false end
 		end
 		task.wait(0.05)
+	end
+end)
+
+-- Auto Attack Loop (Separate from Kill Aura)
+task.spawn(function()
+	local lockedTarget=nil
+	while true do
+		if _G.autoAttack then
+			local char=plr.Character
+			local hrp=char and char:FindFirstChild("HumanoidRootPart")
+			if hrp and char:FindFirstChild("Humanoid")then
+				
+				if lockedTarget and lockedTarget:FindFirstChild("Humanoid")and lockedTarget.Humanoid.Health>0 then
+				elseif lockedTarget and (not lockedTarget:FindFirstChild("Humanoid")or lockedTarget.Humanoid.Health<=0) then
+					lockedTarget=nil
+				else
+					local wantBoss=_G.SelectedBoss~="All Bosses"
+					local wantMob=_G.SelectedMob~="All Mobs"
+					if wantBoss then
+						for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+							if obj:IsA("Model")and obj~=char and obj.Name==_G.SelectedBoss and obj:FindFirstChild("Humanoid")and obj.Humanoid.Health>0 then
+								lockedTarget=obj; break
+							end
+						end
+					elseif wantMob then
+						for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+							if obj:IsA("Model")and obj~=char and obj.Name==_G.SelectedMob and obj:FindFirstChild("Humanoid")and obj.Humanoid.Health>0 then
+								lockedTarget=obj; break
+							end
+						end
+					else
+						local minDist=math.huge
+						for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+							if obj:IsA("Model")and obj~=char and obj:FindFirstChild("Humanoid")and obj:FindFirstChild("HumanoidRootPart")and obj.Humanoid.Health>0 then
+								local d=(hrp.Position-obj.HumanoidRootPart.Position).Magnitude
+								if d<minDist then minDist=d; lockedTarget=obj end
+							end
+						end
+					end
+				end
+				
+				if lockedTarget and lockedTarget:FindFirstChild("HumanoidRootPart")then
+					pcall(function()
+						game:GetService("ReplicatedStorage").Remotes.CombatInput:FireServer()
+					end)
+					
+					for k,v in pairs(_G.Skills)do
+						if v then
+							VIM:SendKeyEvent(true,Enum.KeyCode[k],false,game)
+							task.wait(0.05)
+							VIM:SendKeyEvent(false,Enum.KeyCode[k],false,game)
+						end
+					end
+				end
+			end
+		else
+			lockedTarget=nil
+		end
+		task.wait(0.1)
 	end
 end)
 
