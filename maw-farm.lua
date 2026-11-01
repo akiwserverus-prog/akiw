@@ -107,7 +107,9 @@ local tabData = {
     {icon = "📍", name = "Teleport"},
     {icon = "⛏️", name = "Mining"},
     {icon = "🌿", name = "Gathering"},
-    {icon = "📦", name = "Pickup"}
+    {icon = "📦", name = "Pickup"},
+    {icon = "🌌", name = "WildQi"},
+    {icon = "🗺️", name = "Map"}
 }
 
 for i, t in ipairs(tabData) do
@@ -153,8 +155,9 @@ local BossList = {"All Bosses", "Abbot Wuxin", "Black Tiger King, Lord of the Bl
 local MobList = {"All Mobs", "Bandit Captain Ma", "Bandit Enforcer", "Bandit Swordsman", "Barrow Wight", "Beggars' Union Disciple", "Black Bear", "Black Cult Disciple", "Black Cult Elder", "Black Road Alliance Disciple", "Black Tiger Disciple", "Blight-Gullet Snapper", "Bone-Crusher Demon Ape", "Bronze Corpse", "Bronze Vault Guardian", "Buried Miner", "Caravan Master Hu", "Cave Crawler", "Corpse-Driver Acolyte", "Demonic Cult Zealot", "Dire Wolf", "Drunken Swordsman", "Elder of Mount Hua", "Emei Sect Disciple", "Fallen Monk", "Flood Dragon Pirate", "Gate-Pass Bandit", "Granny Wei", "Green Forest Thug", "Grey Wolf", "Heavenly Demon Cult Disciple", "Herb Gatherer", "Hopping Corpse", "Horse Herder", "Horse Thief", "Huo of the Left Fang", "Iron-Hide Qi Bear", "Iron-Shell Snapper", "Jade-Horn Gorer", "Jade-Horn Rhino", "Kong Wuya", "Kunlun Sect Disciple", "Lei of the Right Fang", "Longyuan Escort", "Marsh Snapper", "Maw-Spawn", "Mine Bandit", "Mount Hua Disciple", "Mount Hua Sect Disciple", "Mountain Brigand", "Mountain Tiger", "Nameless Tomb Guard", "Oj-Touched Wolf", "Outlaw Chief", "Pack Buffalo", "Petty Thief", "Qi-Burning Boar", "Qi-Deviated Madman", "Qi-Maddened Stalker", "Red Sail Raider", "Reed Serpent", "Relay Runner", "Renegade Disciple", "Restless Spirit", "River Buffalo", "Rock Golem", "Salt Trader", "Shaolin Temple Disciple", "Shield-Bearer of the Nameless Host", "Sichuan Tang Clan Disciple", "Sky-Burial Pilgrim", "Spearman of the Nameless Host", "Steppe Hunter", "Steppe Rider", "Steppe Wolf", "Tang Mo", "Tea Picker", "Tempered Demon Ape", "Tempered Stalker Alpha", "Tianshui Fishwife", "Travelling Merchant Qian", "Villager", "Wailing Shade", "Wandering Cultivator", "Wandering Swordsman", "Water Ghoul", "White-Striped Vault Tiger", "Wild Boar", "Wudang Sect Disciple", "Your Reflection", "Zhang Tieniu", "Zhenyuan Escort"}
 local NpcTpList = {"All Locations", "Auctioneer Qian", "Beggars' Union Elder", "Beggar Boy Xiao", "Black Road Broker", "Blacksmith Old Pak", "Caravan Guard Bo", "Constable Captain Yun Baek", "Constable Tie", "Drunk Swordsman Ma", "Elder Zhou", "Emei Sword Nun", "Envoy Han Jingxu", "Fence Mo", "Ferryman Ou", "Granny Lian", "Granny Tsang", "Guarding Post", "Heavenly Demon Cult Envoy", "Hunter Gao", "Innkeeper Choi", "Kunlun Swordsman", "Little Mei", "Magistrate's Clerk Zhen", "Madam Hong", "Master Smith Ou", "Merchant Wang", "Oathkeeper Shi Wuyan", "Old Fisherman Lao", "Old Woman Guo", "Parrying Post", "Pill Master Yao", "Porter Dong", "Prize-Keeper Lu", "Registrar Wen", "Rice Merchant Fu", "Riddle-Keeper Su", "Salt Merchant Hu", "Scholar Bai", "Storyteller Wu", "Tailor Mei", "Tea Girl Lan", "The Old Wayfarer", "Town Crier Liu", "Training Post", "Wandering Swordsman Ling", "Waiter Xiao Er", "Weaver Jin", "Wu the Younger", "Alliance Clerk Han", "Apprentice Gu"}
 local MineList = {"All Ores", "Copper Ore", "Iron Ore", "Qi Crystal Shard", "Spirit Jade Shard"}
-local GatherList = {"All Plants", "Bamboo Shoot", "Cloudcap Mushroom", "Crimson Lotus", "Frost Moss", "Heavenly Snow Lotus", "Jade-Dew Grass", "Moonshade Orchid", "Mountain Ginseng", "Spirit Grass", "Spirit Rice", "Sunfire Blossom", "Thunderstruck Root", "Vein-Bloom Orchid", "Wild Ginger"}
+local GatherList = {"All Plants", "Bamboo Shoot", "Cloudcap Mushroom", "Crimson Lotus", "Frost Moss", "Heavenly Snow Lotus", "Jade-Dew Grass", "Moonshade Orchid", "Mountain Ginseng", "Purple Wild Qi", "Spirit Grass", "Spirit Rice", "Sunfire Blossom", "Thunderstruck Root", "Vein-Bloom Orchid", "Wild Ginger"}
 local PickList = {"All Items", "Five Tigers Door-Breaking Saber", "Jade Headband — low-grade", "Steamed Bun", "Tiger Fur Collar — low-grade"}
+local QiSpotList = {"QiSpot_QingyunGarden", "QiSpot_EastfieldShrine", "QiSpot_SouthbrookShrine", "QiSpot_West_SunkenPagoda", "QiSpot_West_WillowShrine", "QiSpot_West_MonkHermitage"}
 
 _G.SelectedBoss = "All Bosses"
 _G.SelectedMob = "All Mobs"
@@ -162,11 +165,13 @@ _G.SelectedTp = "All Locations"
 _G.SelectedMine = "All Ores"
 _G.SelectedGather = "All Plants"
 _G.SelectedPick = "All Items"
+_G.SelectedQiSpot = "QiSpot_QingyunGarden"
 
 _G.fk = false
 _G.autoMine = false
 _G.autoGather = false
 _G.autoPick = false
+_G.autoCultivate = false
 _G.Skills = {Z=false, X=false, C=false, V=false, ["9"]=false, ["8"]=false, ["7"]=false, ["6"]=false}
 
 -- UI Helpers
@@ -491,6 +496,86 @@ local pRight = createSection(pView, "⚡ Auto", UDim2.new(0.52,0,0,0), UDim2.new
 createDropdown(pLeft, 0, "SELECT ITEM", PickList, "SelectedPick")
 createToggle(pRight, 0, "Auto Pickup", function(v) _G.autoPick = v end)
 
+-- TAB 6: WILD QI
+local qView = tabs[6].view
+local qLeft = createSection(qView, "🌌 Qi Spot", UDim2.new(0,0,0,0), UDim2.new(0.48, 0, 0, 120))
+local qRight = createSection(qView, "⚡ Auto", UDim2.new(0.52,0,0,0), UDim2.new(0.48, 0, 0, 120))
+createDropdown(qLeft, 0, "SELECT QI SPOT", QiSpotList, "SelectedQiSpot")
+createToggle(qRight, 0, "Auto Cultivate (+15 float)", function(v) _G.autoCultivate = v end)
+
+-- TAB 7: MAP
+local mapView = tabs[7].view
+local mapSection = createSection(mapView, "🗺️ Region Teleport", UDim2.new(0,0,0,0), UDim2.new(1, 0, 0, 280))
+
+local regions = {
+    {name = "Qingyun Garden", x = 0, y = 0},
+    {name = "West Region", x = 1, y = 0},
+    {name = "Eastfield Shrine", x = 0, y = 1},
+    {name = "Southbrook Shrine", x = 1, y = 1}
+}
+
+for i, reg in ipairs(regions) do
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0.48, 0, 0, 110)
+    btn.Position = UDim2.new(reg.x * 0.52, 0, reg.y * 0.52, reg.y * 120)
+    btn.BackgroundColor3 = c.panel
+    btn.TextColor3 = c.text
+    btn.TextSize = 13
+    btn.Font = BOLD_FONT
+    btn.Text = reg.name
+    btn.Parent = mapSection
+    
+    local btnCorner = Instance.new("UICorner")
+    btnCorner.CornerRadius = UDim.new(0, 8)
+    btnCorner.Parent = btn
+    
+    local btnStroke = Instance.new("UIStroke")
+    btnStroke.Thickness = 1
+    btnStroke.Color = c.border
+    btnStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    btnStroke.Parent = btn
+    
+    btn.MouseEnter:Connect(function()
+        btn.BackgroundColor3 = c.accent
+        btnStroke.Color = c.accent
+    end)
+    btn.MouseLeave:Connect(function()
+        btn.BackgroundColor3 = c.panel
+        btnStroke.Color = c.border
+    end)
+    
+    btn.MouseButton1Click:Connect(function()
+        local char = plr.Character
+        local hrp = char and char:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            if reg.name == "West Region" then
+                hrp.CFrame = hrp.CFrame + Vector3.new(18000, 5, 0)
+            elseif reg.name == "Qingyun Garden" then
+                for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                    if obj:IsA("Model") and obj ~= char and string.find(string.lower(obj.Name), "qingyun") and obj:FindFirstChild("HumanoidRootPart") then
+                        hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 5, 0)
+                        break
+                    end
+                end
+            elseif reg.name == "Eastfield Shrine" then
+                for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                    if obj.Name == "QiSpot_EastfieldShrine" and obj:FindFirstChild("Position") then
+                        hrp.CFrame = CFrame.new(obj.Position.Value) + Vector3.new(0, 5, 0)
+                        break
+                    end
+                end
+            elseif reg.name == "Southbrook Shrine" then
+                for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                    if obj.Name == "QiSpot_SouthbrookShrine" and obj:FindFirstChild("Position") then
+                        hrp.CFrame = CFrame.new(obj.Position.Value) + Vector3.new(0, 5, 0)
+                        break
+                    end
+                end
+            end
+        end
+    end)
+end
+
 -- Logic Loops
 local function chainLoop(toggleKey, selectedVar, keyword)
     task.spawn(function()
@@ -545,38 +630,80 @@ chainLoop("autoPick", "SelectedPick", "pick")
 
 task.spawn(function()
     while true do
+        if _G.autoCultivate then
+            local char = plr.Character
+            local hrp = char and char:FindFirstChild("HumanoidRootPart")
+            if hrp and char:FindFirstChild("Humanoid") then
+                local qiSpot = nil
+                for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                    if obj.Name == _G.SelectedQiSpot and obj:FindFirstChild("Position") then
+                        qiSpot = obj
+                        break
+                    end
+                end
+                if qiSpot then
+                    char.Humanoid.PlatformStand = true
+                    hrp.AssemblyLinearVelocity = Vector3.zero
+                    hrp.CFrame = CFrame.new(qiSpot.Position.Value + Vector3.new(0, 15, 0))
+                    task.wait(0.1)
+                else
+                    warn("QiSpot not found:", _G.SelectedQiSpot)
+                end
+            end
+        else
+            local char = plr.Character
+            if char and char:FindFirstChild("Humanoid") then char.Humanoid.PlatformStand = false end
+        end
+        task.wait(0.1)
+    end
+end)
+
+task.spawn(function()
+    local lockedTarget = nil
+    while true do
         if _G.fk then
             local char = plr.Character
             local hrp = char and char:FindFirstChild("HumanoidRootPart")
             if hrp and char:FindFirstChild("Humanoid") then
                 char.Humanoid.PlatformStand = true
                 hrp.AssemblyLinearVelocity = Vector3.zero
-                local target = nil
-                local wantBoss = _G.SelectedBoss ~= "All Bosses"
-                local wantMob = _G.SelectedMob ~= "All Mobs"
-                if wantBoss then
-                    for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
-                        if obj:IsA("Model") and obj ~= char and obj.Name == _G.SelectedBoss and obj:FindFirstChild("Humanoid") and obj.Humanoid.Health > 0 then
-                            target = obj; break
-                        end
-                    end
-                elseif wantMob then
-                    for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
-                        if obj:IsA("Model") and obj ~= char and obj.Name == _G.SelectedMob and obj:FindFirstChild("Humanoid") and obj.Humanoid.Health > 0 then
-                            target = obj; break
-                        end
-                    end
+                
+                if lockedTarget and lockedTarget:FindFirstChild("Humanoid") and lockedTarget.Humanoid.Health > 0 then
+                    -- keep locked target
+                elseif lockedTarget and (not lockedTarget:FindFirstChild("Humanoid") or lockedTarget.Humanoid.Health <= 0) then
+                    -- target died, retreat to safe zone
+                    hrp.CFrame = hrp.CFrame + Vector3.new(0, 50, 0)
+                    task.wait(1)
+                    lockedTarget = nil
                 else
-                    local minDist = math.huge
-                    for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
-                        if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") and obj.Humanoid.Health > 0 then
-                            local d = (hrp.Position - obj.HumanoidRootPart.Position).Magnitude
-                            if d < minDist then minDist = d; target = obj end
+                    -- find new target
+                    local wantBoss = _G.SelectedBoss ~= "All Bosses"
+                    local wantMob = _G.SelectedMob ~= "All Mobs"
+                    if wantBoss then
+                        for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                            if obj:IsA("Model") and obj ~= char and obj.Name == _G.SelectedBoss and obj:FindFirstChild("Humanoid") and obj.Humanoid.Health > 0 then
+                                lockedTarget = obj; break
+                            end
+                        end
+                    elseif wantMob then
+                        for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                            if obj:IsA("Model") and obj ~= char and obj.Name == _G.SelectedMob and obj:FindFirstChild("Humanoid") and obj.Humanoid.Health > 0 then
+                                lockedTarget = obj; break
+                            end
+                        end
+                    else
+                        local minDist = math.huge
+                        for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+                            if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") and obj.Humanoid.Health > 0 then
+                                local d = (hrp.Position - obj.HumanoidRootPart.Position).Magnitude
+                                if d < minDist then minDist = d; lockedTarget = obj end
+                            end
                         end
                     end
                 end
-                if target then
-                    hrp.CFrame = CFrame.lookAt(target.HumanoidRootPart.Position + Vector3.new(0, 8.5, 0), target.HumanoidRootPart.Position)
+                
+                if lockedTarget and lockedTarget:FindFirstChild("HumanoidRootPart") then
+                    hrp.CFrame = CFrame.lookAt(lockedTarget.HumanoidRootPart.Position + Vector3.new(0, 8.5, 0), lockedTarget.HumanoidRootPart.Position)
                     pcall(function() 
                         game:GetService("ReplicatedStorage").Remotes.CombatInput:FireServer()
                         for k, v in pairs(_G.Skills) do if v then VIM:SendKeyEvent(true, Enum.KeyCode[k], false, game) end end
@@ -584,6 +711,7 @@ task.spawn(function()
                 end
             end
         else
+            lockedTarget = nil
             local char = plr.Character
             if char and char:FindFirstChild("Humanoid") then char.Humanoid.PlatformStand = false end
         end
