@@ -369,7 +369,7 @@ end
 -- TAB 2: TELEPORT
 local tpView = tabs[2].view
 local tpLeft = createSection(tpView, "📍 Location", UDim2.new(0,0,0,0), UDim2.new(0.48, 0, 0, 120))
-local tpRight = createSection(tpView, "⚡ Action", UDim2.new(0.52,0,0,0), UDim2.new(0.48, 0, 0, 120))
+local tpRight = createSection(tpView, "⚡ Quick Access", UDim2.new(0.52,0,0,0), UDim2.new(0.48, 0, 0, 280))
 
 createDropdown(tpLeft, 0, "SELECT TARGET", NpcTpList, "SelectedTp")
 createButton(tpRight, 0, "Teleport Now", function()
@@ -380,6 +380,58 @@ createButton(tpRight, 0, "Teleport Now", function()
         if targetName == "All Locations" then return end
         for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
             if obj:IsA("Model") and obj ~= char and obj.Name == targetName and obj:FindFirstChild("HumanoidRootPart") then
+                hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+                break
+            end
+        end
+    end
+end)
+
+createButton(tpRight, 45, "Go to Pill Master Yao", function()
+    local char = plr.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+            if obj:IsA("Model") and obj ~= char and obj.Name == "Pill Master Yao" and obj:FindFirstChild("HumanoidRootPart") then
+                hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+                break
+            end
+        end
+    end
+end)
+
+createButton(tpRight, 90, "Go to Pill Seller", function()
+    local char = plr.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+            if obj:IsA("Model") and obj ~= char and obj.Name == "Pill Seller" and obj:FindFirstChild("HumanoidRootPart") then
+                hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+                break
+            end
+        end
+    end
+end)
+
+createButton(tpRight, 135, "Go to Blacksmith", function()
+    local char = plr.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+            if obj:IsA("Model") and obj ~= char and string.find(obj.Name, "Smith") and obj:FindFirstChild("HumanoidRootPart") then
+                hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+                break
+            end
+        end
+    end
+end)
+
+createButton(tpRight, 180, "Go to Merchant", function()
+    local char = plr.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+            if obj:IsA("Model") and obj ~= char and string.find(obj.Name, "Merchant") and obj:FindFirstChild("HumanoidRootPart") then
                 hrp.CFrame = obj.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
                 break
             end
