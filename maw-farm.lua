@@ -2,12 +2,9 @@ local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/Siri
 local W = Rayfield:CreateWindow({Name="AKIW HUB",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
 local T_Combat = W:CreateTab("⚔️ Combat", 4483362458)
-local T_Teleport = W:CreateTab("📍 Teleport", 4483362458)
-local T_Mining = W:CreateTab("⛏️ Mining", 4483362458)
-local T_Gathering = W:CreateTab("🌿 Gathering", 4483362458)
-local T_Pickup = W:CreateTab("📦 Pickup", 4483362458)
+local T_Teleport = W:CreateTab("📍 Teleport & Map", 4483362458)
+local T_Farm = W:CreateTab("🚜 Farm", 4483362458)
 local T_WildQi = W:CreateTab("🌌 Wild Qi", 4483362458)
-local T_Map = W:CreateTab("🗺️ Map", 4483362458)
 
 -- Global Variables
 _G.SelectedBoss = "All Bosses"
@@ -117,23 +114,27 @@ T_Teleport:CreateButton({Name="Merchant",Callback=function()
 end,})
 
 -- Mining Tab
-T_Mining:CreateDropdown({Name="Select Ore",Options=MineList,CurrentOption={"All Ores"},MultipleOptions=false,Flag="OreDropdown",Callback=function(Option)_G.SelectedMine=Option[1]end,})
-T_Mining:CreateToggle({Name="Auto Mine",CurrentValue=false,Flag="AutoMine",Callback=function(V)_G.autoMine=V end,})
+T_Farm:CreateSection("Mining")
+T_Farm:CreateDropdown({Name="Select Ore",Options=MineList,CurrentOption={"All Ores"},MultipleOptions=false,Flag="OreDropdown",Callback=function(Option)_G.SelectedMine=Option[1]end,})
+T_Farm:CreateToggle({Name="Auto Mine",CurrentValue=false,Flag="AutoMine",Callback=function(V)_G.autoMine=V end,})
 
 -- Gathering Tab
-T_Gathering:CreateDropdown({Name="Select Plant",Options=GatherList,CurrentOption={"All Plants"},MultipleOptions=false,Flag="PlantDropdown",Callback=function(Option)_G.SelectedGather=Option[1]end,})
-T_Gathering:CreateToggle({Name="Auto Gather",CurrentValue=false,Flag="AutoGather",Callback=function(V)_G.autoGather=V end,})
+T_Farm:CreateSection("Gathering")
+T_Farm:CreateDropdown({Name="Select Plant",Options=GatherList,CurrentOption={"All Plants"},MultipleOptions=false,Flag="PlantDropdown",Callback=function(Option)_G.SelectedGather=Option[1]end,})
+T_Farm:CreateToggle({Name="Auto Gathering",CurrentValue=false,Flag="AutoGather",Callback=function(V)_G.autoGather=V end,})
 
 -- Pickup Tab
-T_Pickup:CreateDropdown({Name="Select Item",Options=PickList,CurrentOption={"All Items"},MultipleOptions=false,Flag="ItemDropdown",Callback=function(Option)_G.SelectedPick=Option[1]end,})
-T_Pickup:CreateToggle({Name="Auto Pickup",CurrentValue=false,Flag="AutoPickup",Callback=function(V)_G.autoPick=V end,})
+T_Farm:CreateSection("Pickup")
+T_Farm:CreateDropdown({Name="Select Item",Options=PickList,CurrentOption={"All Items"},MultipleOptions=false,Flag="ItemDropdown",Callback=function(Option)_G.SelectedPick=Option[1]end,})
+T_Farm:CreateToggle({Name="Auto Pickup",CurrentValue=false,Flag="AutoPickup",Callback=function(V)_G.autoPick=V end,})
 
 -- Wild Qi Tab
 T_WildQi:CreateDropdown({Name="Select Qi Spot",Options=QiSpotList,CurrentOption={"QiSpot_QingyunGarden"},MultipleOptions=false,Flag="QiSpotDropdown",Callback=function(Option)_G.SelectedQiSpot=Option[1]end,})
 T_WildQi:CreateToggle({Name="Auto Cultivate (+15)",CurrentValue=false,Flag="AutoCultivate",Callback=function(V)_G.autoCultivate=V end,})
 
--- Map Tab
-T_Map:CreateButton({Name="Qingyun Garden",Callback=function()
+-- Map Section (Inside Teleport)
+T_Teleport:CreateSection("2x2 Map Teleport")
+T_Teleport:CreateButton({Name="Qingyun Garden",Callback=function()
 	local char=plr.Character
 	local hrp=char and char:FindFirstChild("HumanoidRootPart")
 	if hrp then
@@ -165,7 +166,7 @@ T_Map:CreateButton({Name="Eastfield Shrine",Callback=function()
 	end
 end,})
 
-T_Map:CreateButton({Name="Southbrook Shrine",Callback=function()
+T_Teleport:CreateButton({Name="Southbrook Shrine",Callback=function()
 	local char=plr.Character
 	local hrp=char and char:FindFirstChild("HumanoidRootPart")
 	if hrp then
