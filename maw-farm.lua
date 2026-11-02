@@ -136,7 +136,7 @@ T_Farm:CreateToggle({Name="Auto Pickup",CurrentValue=false,Flag="AutoPickup",Cal
 T_WildQi:CreateButton({Name="Teleport to Wild Qi", Callback=function()
 	local char = plr.Character
 	local hrp = char and char:FindFirstChild("HumanoidRootPart")
-	if hrp and char:FindFirstChild("Humanoid") then
+	if hrp then
 		local targetQi = nil
 		local minDist = math.huge
 		for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
@@ -157,11 +157,7 @@ T_WildQi:CreateButton({Name="Teleport to Wild Qi", Callback=function()
 		end
 		
 		if targetQi then
-			-- Teleport + Lock
-			char.Humanoid.PlatformStand = true
-			hrp.Anchored = true
-			hrp.AssemblyLinearVelocity = Vector3.zero
-			hrp.AssemblyAngularVelocity = Vector3.zero
+			-- Normal Teleport
 			hrp.CFrame = CFrame.new(targetQi)
 		else
 			Rayfield:Notify({Title = "AKIW HUB v1.2", Content = "No Wild Qi found!", Duration = 3, Image = 4483362458})
