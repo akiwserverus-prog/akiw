@@ -162,7 +162,7 @@ T_WildQi:CreateButton({Name="Teleport to Wild Qi", Callback=function()
 			hrp.Anchored = true
 			hrp.AssemblyLinearVelocity = Vector3.zero
 			hrp.AssemblyAngularVelocity = Vector3.zero
-			hrp.CFrame = CFrame.new(targetQi + Vector3.new(math.random(-5, 5), -10, math.random(-5, 5)))
+			hrp.CFrame = CFrame.new(targetQi)
 		else
 			Rayfield:Notify({Title = "AKIW HUB v1.2", Content = "No Wild Qi found!", Duration = 3, Image = 4483362458})
 		end
