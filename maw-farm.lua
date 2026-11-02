@@ -133,10 +133,12 @@ T_Farm:CreateDropdown({Name="Select Item",Options=PickList,CurrentOption={"All I
 T_Farm:CreateToggle({Name="Auto Pickup",CurrentValue=false,Flag="AutoPickup",Callback=function(V)_G.autoPick=V end,})
 
 -- Wild Qi Tab
-T_WildQi:CreateButton({Name="Teleport to Wild Qi", Callback=function()
+local visitedWildQi = {}
+
+T_WildQi:CreateButton({Name="Teleport to Wild Qi (Next)", Callback=function()
 	local char = plr.Character
 	local hrp = char and char:FindFirstChild("HumanoidRootPart")
-	if hrp then
+	if hrp and char:FindFirstChild("Humanoid") then
 		local targetQi = nil
 		local minDist = math.huge
 		for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
@@ -150,19 +152,36 @@ T_WildQi:CreateButton({Name="Teleport to Wild Qi", Callback=function()
 				end
 				
 				if targetPos then
-					local dist = (hrp.Position - targetPos).Magnitude
-					if dist < minDist then minDist = dist; targetQi = targetPos end
+					local posStr = tostring(targetPos)
+					-- Skip kalau sudah dikunjungi
+					if not visitedWildQi[posStr] then
+						local dist = (hrp.Position - targetPos).Magnitude
+						if dist < minDist then minDist = dist; targetQi = targetPos end
+					end
 				end
 			end
 		end
 		
 		if targetQi then
-			-- Normal Teleport
+			-- Mark as visited
+			visitedWildQi[tostring(targetQi)] = true
+			-- Teleport
 			hrp.CFrame = CFrame.new(targetQi)
 		else
-			Rayfield:Notify({Title = "AKIW HUB v1.2", Content = "No Wild Qi found!", Duration = 3, Image = 4483362458})
+			-- Kalau semua sudah dikunjungi, reset
+			if next(visitedWildQi) ~= nil then
+				visitedWildQi = {}
+				Rayfield:Notify({Title = "AKIW HUB v1.2", Content = "Semua Wild Qi checked! Reset.", Duration = 2, Image = 4483362458})
+			else
+				Rayfield:Notify({Title = "AKIW HUB v1.2", Content = "No Wild Qi found!", Duration = 3, Image = 4483362458})
+			end
 		end
 	end
+end})
+
+T_WildQi:CreateButton({Name="Reset Wild Qi Log", Callback=function()
+	visitedWildQi = {}
+	Rayfield:Notify({Title = "AKIW HUB v1.2", Content = "Log cleared!", Duration = 2, Image = 4483362458})
 end})
 
 -- Map Section (Inside Teleport)
