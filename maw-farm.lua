@@ -194,37 +194,16 @@ task.spawn(function()
 			local char = plr.Character
 			local hrp = char and char:FindFirstChild("HumanoidRootPart")
 			if hrp then
-				local enemies = {}
-				-- Collect enemies from workspace folders
-				for _, folder in ipairs({workspace, workspace:FindFirstChild("Live")}) do
-					if folder then
-						for _, obj in ipairs(folder:GetChildren()) do
-							if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
-								if obj.Humanoid.Health > 0 then
-									table.insert(enemies, obj)
+				for _, obj in pairs(workspace:GetDescendants()) do
+					if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
+						if obj.Humanoid.Health > 0 then
+							local match = (_G.SelectedBoss == "All Bosses" or obj.Name == _G.SelectedBoss) or (_G.SelectedMob == "All Mobs" or obj.Name == _G.SelectedMob)
+							if match then
+								local objHrp = obj.HumanoidRootPart
+								if (hrp.Position - objHrp.Position).Magnitude < 25 then
+									objHrp.CFrame = hrp.CFrame + (hrp.CFrame.LookVector * 8.5)
 								end
 							end
-						end
-					end
-				end
-				
-				-- Float enemies
-				for _, obj in ipairs(enemies) do
-					local shouldFloat = false
-					if _G.SelectedBoss == "All Bosses" and _G.SelectedMob == "All Mobs" then
-						shouldFloat = true
-					elseif obj.Name == _G.SelectedBoss or obj.Name == _G.SelectedMob then
-						shouldFloat = true
-					end
-					
-					if shouldFloat then
-						local objHrp = obj.HumanoidRootPart
-						local dist = (hrp.Position - objHrp.Position).Magnitude
-						if dist < 20 then
-							objHrp.CFrame = hrp.CFrame + hrp.CFrame.LookVector * 8.5
-							objHrp.Velocity = Vector3.zero
-							objHrp.RotVelocity = Vector3.zero
-							objHrp.Anchored = false
 						end
 					end
 				end
