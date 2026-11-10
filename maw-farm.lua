@@ -1,11 +1,11 @@
--- AKIW HUB v1.2 (Wild Qi Physics Lock Fix)
-local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
-local W = Rayfield:CreateWindow({Name="MAW Auto Farm",KeySystem=false,ConfigurationSaving={Enabled=false}})
+-- AKIW HUB v1.2 (Orion UI for Delta Compatibility)
+local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Orion/main/source'))()
+local W = OrionLib:MakeWindow({Name = "AKIW HUB v1.2", HidePremium = false, SaveConfig = false, ConfigFolder = "AKIWConfig"})
 
-local T_Combat = W:CreateTab("Combat")
-local T_Teleport = W:CreateTab("Teleport")
-local T_Farm = W:CreateTab("Farm")
-local T_WildQi = W:CreateTab("Wild Qi")
+local T_Combat = W:MakeTab({Name = "Combat", Icon = "rbxassetid://4483362458", PremiumOnly = false})
+local T_Teleport = W:MakeTab({Name = "Teleport", Icon = "rbxassetid://4483362458", PremiumOnly = false})
+local T_Farm = W:MakeTab({Name = "Farm", Icon = "rbxassetid://4483362458", PremiumOnly = false})
+local T_WildQi = W:MakeTab({Name = "Wild Qi", Icon = "rbxassetid://4483362458", PremiumOnly = false})
 
 -- Global Variables
 _G.SelectedBoss = "All Bosses"
