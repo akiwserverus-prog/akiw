@@ -135,6 +135,9 @@ T_Farm:CreateToggle({Name="Auto Pickup",CurrentValue=false,Flag="AutoPickup",Cal
 
 -- Wild Qi Tab
 local visitedWildQi = {}
+_G.autoWildQiCultivate = false
+
+T_WildQi:CreateToggle({Name="Auto Cultivate Wild Qi", CurrentValue=false, Flag="AutoWildQi", Callback=function(V) _G.autoWildQiCultivate = V end})
 
 T_WildQi:CreateButton({Name="Teleport to Wild Qi (Next)", Callback=function()
 	local char = plr.Character
@@ -184,6 +187,71 @@ T_WildQi:CreateButton({Name="Reset Wild Qi Log", Callback=function()
 	visitedWildQi = {}
 	Rayfield:Notify({Title = "AKIW HUB v2.7", Content = "Log cleared!", Duration = 2, Image = 4483362458})
 end})
+
+-- Auto Wild Qi Cultivate Loop
+task.spawn(function()
+	while true do
+		if _G.autoWildQiCultivate then
+			local char = plr.Character
+			local hrp = char and char:FindFirstChild("HumanoidRootPart")
+			if hrp and char:FindFirstChild("Humanoid") then
+				local targetObj, targetPos = nil, nil
+				local minDist = math.huge
+				for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+					if obj.Name == "WildQi" and obj:IsA("Model") then
+						local pos = obj.PrimaryPart and obj.PrimaryPart.Position or (obj:FindFirstChildWhichIsA("BasePart") and obj:FindFirstChildWhichIsA("BasePart").Position)
+						if pos and not visitedWildQi[tostring(pos)] then
+							local dist = (hrp.Position - pos).Magnitude
+							if dist < minDist then minDist = dist; targetObj = obj; targetPos = pos end
+						end
+					end
+				end
+
+				if targetPos then
+					visitedWildQi[tostring(targetPos)] = true
+					hrp.CFrame = CFrame.new(targetPos + Vector3.new(0, 3, 0))
+					task.wait(1)
+
+					local prompt = targetObj:FindFirstChildWhichIsA("ProximityPrompt", true)
+					if prompt then
+						fireproximityprompt(prompt)
+					else
+						pcall(function()
+							game:GetService("ReplicatedStorage").Remotes.Interact:FireServer(targetObj)
+						end)
+					end
+					task.wait(2)
+
+					local startTime = tick()
+					while tick() - startTime < 15 and _G.autoWildQiCultivate do
+						local enemyFound = false
+						for _, obj in ipairs(workspace:GetChildren()) do
+							if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") and obj.Humanoid.Health > 0 then
+								local dist = (hrp.Position - obj.HumanoidRootPart.Position).Magnitude
+								if dist < 60 then
+									enemyFound = true
+									hrp.CFrame = CFrame.lookAt(obj.HumanoidRootPart.Position + Vector3.new(0, 8.5, 0), obj.HumanoidRootPart.Position)
+									pcall(function()
+										game:GetService("ReplicatedStorage").Remotes.CombatInput:FireServer(obj.HumanoidRootPart)
+									end)
+								end
+							end
+						end
+						if not enemyFound then
+							task.wait(0.5)
+						else
+							task.wait(0.1)
+						end
+					end
+				else
+					visitedWildQi = {}
+					task.wait(2)
+				end
+			end
+		end
+		task.wait(0.5)
+	end
+end)
 
 -- Map Section (Inside Teleport)
 T_Teleport:CreateSection("2x2 Map Teleport")
