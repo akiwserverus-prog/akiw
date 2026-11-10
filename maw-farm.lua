@@ -379,7 +379,7 @@ task.spawn(function()
 				
 				if lockedTarget and lockedTarget:FindFirstChild("HumanoidRootPart")then
 					pcall(function()
-						game:GetService("ReplicatedStorage").Remotes.CombatInput:FireServer()
+						game:GetService("ReplicatedStorage").Remotes.CombatInput:FireServer(lockedTarget.HumanoidRootPart)
 					end)
 					
 					for k,v in pairs(_G.Skills)do
@@ -398,4 +398,4 @@ task.spawn(function()
 	end
 end)
 
-print("[AKIW] Hub v1.2 Loaded - Rayfield UI")
+print("[AKIW] Hub Loaded - Rayfield UI")
