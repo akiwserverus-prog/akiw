@@ -23,6 +23,7 @@ _G.autoMine = false
 _G.autoGather = false
 _G.autoPick = false
 _G.autoCultivate = false
+_G.autoDodge = false
 _G.Skills = {Z=false, X=false, C=false, V=false, ["9"]=false, ["8"]=false, ["7"]=false, ["6"]=false}
 
 -- Data
@@ -45,6 +46,7 @@ T_Combat:CreateDropdown({Name="Mob Target",Options=MobList,CurrentOption={"All M
 local Section2 = T_Combat:CreateSection("Combat")
 T_Combat:CreateToggle({Name="Float Kill Aura (8.5)",CurrentValue=false,Flag="FK",Callback=function(V)_G.fk=V end,})
 T_Combat:CreateToggle({Name="Auto Attack (Punch & Skill)",CurrentValue=false,Flag="AutoAttack",Callback=function(V)_G.autoAttack=V end,})
+T_Combat:CreateToggle({Name="Auto Dodge",CurrentValue=false,Flag="AutoDodge",Callback=function(V)_G.autoDodge=V end,})
 
 local Section3 = T_Combat:CreateSection("Auto Skills Toggle")
 for _, k in ipairs({"Z","X","C","V","9","8","7","6"}) do
@@ -428,6 +430,47 @@ task.spawn(function()
 			lockedTarget=nil
 		end
 		task.wait(0.1)
+	end
+end)
+
+-- Auto Dodge Loop
+task.spawn(function()
+	while true do
+		if _G.autoDodge then
+			local char = plr.Character
+			local hrp = char and char:FindFirstChild("HumanoidRootPart")
+			if hrp and char:FindFirstChild("Humanoid") then
+				local enemies = {}
+				for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+					if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") and obj.Humanoid.Health > 0 then
+						local dist = (hrp.Position - obj.HumanoidRootPart.Position).Magnitude
+						if dist < 50 then
+							table.insert(enemies, obj)
+						end
+					end
+				end
+				
+				for _, enemy in ipairs(enemies) do
+					local enemyHrp = enemy.HumanoidRootPart
+					local dist = (hrp.Position - enemyHrp.Position).Magnitude
+					
+					-- Check if enemy is attacking (distance < 30 or looking at player)
+					local dirToEnemy = (enemyHrp.Position - hrp.Position).Unit
+					local enemyLook = enemyHrp.CFrame.LookVector
+					local facing = math.acos(math.min(1, math.max(-1, dirToEnemy:Dot(enemyLook)))) * (180 / math.pi)
+					
+					if dist < 30 or (facing < 60) then
+						-- Dodge perpendicular to enemy
+						local dodgeDir = (enemyHrp.CFrame.RightVector * (math.random() > 0.5 and 1 or -1)):Unit
+						local dodgePos = hrp.Position + dodgeDir * 25 + Vector3.new(0, 5, 0)
+						
+						hrp.CFrame = CFrame.new(dodgePos)
+						task.wait(0.3)
+					end
+				end
+			end
+		end
+		task.wait(0.05)
 	end
 end)
 
