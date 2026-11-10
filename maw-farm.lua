@@ -1,6 +1,6 @@
--- AKIW HUB v1.6 (Full Restoration)
+-- AKIW HUB v1.7 (Float Kill Fixed)
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
-local W = Rayfield:CreateWindow({Name="AKIW HUB v1.6",KeySystem=false,ConfigurationSaving={Enabled=false}})
+local W = Rayfield:CreateWindow({Name="AKIW HUB v1.7",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
 local T_Combat = W:CreateTab("Combat", nil)
 local T_Teleport = W:CreateTab("Teleport & Map", nil)
@@ -265,4 +265,4 @@ task.spawn(function()
 	end
 end)
 
-print("[AKIW v1.6] Script loaded successfully!")
+print("[AKIW v1.7] Script loaded successfully!")
