@@ -1,6 +1,6 @@
--- AKIW HUB v2.5 (Float Kill Optimized)
+-- AKIW HUB v2.6 (Float Kill Cache)
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
-local W = Rayfield:CreateWindow({Name="AKIW HUB v2.5",KeySystem=false,ConfigurationSaving={Enabled=false}})
+local W = Rayfield:CreateWindow({Name="AKIW HUB v2.6",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
 local T_Combat = W:CreateTab("Combat", nil)
 local T_Teleport = W:CreateTab("Teleport & Map", nil)
@@ -187,9 +187,10 @@ task.spawn(function()
 	end
 end)
 
--- Float Kill Loop (Optimized Target Lock)
+-- Float Kill Loop (Cache-Based)
 task.spawn(function()
-	local lastTarget = nil
+	local enemyCache = {}
+	local cacheTime = 0
 	while true do
 		if _G.fk then
 			local plr = game:GetService("Players").LocalPlayer
@@ -202,38 +203,32 @@ task.spawn(function()
 				hum.AutoRotate = false
 				hrp.AssemblyLinearVelocity = Vector3.zero
 				hrp.AssemblyAngularVelocity = Vector3.zero
-				hrp.Velocity = Vector3.zero
 
-				local target = nil
-				local targetName = (_G.SelectedBoss ~= "All Bosses" and _G.SelectedBoss) or (_G.SelectedMob ~= "All Mobs" and _G.SelectedMob)
-
-				-- Search for selected target
-				if targetName then
+				-- Rebuild cache every 1 second
+				if os.clock() - cacheTime > 1 then
+					cacheTime = os.clock()
+					enemyCache = {}
 					for _, obj in ipairs(workspace:GetChildren()) do
-						if obj:IsA("Model") and obj.Name == targetName and obj:FindFirstChild("Humanoid") and obj.Humanoid.Health > 0 and obj:FindFirstChild("HumanoidRootPart") then
-							target = obj
-							break
-						end
-					end
-				end
-
-				-- Fallback to nearest if no target found or "All..." selected
-				if not target then
-					local minDist = 9999
-					for _, obj in ipairs(workspace:GetChildren()) do
-						if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj.Humanoid.Health > 0 and obj:FindFirstChild("HumanoidRootPart") then
-							local dist = (hrp.Position - obj.HumanoidRootPart.Position).Magnitude
-							if dist < minDist and dist < 300 then
-								minDist = dist
-								target = obj
+						if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
+							if obj.Humanoid.Health > 0 then
+								enemyCache[obj.Name] = obj
 							end
 						end
 					end
 				end
 
+				local target = nil
+				local targetName = (_G.SelectedBoss ~= "All Bosses" and _G.SelectedBoss) or (_G.SelectedMob ~= "All Mobs" and _G.SelectedMob)
+
+				-- Use exact name from cache
+				if targetName and enemyCache[targetName] then
+					target = enemyCache[targetName]
+				end
+
 				if target and target:FindFirstChild("HumanoidRootPart") then
 					local tHrp = target.HumanoidRootPart
 					hrp.CFrame = CFrame.new(tHrp.Position + Vector3.new(0, 8.5, 0), tHrp.Position)
+					hrp.AssemblyLinearVelocity = Vector3.zero
 				end
 			end
 		else
@@ -245,7 +240,7 @@ task.spawn(function()
 				hum.AutoRotate = true
 			end
 		end
-		task.wait(0.1) -- Slowed down to reduce lag
+		task.wait(0.15)
 	end
 end)
 
@@ -269,4 +264,4 @@ task.spawn(function()
 	end
 end)
 
-print("[AKIW v2.5] Script loaded successfully!")
+print("[AKIW v2.6] Script loaded successfully!")
