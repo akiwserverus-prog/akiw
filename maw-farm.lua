@@ -1,6 +1,6 @@
--- AKIW HUB v2.0 (Float Kill Simplified)
+-- AKIW HUB v2.1 (Float Kill Simplified)
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
-local W = Rayfield:CreateWindow({Name="AKIW HUB v2.0",KeySystem=false,ConfigurationSaving={Enabled=false}})
+local W = Rayfield:CreateWindow({Name="AKIW HUB v2.1",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
 local T_Combat = W:CreateTab("Combat", nil)
 local T_Teleport = W:CreateTab("Teleport & Map", nil)
@@ -252,4 +252,4 @@ task.spawn(function()
 	end
 end)
 
-print("[AKIW v2.0] Script loaded successfully!")
+print("[AKIW v2.1] Script loaded successfully!")
