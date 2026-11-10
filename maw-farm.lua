@@ -1,5 +1,9 @@
 -- AKIW HUB v1.2 (Wild Qi Physics Lock Fix)
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
+if not Rayfield then
+	warn("[AKIW] Failed to load Rayfield UI library. Check network connection.")
+	return
+end
 local W = Rayfield:CreateWindow({Name="AKIW HUB v1.2",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
 local T_Combat = W:CreateTab("⚔️ Combat", 4483362458)
