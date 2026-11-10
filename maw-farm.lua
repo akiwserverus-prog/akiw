@@ -187,30 +187,61 @@ task.spawn(function()
 	end
 end)
 
--- Float Kill Loop (Optimized)
+-- Float Kill Loop (Working)
 task.spawn(function()
 	while true do
 		if _G.fk then
 			local char = plr.Character
 			local hrp = char and char:FindFirstChild("HumanoidRootPart")
-			if hrp then
+			local hum = char and char:FindFirstChild("Humanoid")
+			
+			if hrp and hum then
+				hum.PlatformStand = true
+				hrp.AssemblyLinearVelocity = Vector3.zero
+				hrp.AssemblyAngularVelocity = Vector3.zero
+				
 				local target = nil
-				-- Cari target di workspace
-				for _, obj in pairs(workspace:GetChildren()) do
-					if obj:IsA("Model") and (obj.Name == _G.SelectedBoss or obj.Name == _G.SelectedMob) and obj:FindFirstChild("HumanoidRootPart") then
-						target = obj
-						break
+				local minDist = math.huge
+				
+				for _, obj in ipairs(workspace:GetDescendants()) do
+					if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
+						local h = obj.Humanoid
+						local tHrp = obj.HumanoidRootPart
+						if h and h.Health > 0 and tHrp then
+							local match = (_G.SelectedBoss == "All Bosses" or string.lower(obj.Name):find(string.lower(_G.SelectedBoss)) ~= nil) or (_G.SelectedMob == "All Mobs" or string.lower(obj.Name):find(string.lower(_G.SelectedMob)) ~= nil)
+							if match then
+								local d = (hrp.Position - tHrp.Position).Magnitude
+								if d < minDist and d < 100 then
+									minDist = d
+									target = obj
+								end
+							end
+						end
 					end
 				end
 				
 				if target then
-					-- Float di atas target, hadap bawah
-					hrp.CFrame = target.HumanoidRootPart.CFrame + Vector3.new(0, 10, 0)
-					hrp.CFrame = CFrame.lookAt(hrp.Position, target.HumanoidRootPart.Position)
+					local tHrp = target:FindFirstChild("HumanoidRootPart")
+					local floatPos = tHrp.Position + Vector3.new(0, 8.5, 0)
+					hrp.CFrame = CFrame.lookAt(floatPos, tHrp.Position)
+					
+					pcall(function()
+						local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
+						if remotes and remotes:FindFirstChild("CombatInput") then
+							remotes.CombatInput:FireServer()
+							remotes.CombatInput:FireServer()
+							remotes.CombatInput:FireServer()
+						end
+					end)
 				end
 			end
+		else
+			local char = plr.Character
+			local hum = char and char:FindFirstChild("Humanoid")
+			if hum then hum.PlatformStand = false end
+			task.wait(1)
 		end
-		task.wait(0.2)
+		task.wait(0.03)
 	end
 end)
 
