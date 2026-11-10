@@ -1,13 +1,11 @@
 -- AKIW HUB v1.2 (Wild Qi Physics Lock Fix)
--- Load Rayfield directly
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
+local W = Rayfield:CreateWindow({Name="MAW Auto Farm",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
-local W = Rayfield:CreateWindow({Name="AKIW HUB v1.2",KeySystem=false,ConfigurationSaving={Enabled=false}})
-
-local T_Combat = W:CreateTab("Combat", 4483362458)
-local T_Teleport = W:CreateTab("Teleport & Map", 4483362458)
-local T_Farm = W:CreateTab("Farm", 4483362458)
-local T_WildQi = W:CreateTab("Wild Qi", 4483362458)
+local T_Combat = W:CreateTab("Combat")
+local T_Teleport = W:CreateTab("Teleport")
+local T_Farm = W:CreateTab("Farm")
+local T_WildQi = W:CreateTab("Wild Qi")
 
 -- Global Variables
 _G.SelectedBoss = "All Bosses"
