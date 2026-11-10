@@ -196,7 +196,11 @@ task.spawn(function()
 			if hrp then
 				for _, obj in ipairs(workspace:GetDescendants()) do
 					if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
-						if obj.Humanoid.Health > 0 then
+						local match = false
+						if _G.SelectedBoss == "All Bosses" or obj.Name == _G.SelectedBoss then match = true end
+						if _G.SelectedMob == "All Mobs" or obj.Name == _G.SelectedMob then match = true end
+						
+						if match and obj.Humanoid.Health > 0 then
 							local objHrp = obj.HumanoidRootPart
 							local dist = (hrp.Position - objHrp.Position).Magnitude
 							if dist < 15 then
