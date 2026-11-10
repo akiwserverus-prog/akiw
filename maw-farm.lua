@@ -1,6 +1,6 @@
--- AKIW HUB v1.9 (Float Kill Movement Fix)
+-- AKIW HUB v2.0 (Float Kill Simplified)
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
-local W = Rayfield:CreateWindow({Name="AKIW HUB v1.9",KeySystem=false,ConfigurationSaving={Enabled=false}})
+local W = Rayfield:CreateWindow({Name="AKIW HUB v2.0",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
 local T_Combat = W:CreateTab("Combat", nil)
 local T_Teleport = W:CreateTab("Teleport & Map", nil)
@@ -195,7 +195,6 @@ task.spawn(function()
 			local char = plr.Character
 			local hrp = char and char:FindFirstChild("HumanoidRootPart")
 			local hum = char and char:FindFirstChild("Humanoid")
-			local ws = game:GetService("Workspace")
 
 			if hrp and hum then
 				hum.PlatformStand = true
@@ -205,41 +204,22 @@ task.spawn(function()
 				local target = nil
 				local minDist = math.huge
 				
-				local targetName = ""
-				if _G.SelectedBoss ~= "All Bosses" then targetName = _G.SelectedBoss
-				elseif _G.SelectedMob ~= "All Mobs" then targetName = _G.SelectedMob end
-
-				for _, obj in ipairs(ws:GetDescendants()) do
+				-- Get list of all enemies
+				for _, obj in ipairs(workspace:GetDescendants()) do
 					if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
-						local h = obj.Humanoid
-						local tHrp = obj.HumanoidRootPart
-						if h and h.Health > 0 and tHrp then
-							local match = true
-							if targetName ~= "" then
-								match = string.lower(obj.Name):find(string.lower(targetName)) ~= nil
-							end
-							if match then
-								local d = (hrp.Position - tHrp.Position).Magnitude
-								if d < minDist and d < 500 then -- Increased distance check
-									minDist = d
-									target = obj
-								end
+						if obj.Humanoid.Health > 0 then
+							local d = (hrp.Position - obj.HumanoidRootPart.Position).Magnitude
+							if d < minDist and d < 500 then
+								minDist = d
+								target = obj
 							end
 						end
 					end
 				end
 
-				if target then
-					local tHrp = target:FindFirstChild("HumanoidRootPart")
-					local floatPos = tHrp.Position + Vector3.new(0, 8.5, 0)
-					hrp.CFrame = CFrame.new(floatPos) -- Removed lookAt to be safer
-
-					pcall(function()
-						local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-						if remotes and remotes:FindFirstChild("CombatInput") then
-							remotes.CombatInput:FireServer(tHrp) -- Pass target
-						end
-					end)
+				if target and target:FindFirstChild("HumanoidRootPart") then
+					local tHrp = target.HumanoidRootPart
+					hrp.CFrame = CFrame.new(tHrp.Position + Vector3.new(0, 8.5, 0), tHrp.Position)
 				end
 			end
 		else
@@ -247,9 +227,8 @@ task.spawn(function()
 			local char = plr.Character
 			local hum = char and char:FindFirstChild("Humanoid")
 			if hum then hum.PlatformStand = false end
-			task.wait(1)
 		end
-		task.wait(0.03)
+		task.wait(0.05)
 	end
 end)
 
@@ -273,4 +252,4 @@ task.spawn(function()
 	end
 end)
 
-print("[AKIW v1.9] Script loaded successfully!")
+print("[AKIW v2.0] Script loaded successfully!")
