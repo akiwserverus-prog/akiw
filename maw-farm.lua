@@ -1,6 +1,6 @@
--- AKIW HUB v2.3 (Float Kill Target Lock)
+-- AKIW HUB v2.4 (Float Kill Optimized)
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
-local W = Rayfield:CreateWindow({Name="AKIW HUB v2.3",KeySystem=false,ConfigurationSaving={Enabled=false}})
+local W = Rayfield:CreateWindow({Name="AKIW HUB v2.4",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
 local T_Combat = W:CreateTab("Combat", nil)
 local T_Teleport = W:CreateTab("Teleport & Map", nil)
@@ -187,9 +187,10 @@ task.spawn(function()
 	end
 end)
 
--- Float Kill Loop (Target Lock & No Fall)
+-- Float Kill Loop (Fixed)
 task.spawn(function()
 	local lockedTarget = nil
+	local refreshTarget = 0
 	while true do
 		if _G.fk then
 			local plr = game:GetService("Players").LocalPlayer
@@ -200,28 +201,32 @@ task.spawn(function()
 			if hrp and hum then
 				hum.PlatformStand = true
 				hum.AutoRotate = false
+
+				-- Anti-gravity: set velocity zero and maintain position
 				hrp.AssemblyLinearVelocity = Vector3.zero
 				hrp.AssemblyAngularVelocity = Vector3.zero
+				hrp.Velocity = Vector3.zero
 
-				-- Find target based on dropdown selection
-				if not lockedTarget or not lockedTarget.Parent or (lockedTarget:FindFirstChild("Humanoid") and lockedTarget.Humanoid.Health <= 0) then
+				-- Refresh target every 0.5 seconds only
+				local now = os.clock()
+				if now - refreshTarget > 0.5 then
+					refreshTarget = now
 					lockedTarget = nil
+					
 					local bossName = _G.SelectedBoss
 					local mobName = _G.SelectedMob
 					
-					if bossName ~= "All Bosses" then
+					-- Search exact name from selection
+					local searchName = bossName
+					if bossName == "All Bosses" then searchName = mobName end
+					
+					if searchName ~= "All Bosses" and searchName ~= "All Mobs" then
+						-- Exact match
 						for _, obj in ipairs(workspace:GetChildren()) do
-							if obj:IsA("Model") and obj.Name == bossName and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
-								if obj.Humanoid.Health > 0 then
-									lockedTarget = obj
-									break
-								end
-							end
-						end
-					elseif mobName ~= "All Mobs" then
-						for _, obj in ipairs(workspace:GetChildren()) do
-							if obj:IsA("Model") and obj.Name == mobName and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
-								if obj.Humanoid.Health > 0 then
+							if obj:IsA("Model") and obj.Name == searchName then
+								local objHrp = obj:FindFirstChild("HumanoidRootPart")
+								local objHum = obj:FindFirstChild("Humanoid")
+								if objHrp and objHum and objHum.Health > 0 then
 									lockedTarget = obj
 									break
 								end
@@ -230,16 +235,31 @@ task.spawn(function()
 					end
 				end
 
-				if lockedTarget and lockedTarget:FindFirstChild("HumanoidRootPart") then
-					local tHrp = lockedTarget.HumanoidRootPart
-					-- Stay exactly above target, facing downward, no movement
-					local targetPos = tHrp.Position + Vector3.new(0, 8.5, 0)
-					hrp.CFrame = CFrame.new(targetPos, targetPos - Vector3.new(0, 10, 0))
-					
-					-- Force zero velocity every frame to prevent fall
-					hrp.AssemblyLinearVelocity = Vector3.zero
-					hrp.AssemblyAngularVelocity = Vector3.zero
-					hrp.Velocity = Vector3.zero
+				-- If no target found from selection, use nearest
+				if not lockedTarget then
+					local minDist = 99999
+					for _, obj in ipairs(workspace:GetChildren()) do
+						if obj:IsA("Model") and obj ~= char then
+							local objHrp = obj:FindFirstChild("HumanoidRootPart")
+							local objHum = obj:FindFirstChild("Humanoid")
+							if objHrp and objHum and objHum.Health > 0 then
+								local d = (hrp.Position - objHrp.Position).Magnitude
+								if d < minDist and d < 300 then
+									minDist = d
+									lockedTarget = obj
+								end
+							end
+						end
+					end
+				end
+
+				if lockedTarget then
+					local tHrp = lockedTarget:FindFirstChild("HumanoidRootPart")
+					if tHrp then
+						hrp.CFrame = CFrame.new(tHrp.Position + Vector3.new(0, 8.5, 0), tHrp.Position)
+						hrp.AssemblyLinearVelocity = Vector3.zero
+						hrp.Velocity = Vector3.zero
+					end
 				end
 			end
 		else
@@ -252,7 +272,7 @@ task.spawn(function()
 			end
 			lockedTarget = nil
 		end
-		task.wait(0.03)
+		task.wait(0.08)
 	end
 end)
 
@@ -276,4 +296,4 @@ task.spawn(function()
 	end
 end)
 
-print("[AKIW v2.3] Script loaded successfully!")
+print("[AKIW v2.4] Script loaded successfully!")
