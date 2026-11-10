@@ -1,6 +1,6 @@
--- AKIW HUB v1.8 (Float Kill Exact Fix)
+-- AKIW HUB v1.9 (Float Kill Movement Fix)
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
-local W = Rayfield:CreateWindow({Name="AKIW HUB v1.8",KeySystem=false,ConfigurationSaving={Enabled=false}})
+local W = Rayfield:CreateWindow({Name="AKIW HUB v1.9",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
 local T_Combat = W:CreateTab("Combat", nil)
 local T_Teleport = W:CreateTab("Teleport & Map", nil)
@@ -205,13 +205,9 @@ task.spawn(function()
 				local target = nil
 				local minDist = math.huge
 				
-				-- Build target name from selected boss/mob
 				local targetName = ""
-				if _G.SelectedBoss ~= "All Bosses" then
-					targetName = _G.SelectedBoss
-				elseif _G.SelectedMob ~= "All Mobs" then
-					targetName = _G.SelectedMob
-				end
+				if _G.SelectedBoss ~= "All Bosses" then targetName = _G.SelectedBoss
+				elseif _G.SelectedMob ~= "All Mobs" then targetName = _G.SelectedMob end
 
 				for _, obj in ipairs(ws:GetDescendants()) do
 					if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
@@ -224,7 +220,7 @@ task.spawn(function()
 							end
 							if match then
 								local d = (hrp.Position - tHrp.Position).Magnitude
-								if d < minDist and d < 100 then
+								if d < minDist and d < 500 then -- Increased distance check
 									minDist = d
 									target = obj
 								end
@@ -236,20 +232,18 @@ task.spawn(function()
 				if target then
 					local tHrp = target:FindFirstChild("HumanoidRootPart")
 					local floatPos = tHrp.Position + Vector3.new(0, 8.5, 0)
-					hrp.CFrame = CFrame.lookAt(floatPos, tHrp.Position)
+					hrp.CFrame = CFrame.new(floatPos) -- Removed lookAt to be safer
 
 					pcall(function()
 						local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
 						if remotes and remotes:FindFirstChild("CombatInput") then
-							remotes.CombatInput:FireServer()
-							remotes.CombatInput:FireServer()
-							remotes.CombatInput:FireServer()
+							remotes.CombatInput:FireServer(tHrp) -- Pass target
 						end
 					end)
 				end
 			end
 		else
-			local plr = game.GetService("Players").LocalPlayer
+			local plr = game:GetService("Players").LocalPlayer
 			local char = plr.Character
 			local hum = char and char:FindFirstChild("Humanoid")
 			if hum then hum.PlatformStand = false end
@@ -279,4 +273,4 @@ task.spawn(function()
 	end
 end)
 
-print("[AKIW v1.8] Script loaded successfully!")
+print("[AKIW v1.9] Script loaded successfully!")
