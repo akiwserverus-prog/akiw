@@ -187,29 +187,30 @@ task.spawn(function()
 	end
 end)
 
--- Float Kill Loop
+-- Float Kill Loop (Optimized)
 task.spawn(function()
 	while true do
 		if _G.fk then
 			local char = plr.Character
 			local hrp = char and char:FindFirstChild("HumanoidRootPart")
 			if hrp then
-				for _, obj in pairs(workspace:GetDescendants()) do
-					if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
-						if obj.Humanoid.Health > 0 then
-							local match = (_G.SelectedBoss == "All Bosses" or obj.Name == _G.SelectedBoss) or (_G.SelectedMob == "All Mobs" or obj.Name == _G.SelectedMob)
-							if match then
-								local objHrp = obj.HumanoidRootPart
-								if (hrp.Position - objHrp.Position).Magnitude < 25 then
-									objHrp.CFrame = hrp.CFrame + (hrp.CFrame.LookVector * 8.5)
-								end
-							end
-						end
+				local target = nil
+				-- Cari target di workspace
+				for _, obj in pairs(workspace:GetChildren()) do
+					if obj:IsA("Model") and (obj.Name == _G.SelectedBoss or obj.Name == _G.SelectedMob) and obj:FindFirstChild("HumanoidRootPart") then
+						target = obj
+						break
 					end
+				end
+				
+				if target then
+					-- Float di atas target, hadap bawah
+					hrp.CFrame = target.HumanoidRootPart.CFrame + Vector3.new(0, 10, 0)
+					hrp.CFrame = CFrame.lookAt(hrp.Position, target.HumanoidRootPart.Position)
 				end
 			end
 		end
-		task.wait(0.1)
+		task.wait(0.2)
 	end
 end)
 
