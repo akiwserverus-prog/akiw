@@ -1,6 +1,6 @@
--- AKIW HUB v2.4 (Float Kill Optimized)
+-- AKIW HUB v2.5 (Float Kill Optimized)
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
-local W = Rayfield:CreateWindow({Name="AKIW HUB v2.4",KeySystem=false,ConfigurationSaving={Enabled=false}})
+local W = Rayfield:CreateWindow({Name="AKIW HUB v2.5",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
 local T_Combat = W:CreateTab("Combat", nil)
 local T_Teleport = W:CreateTab("Teleport & Map", nil)
@@ -187,10 +187,9 @@ task.spawn(function()
 	end
 end)
 
--- Float Kill Loop (Fixed)
+-- Float Kill Loop (Optimized Target Lock)
 task.spawn(function()
-	local lockedTarget = nil
-	local refreshTarget = 0
+	local lastTarget = nil
 	while true do
 		if _G.fk then
 			local plr = game:GetService("Players").LocalPlayer
@@ -201,65 +200,40 @@ task.spawn(function()
 			if hrp and hum then
 				hum.PlatformStand = true
 				hum.AutoRotate = false
-
-				-- Anti-gravity: set velocity zero and maintain position
 				hrp.AssemblyLinearVelocity = Vector3.zero
 				hrp.AssemblyAngularVelocity = Vector3.zero
 				hrp.Velocity = Vector3.zero
 
-				-- Refresh target every 0.5 seconds only
-				local now = os.clock()
-				if now - refreshTarget > 0.5 then
-					refreshTarget = now
-					lockedTarget = nil
-					
-					local bossName = _G.SelectedBoss
-					local mobName = _G.SelectedMob
-					
-					-- Search exact name from selection
-					local searchName = bossName
-					if bossName == "All Bosses" then searchName = mobName end
-					
-					if searchName ~= "All Bosses" and searchName ~= "All Mobs" then
-						-- Exact match
-						for _, obj in ipairs(workspace:GetChildren()) do
-							if obj:IsA("Model") and obj.Name == searchName then
-								local objHrp = obj:FindFirstChild("HumanoidRootPart")
-								local objHum = obj:FindFirstChild("Humanoid")
-								if objHrp and objHum and objHum.Health > 0 then
-									lockedTarget = obj
-									break
-								end
-							end
-						end
-					end
-				end
+				local target = nil
+				local targetName = (_G.SelectedBoss ~= "All Bosses" and _G.SelectedBoss) or (_G.SelectedMob ~= "All Mobs" and _G.SelectedMob)
 
-				-- If no target found from selection, use nearest
-				if not lockedTarget then
-					local minDist = 99999
+				-- Search for selected target
+				if targetName then
 					for _, obj in ipairs(workspace:GetChildren()) do
-						if obj:IsA("Model") and obj ~= char then
-							local objHrp = obj:FindFirstChild("HumanoidRootPart")
-							local objHum = obj:FindFirstChild("Humanoid")
-							if objHrp and objHum and objHum.Health > 0 then
-								local d = (hrp.Position - objHrp.Position).Magnitude
-								if d < minDist and d < 300 then
-									minDist = d
-									lockedTarget = obj
-								end
+						if obj:IsA("Model") and obj.Name == targetName and obj:FindFirstChild("Humanoid") and obj.Humanoid.Health > 0 and obj:FindFirstChild("HumanoidRootPart") then
+							target = obj
+							break
+						end
+					end
+				end
+
+				-- Fallback to nearest if no target found or "All..." selected
+				if not target then
+					local minDist = 9999
+					for _, obj in ipairs(workspace:GetChildren()) do
+						if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj.Humanoid.Health > 0 and obj:FindFirstChild("HumanoidRootPart") then
+							local dist = (hrp.Position - obj.HumanoidRootPart.Position).Magnitude
+							if dist < minDist and dist < 300 then
+								minDist = dist
+								target = obj
 							end
 						end
 					end
 				end
 
-				if lockedTarget then
-					local tHrp = lockedTarget:FindFirstChild("HumanoidRootPart")
-					if tHrp then
-						hrp.CFrame = CFrame.new(tHrp.Position + Vector3.new(0, 8.5, 0), tHrp.Position)
-						hrp.AssemblyLinearVelocity = Vector3.zero
-						hrp.Velocity = Vector3.zero
-					end
+				if target and target:FindFirstChild("HumanoidRootPart") then
+					local tHrp = target.HumanoidRootPart
+					hrp.CFrame = CFrame.new(tHrp.Position + Vector3.new(0, 8.5, 0), tHrp.Position)
 				end
 			end
 		else
@@ -270,9 +244,8 @@ task.spawn(function()
 				hum.PlatformStand = false 
 				hum.AutoRotate = true
 			end
-			lockedTarget = nil
 		end
-		task.wait(0.08)
+		task.wait(0.1) -- Slowed down to reduce lag
 	end
 end)
 
@@ -296,4 +269,4 @@ task.spawn(function()
 	end
 end)
 
-print("[AKIW v2.4] Script loaded successfully!")
+print("[AKIW v2.5] Script loaded successfully!")
