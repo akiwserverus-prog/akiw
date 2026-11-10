@@ -26,10 +26,10 @@ end
 
 local W = Rayfield:CreateWindow({Name="AKIW HUB v1.2",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
-local T_Combat = W:CreateTab("⚔️ Combat", 4483362458)
-local T_Teleport = W:CreateTab("📍 Teleport & Map", 4483362458)
-local T_Farm = W:CreateTab("🚜 Farm", 4483362458)
-local T_WildQi = W:CreateTab("🌌 Wild Qi", 4483362458)
+local T_Combat = W:CreateTab("Combat", 4483362458)
+local T_Teleport = W:CreateTab("Teleport & Map", 4483362458)
+local T_Farm = W:CreateTab("Farm", 4483362458)
+local T_WildQi = W:CreateTab("Wild Qi", 4483362458)
 
 -- Global Variables
 _G.SelectedBoss = "All Bosses"
