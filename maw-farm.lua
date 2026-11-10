@@ -1,35 +1,6 @@
 -- AKIW HUB v1.2 (Wild Qi Physics Lock Fix)
--- Rayfield UI with Delta fallback to minimal
-local Rayfield = nil
-local function safeLoad(url)
-    local success, result = pcall(function()
-        return game:HttpGet(url)
-    end)
-    if success and result then
-        local loadSuccess, loadResult = pcall(loadstring, result)
-        if loadSuccess and type(loadResult) == "function" then
-            local uiSuccess, ui = pcall(loadResult)
-            if uiSuccess then return ui end
-        end
-    end
-    return nil
-end
-
-Rayfield = safeLoad("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua") or safeLoad("https://sirius.menu/rayfield")
-
-if not Rayfield then
-	warn("[AKIW] Rayfield failed. Loading minimal version...")
-	local minSuccess, minResult = pcall(function()
-		return game:HttpGet("https://raw.githubusercontent.com/akiwserverus-prog/akiw/main/maw-farm-minimal.lua")
-	end)
-	if minSuccess and minResult then
-		local loadSuccess, loadFunc = pcall(loadstring, minResult)
-		if loadSuccess and type(loadFunc) == "function" then
-			loadFunc()
-		end
-	end
-	return
-end
+-- Load Rayfield directly
+local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
 
 local W = Rayfield:CreateWindow({Name="AKIW HUB v1.2",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
