@@ -378,14 +378,40 @@ task.spawn(function()
 				end
 				
 				if lockedTarget and lockedTarget:FindFirstChild("HumanoidRootPart")then
-					-- Mouse click untuk trigger attack
+					-- Equip tool if not holding one
+					if not char:FindFirstChildOfClass("Tool") then
+						local tool = plr.Backpack:FindFirstChildOfClass("Tool")
+						if tool then
+							char.Humanoid:EquipTool(tool)
+						end
+					end
+					
+					-- Activate equipped tool
+					local currentTool = char:FindFirstChildOfClass("Tool")
+					if currentTool then
+						pcall(function() currentTool:Activate() end)
+					end
+					
+					-- Mouse click simulation
 					VIM:SendMouseButtonEvent(0,0,0,true,game,0)
 					task.wait(0.02)
 					VIM:SendMouseButtonEvent(0,0,0,false,game,0)
 					
-					-- Remote call
+					-- Try multiple combat remotes
 					pcall(function()
-						game:GetService("ReplicatedStorage").Remotes.CombatInput:FireServer(lockedTarget.HumanoidRootPart)
+						local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
+						if remotes then
+							if remotes:FindFirstChild("CombatInput") then
+								remotes.CombatInput:FireServer(lockedTarget.HumanoidRootPart)
+								remotes.CombatInput:FireServer()
+							end
+							if remotes:FindFirstChild("Attack") then
+								remotes.Attack:FireServer(lockedTarget.HumanoidRootPart)
+							end
+							if remotes:FindFirstChild("LightAttack") then
+								remotes.LightAttack:FireServer()
+							end
+						end
 					end)
 					
 					-- Skills
