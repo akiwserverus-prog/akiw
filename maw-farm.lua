@@ -1,4 +1,4 @@
--- AKIW HUB v1.2 (Wild Qi Physics Lock Fix)
+-- AKIW HUB v3.312 (Wild Qi Physics Lock Fix)
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
 local W = Rayfield:CreateWindow({Name="AKIW HUB v2.7",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
