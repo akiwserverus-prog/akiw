@@ -187,7 +187,7 @@ task.spawn(function()
 	end
 end)
 
--- Float Kill Loop
+-- Float Kill Loop (Low Lag)
 task.spawn(function()
 	while true do
 		if _G.fk then
@@ -203,9 +203,9 @@ task.spawn(function()
 
 				local target = nil
 				local minDist = math.huge
-				
-				-- Get list of all enemies
-				for _, obj in ipairs(workspace:GetDescendants()) do
+
+				-- Only check direct workspace children (low lag)
+				for _, obj in ipairs(workspace:GetChildren()) do
 					if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
 						if obj.Humanoid.Health > 0 then
 							local d = (hrp.Position - obj.HumanoidRootPart.Position).Magnitude
