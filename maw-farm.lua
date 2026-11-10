@@ -1,6 +1,6 @@
--- AKIW HUB v1.5 Full (400+ Lines Restored)
+-- AKIW HUB v1.6 (Full Restoration)
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
-local W = Rayfield:CreateWindow({Name="AKIW HUB v1.5",KeySystem=false,ConfigurationSaving={Enabled=false}})
+local W = Rayfield:CreateWindow({Name="AKIW HUB v1.6",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
 local T_Combat = W:CreateTab("Combat", nil)
 local T_Teleport = W:CreateTab("Teleport & Map", nil)
@@ -234,4 +234,4 @@ task.spawn(function()
 	end
 end)
 
-print("[AKIW] Script loaded successfully!")
+print("[AKIW v1.6] Script loaded successfully!")
