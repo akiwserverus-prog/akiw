@@ -1,6 +1,6 @@
--- AKIW HUB v2.1 (Float Kill Simplified)
+-- AKIW HUB v2.2 (Float Kill Target Lock)
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
-local W = Rayfield:CreateWindow({Name="AKIW HUB v2.1",KeySystem=false,ConfigurationSaving={Enabled=false}})
+local W = Rayfield:CreateWindow({Name="AKIW HUB v2.2",KeySystem=false,ConfigurationSaving={Enabled=false}})
 
 local T_Combat = W:CreateTab("Combat", nil)
 local T_Teleport = W:CreateTab("Teleport & Map", nil)
@@ -187,8 +187,9 @@ task.spawn(function()
 	end
 end)
 
--- Float Kill Loop (Low Lag)
+-- Float Kill Loop (Fixed Target & No Fall)
 task.spawn(function()
+	local lockedTarget = nil
 	while true do
 		if _G.fk then
 			local plr = game:GetService("Players").LocalPlayer
@@ -201,25 +202,28 @@ task.spawn(function()
 				hrp.AssemblyLinearVelocity = Vector3.zero
 				hrp.AssemblyAngularVelocity = Vector3.zero
 
-				local target = nil
-				local minDist = math.huge
-
-				-- Only check direct workspace children (low lag)
-				for _, obj in ipairs(workspace:GetChildren()) do
-					if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
-						if obj.Humanoid.Health > 0 then
-							local d = (hrp.Position - obj.HumanoidRootPart.Position).Magnitude
-							if d < minDist and d < 500 then
-								minDist = d
-								target = obj
+				-- Find target based on selection
+				if not lockedTarget or not lockedTarget.Parent or lockedTarget:FindFirstChild("Humanoid").Health <= 0 then
+					lockedTarget = nil
+					local targetName = _G.SelectedBoss ~= "All Bosses" and _G.SelectedBoss or (_G.SelectedMob ~= "All Mobs" and _G.SelectedMob or nil)
+					
+					if targetName then
+						for _, obj in ipairs(workspace:GetChildren()) do
+							if obj:IsA("Model") and obj.Name == targetName and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
+								if obj.Humanoid.Health > 0 then
+									lockedTarget = obj
+									break
+								end
 							end
 						end
 					end
 				end
 
-				if target and target:FindFirstChild("HumanoidRootPart") then
-					local tHrp = target.HumanoidRootPart
+				if lockedTarget and lockedTarget:FindFirstChild("HumanoidRootPart") then
+					local tHrp = lockedTarget.HumanoidRootPart
 					hrp.CFrame = CFrame.new(tHrp.Position + Vector3.new(0, 8.5, 0), tHrp.Position)
+					hrp.AssemblyLinearVelocity = Vector3.zero
+					hrp.AssemblyAngularVelocity = Vector3.zero
 				end
 			end
 		else
@@ -227,8 +231,9 @@ task.spawn(function()
 			local char = plr.Character
 			local hum = char and char:FindFirstChild("Humanoid")
 			if hum then hum.PlatformStand = false end
+			lockedTarget = nil
 		end
-		task.wait(0.05)
+		task.wait(0.1)
 	end
 end)
 
@@ -252,4 +257,4 @@ task.spawn(function()
 	end
 end)
 
-print("[AKIW v2.1] Script loaded successfully!")
+print("[AKIW v2.2] Script loaded successfully!")
