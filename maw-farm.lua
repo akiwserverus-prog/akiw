@@ -378,10 +378,17 @@ task.spawn(function()
 				end
 				
 				if lockedTarget and lockedTarget:FindFirstChild("HumanoidRootPart")then
+					-- Mouse click untuk trigger attack
+					VIM:SendMouseButtonEvent(0,0,0,true,game,0)
+					task.wait(0.02)
+					VIM:SendMouseButtonEvent(0,0,0,false,game,0)
+					
+					-- Remote call
 					pcall(function()
 						game:GetService("ReplicatedStorage").Remotes.CombatInput:FireServer(lockedTarget.HumanoidRootPart)
 					end)
 					
+					-- Skills
 					for k,v in pairs(_G.Skills)do
 						if v then
 							VIM:SendKeyEvent(true,Enum.KeyCode[k],false,game)
