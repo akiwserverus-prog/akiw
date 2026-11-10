@@ -1,14 +1,22 @@
 -- AKIW HUB v1.2 (Wild Qi Physics Lock Fix)
 local Rayfield = nil
-local success, err = pcall(function()
-	Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
+local ok, res = pcall(function()
+	return loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))
 end)
 
-if not success or not Rayfield then
-	-- Fallback URL
-	pcall(function()
-		Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+if ok and typeof(res) == "function" then
+	local ok2, ui = pcall(res)
+	if ok2 then Rayfield = ui end
+end
+
+if not Rayfield then
+	local ok3, res2 = pcall(function()
+		return loadstring(game:HttpGet("https://sirius.menu/rayfield"))
 	end)
+	if ok3 and typeof(res2) == "function" then
+		local ok4, ui2 = pcall(res2)
+		if ok4 then Rayfield = ui2 end
+	end
 end
 
 if not Rayfield then
