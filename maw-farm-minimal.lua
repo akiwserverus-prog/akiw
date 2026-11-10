@@ -7,8 +7,10 @@ local T = W:CreateTab("Main")
 _G.autoAttack = false
 _G.autoDodge = false
 _G.fk = false
+_G.autoSell = false
 _G.SelectedBoss = "All Bosses"
 _G.SelectedMob = "All Mobs"
+_G.SelectedRealm = "Mortal Realm"
 _G.Skills = {Z=false, X=false, C=false, V=false}
 
 local plr = game.Players.LocalPlayer
@@ -76,6 +78,28 @@ for _, key in ipairs({"Z", "X", "C", "V"}) do
         end
     })
 end
+
+-- Auto Sell Section
+local AutoSellSection = T:CreateSection("Auto Sell")
+
+local RealmList = {"Mortal Realm", "Qi Condensation", "Foundation Establishment", "Golden Core", "Nascent Soul"}
+T:CreateDropdown({
+    Name = "Sell Realm",
+    Options = RealmList,
+    CurrentOption = {"Mortal Realm"},
+    MultipleOptions = false,
+    Callback = function(Value)
+        _G.SelectedRealm = Value[1]
+    end
+})
+
+T:CreateToggle({
+    Name = "Auto Sell Items",
+    CurrentValue = false,
+    Callback = function(Value)
+        _G.autoSell = Value
+    end
+})
 
 -- Teleport Section
 local TpSection = T:CreateSection("Teleport")
@@ -197,5 +221,28 @@ task.spawn(function()
             end
         end
         task.wait(0.05)
+    end
+end)
+
+-- Auto Sell Loop
+task.spawn(function()
+    while true do
+        if _G.autoSell then
+            pcall(function()
+                local backpack = plr:FindFirstChild("Backpack")
+                if backpack then
+                    for _, item in ipairs(backpack:GetChildren()) do
+                        if item:IsA("Tool") and item:FindFirstChild("Realm") then
+                            local itemRealm = item.Realm.Value
+                            if itemRealm == _G.SelectedRealm or _G.SelectedRealm == "Mortal Realm" then
+                                game:GetService("ReplicatedStorage").Remotes.SellItem:FireServer(item)
+                                task.wait(0.1)
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+        task.wait(1)
     end
 end)
