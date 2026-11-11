@@ -188,14 +188,14 @@ T_WildQi:CreateButton({Name="Reset Wild Qi Log", Callback=function()
 	Rayfield:Notify({Title = "AKIW HUB v2.7", Content = "Log cleared!", Duration = 2, Image = 4483362458})
 end})
 
--- Auto Kultivasi Loop (1 Spot)
+-- Auto Kultivasi Loop (1 Spot with Active Combat)
 task.spawn(function()
 	while true do
 		if _G.autoWildQiCultivate then
 			local char = plr.Character
 			local hrp = char and char:FindFirstChild("HumanoidRootPart")
-			if hrp and char:FindFirstChild("Humanoid") then
-				-- Cari Wild Qi terdekat dan tetap di sana
+			local hum = char and char:FindFirstChild("Humanoid")
+			if hrp and hum then
 				local targetObj = nil
 				for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
 					if obj.Name == "WildQi" and obj:IsA("Model") then
@@ -221,21 +221,33 @@ task.spawn(function()
 						end
 						task.wait(1)
 
-						-- Deteksi musuh & bunuh di spot itu
-						local enemyFound = false
-						for _, obj in ipairs(workspace:GetChildren()) do
-							if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") and obj.Humanoid.Health > 0 then
-								local dist = (hrp.Position - obj.HumanoidRootPart.Position).Magnitude
-								if dist < 60 then
-									enemyFound = true
-									hrp.CFrame = CFrame.lookAt(obj.HumanoidRootPart.Position + Vector3.new(0, 8.5, 0), obj.HumanoidRootPart.Position)
-									pcall(function()
-										game:GetService("ReplicatedStorage").Remotes.CombatInput:FireServer(obj.HumanoidRootPart)
-									end)
+						-- Stay and fight any spawned enemies near this spot
+						local startFight = tick()
+						while _G.autoWildQiCultivate and (tick() - startFight < 30) do
+							local enemyFound = false
+							for _, obj in ipairs(workspace:GetChildren()) do
+								if obj:IsA("Model") and obj ~= char and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") and obj.Humanoid.Health > 0 then
+									local dist = (hrp.Position - obj.HumanoidRootPart.Position).Magnitude
+									if dist < 80 then
+										enemyFound = true
+										-- Float above enemy and attack
+										hrp.CFrame = CFrame.new(obj.HumanoidRootPart.Position + Vector3.new(0, 8.5, 0), obj.HumanoidRootPart.Position)
+										pcall(function()
+											game:GetService("ReplicatedStorage").Remotes.CombatInput:FireServer(obj.HumanoidRootPart)
+										end)
+										VIM:SendMouseButtonEvent(0,0,0,true,game,0)
+										task.wait(0.02)
+										VIM:SendMouseButtonEvent(0,0,0,false,game,0)
+									end
 								end
 							end
+							if not enemyFound then
+								task.wait(0.5)
+								break
+							else
+								task.wait(0.1)
+							end
 						end
-						task.wait(2)
 					end
 				end
 			end
